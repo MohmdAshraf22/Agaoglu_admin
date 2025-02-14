@@ -22,16 +22,66 @@ final class LoginLoadingState extends UserState {
 }
 
 final class LoginSuccessState extends UserState {
+  final Admin admin;
+  const LoginSuccessState(this.admin);
+  @override
+  List<Object> get props => [admin];
+}
+
+final class GetWorkersLoadingState extends UserState {
   @override
   List<Object> get props => [];
 }
 
-final class CreateWorkerLoadingState extends UserState {
+final class GetWorkersSuccessState extends UserState {
+  final List<Worker> workers;
+  const GetWorkersSuccessState(this.workers);
+  @override
+  List<Object> get props => [workers];
+}
+
+final class AddWorkerLoadingState extends UserState {
   @override
   List<Object> get props => [];
 }
 
-final class CreateWorkerSuccessState extends UserState {
+final class AddWorkerSuccessState extends UserState {
+  final Worker worker;
+  const AddWorkerSuccessState(this.worker);
+  @override
+  List<Object> get props => [];
+}
+
+final class UpdateWorkerLoadingState extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+final class UpdateWorkerSuccessState extends UserState {
+  final Worker worker;
+  const UpdateWorkerSuccessState(this.worker);
+  @override
+  List<Object> get props => [];
+}
+
+final class DeleteWorkerLoadingState extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+final class DeleteWorkerSuccessState extends UserState {
+  final String workerId;
+  const DeleteWorkerSuccessState(this.workerId);
+  @override
+  List<Object> get props => [workerId];
+}
+
+final class LogoutLoadingState extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+final class LogoutSuccessState extends UserState {
   @override
   List<Object> get props => [];
 }

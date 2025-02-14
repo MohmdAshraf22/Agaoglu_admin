@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class AppUser extends Equatable {
@@ -24,16 +25,27 @@ class Admin extends AppUser {
 
 class Worker extends AppUser {
   final String categoryId;
+  final String surname;
+  final String phoneNumber;
+  final String? imageUrl;
 
-  const Worker(
-      {required super.id,
-      required super.name,
-      required super.email,
-      required this.categoryId});
+  const Worker({
+    required super.id,
+    required super.name,
+    required super.email,
+    required this.categoryId,
+    required this.surname,
+    required this.phoneNumber,
+    this.imageUrl,
+  });
 
-  factory Worker.fromJson(Map<String, dynamic> json) {
+  factory Worker.fromJson(DocumentSnapshot document) {
+    final Map<String, dynamic> json = document.data() as Map<String, dynamic>;
     return Worker(
-      id: json['id'],
+      imageUrl: json['imageUrl'],
+      surname: json['surname'],
+      phoneNumber: json['phoneNumber'],
+      id: document.id,
       name: json['name'],
       email: json['email'],
       categoryId: json['categoryId'],
@@ -42,11 +54,32 @@ class Worker extends AppUser {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'email': email,
       'categoryId': categoryId,
+      'surname': surname,
+      'phoneNumber': phoneNumber,
+      'imageUrl': imageUrl
     };
+  }
+
+  Worker copyWith({
+    String? name,
+    String? email,
+    String? categoryId,
+    String? surname,
+    String? phoneNumber,
+    String? imageUrl,
+  }) {
+    return Worker(
+      id: id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      categoryId: categoryId ?? this.categoryId,
+      surname: surname ?? this.surname,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      imageUrl: imageUrl ?? this.imageUrl,
+    );
   }
 
   @override
