@@ -54,8 +54,3 @@ class UserCubit extends Cubit<UserState> {
         (r) => emit(DeleteWorkerSuccessState(workerId)));
   }
 }
-/*
-
-
-
- */
