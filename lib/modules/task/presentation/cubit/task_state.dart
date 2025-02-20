@@ -87,6 +87,19 @@ final class CreateTaskError extends TaskState {
 
 final class FilterTaskByStatus extends TaskState {
   final TaskStatus status;
+  final List<Task> tasks;
 
-  const FilterTaskByStatus(this.status);
+  const FilterTaskByStatus(this.status, this.tasks);
+
+  @override
+  List<Object> get props => [status,tasks];
 }
+
+final class ShowDeleteDialog extends TaskState {
+  final String taskId;
+
+  const ShowDeleteDialog(this.taskId);
+
+  @override
+  List<Object> get props => [taskId];
+}final class CloseDeleteDialog extends TaskState {}

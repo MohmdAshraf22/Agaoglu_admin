@@ -1,26 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
 enum TaskStatus {
-  pending,
   all,
+  pending,
   inProgress,
   approved,
   cancelled,
   completed,
 }
 
-class Task {
+class Task extends Equatable {
   final String id;
   final String description;
-  final String? workerAssignedId;
+  final String? workerName;
+  final String? workerPhoto;
   final TaskStatus status;
   final DateTime createdAt;
 
-  Task({
+  const Task({
     required this.id,
     required this.description,
     required this.status,
-    required this.workerAssignedId,
+    this.workerName,
+    this.workerPhoto,
     required this.createdAt,
   });
 
@@ -28,7 +31,8 @@ class Task {
     return {
       'id': id,
       'description': description,
-      'workerAssignedId': workerAssignedId,
+      'workerName': workerName,
+      'workerPhoto': workerPhoto,
       'status': status.name,
       'createdAt': createdAt,
     };
@@ -38,13 +42,15 @@ class Task {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Task(
       id: doc.id,
-      workerAssignedId: data['workerAssignedId'],
-      description: data['description'] ?? '',
-      status: TaskStatus.values.firstWhere(
-        (e) => e.name == data['status'],
-        orElse: () => TaskStatus.pending,
-      ),
+      workerName: data['workerName'],
+      workerPhoto: data['workerPhoto'],
+      description: data['description'],
+      status: TaskStatus.values.byName(data['status']),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
+
+  @override
+  List<Object?> get props =>
+      [id, description, workerName, workerPhoto, status, createdAt];
 }

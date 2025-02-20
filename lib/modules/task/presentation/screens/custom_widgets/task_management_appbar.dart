@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/create_task_screen.dart';
 
 class TaskManagementAppBar extends StatelessWidget {
   const TaskManagementAppBar({super.key});
@@ -29,7 +31,7 @@ class TaskManagementAppBar extends StatelessWidget {
             icon: Icon(Icons.add),
             color: ColorManager.white,
             onPressed: () {
-              // Handle add task
+              context.push(CreateTaskScreen());
             },
           ),
         ),

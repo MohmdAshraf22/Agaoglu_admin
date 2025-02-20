@@ -1,20 +1,19 @@
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasks_admin/core/utils/api_handler.dart';
-import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
+
+import '../../data/model/task.dart';
 
 part 'task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
   final TaskRepository _taskRepository; // Change
 
-  TaskCubit(this._taskRepository) : super(TaskInitial()) {
-    _loadTasks();
-  }
+  TaskCubit(this._taskRepository) : super(TaskInitial());
 
-  void _loadTasks() {
+  void getTasks() {
     emit(TaskLoading());
     _taskRepository.getTasks().listen(
       (tasks) {
@@ -56,8 +55,18 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  filterTasksByStatus(TaskStatus status) {
-    emit(FilterTaskByStatus(status));
+  filterTasksByStatus(TaskStatus status, List<Task> tasks) {
+    if (status == TaskStatus.all) {
+      emit(FilterTaskByStatus(status, tasks));
+    } else {
+      List<Task> filteredTasks =
+          tasks.where((task) => task.status == status).toList();
+      emit(FilterTaskByStatus(status, filteredTasks));
+    }
   }
 
+  void showDeleteDialog(String taskId) {
+    emit(ShowDeleteDialog(taskId));
+    emit(CloseDeleteDialog());
+  }
 }
