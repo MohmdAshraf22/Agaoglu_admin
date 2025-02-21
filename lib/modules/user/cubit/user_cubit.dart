@@ -26,9 +26,9 @@ class UserCubit extends Cubit<UserState> {
         (l) => emit(UserErrorState(l)), (r) => emit(LogoutSuccessState()));
   }
 
-  Future<void> getWorkers(String email, String password) async {
+  Future<void> getWorkers() async {
     emit(GetWorkersLoadingState());
-    final result = await _userRepository.getWorkers(email, password);
+    final result = await _userRepository.getWorkers();
     result.fold(
         (l) => emit(UserErrorState(l)), (r) => emit(GetWorkersSuccessState(r)));
   }
