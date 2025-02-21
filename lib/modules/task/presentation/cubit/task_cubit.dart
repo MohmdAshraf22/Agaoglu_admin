@@ -1,9 +1,10 @@
+import 'dart:io';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:tasks_admin/core/utils/api_handler.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
-
+import 'package:tasks_admin/modules/user/data/models/user.dart';
 import '../../data/model/task.dart';
 
 part 'task_state.dart';
@@ -12,6 +13,8 @@ class TaskCubit extends Cubit<TaskState> {
   final TaskRepository _taskRepository; // Change
 
   TaskCubit(this._taskRepository) : super(TaskInitial());
+
+  final ImagePicker _picker = ImagePicker();
 
   void getTasks() {
     emit(TaskLoading());
@@ -25,16 +28,6 @@ class TaskCubit extends Cubit<TaskState> {
     );
   }
 
-  Future<void> getTask(String taskId) async {
-    emit(GetTaskLoading());
-    final result = await _taskRepository.getTask(taskId);
-    if (result is Success<Task>) {
-      emit(GetTaskSuccess());
-    } else if (result is Error<Task>) {
-      emit(GetTaskError(errorMessage: result.errorMessage!));
-    }
-  }
-
   Future<void> deleteTask(String taskId) async {
     emit(DeleteTaskLoading());
     final result = await _taskRepository.deleteTask(taskId);
@@ -45,7 +38,7 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  Future<void> updateTask(Task task) async {
+  Future<void> updateTask(TaskModel task) async {
     emit(UpdateTaskLoading());
     final result = await _taskRepository.updateTask(task);
     if (result is Success<bool>) {
@@ -55,11 +48,40 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  filterTasksByStatus(TaskStatus status, List<Task> tasks) {
+  Future<void> createTask(TaskModel task) async {
+    emit(CreateTaskLoading());
+    final result = await _taskRepository.createTask(task);
+    if (result is Success<String>) {
+      emit(CreateTaskSuccess());
+    } else if (result is Error<String>) {
+      emit(CreateTaskError(errorMessage: result.errorMessage!));
+    }
+  }
+
+  Future<void> uploadFile({
+    required File file,
+    required String storagePath,
+  }) async {
+    emit(UploadFileLoading());
+    final result = await _taskRepository.uploadFile(
+      file: file,
+      storagePath: storagePath,
+    );
+    if (result is Success<String>) {
+      emit(UploadFileSuccess(
+        downloadUrl: result.data,
+        storagePath: storagePath,
+      ));
+    } else if (result is Error<String>) {
+      emit(UploadFileError(errorMessage: result.errorMessage!));
+    }
+  }
+
+  void filterTasksByStatus(TaskStatus status, List<TaskModel> tasks) {
     if (status == TaskStatus.all) {
       emit(FilterTaskByStatus(status, tasks));
     } else {
-      List<Task> filteredTasks =
+      List<TaskModel> filteredTasks =
           tasks.where((task) => task.status == status).toList();
       emit(FilterTaskByStatus(status, filteredTasks));
     }
@@ -68,5 +90,41 @@ class TaskCubit extends Cubit<TaskState> {
   void showDeleteDialog(String taskId) {
     emit(ShowDeleteDialog(taskId));
     emit(CloseDeleteDialog());
+  }
+
+  void selectWorker(Worker workerId) {
+    emit(SelectWorkerState(workerId));
+  }
+
+  void selectDateTime(DateTime dateTime) {
+    emit(SelectDateTimeState(dateTime));
+  }
+
+  List<File> selectedImages = [];
+
+  Future<void> pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      selectedImages.add(File(image.path));
+      // uploadFile(
+      //   file: File(image.path),
+      //   storagePath: "images",
+      // );
+      emit(MediaImageSelected(List.from(selectedImages)));
+    }
+  }
+
+  void pressRecordingButton(bool isPressed) {
+    bool isRecording = !isPressed;
+    emit(IsPressedRecordingState(isRecording));
+  }
+
+  Future<void> completeRecording(String? audioPath) async {
+    if (audioPath == null) return;
+    await uploadFile(
+      file: File(audioPath),
+      storagePath: "audios",
+    );
+    emit(CompleteRecordingState());
   }
 }

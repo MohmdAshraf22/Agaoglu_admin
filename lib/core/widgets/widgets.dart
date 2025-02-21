@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'dart:math' as math;
 
 class SemiTransparentContainer extends StatelessWidget {
   final double opacity;
@@ -72,5 +73,102 @@ class DefaultButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class DefaultTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final int? maxLines;
+  final String? labelText;
+  final String? hintText;
+  final String? Function(String?)? validator;
+
+  const DefaultTextField(
+      {super.key,
+      required this.controller,
+      this.maxLines,
+      this.labelText,
+      this.hintText,
+      this.validator});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines ?? 1,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        fillColor: ColorManager.white,
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: ColorManager.grey,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: ColorManager.grey,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: ColorManager.grey,
+          ),
+        ),
+      ),
+      validator: validator,
+    );
+  }
+}
+
+////
+class DashedCirclePainter extends CustomPainter {
+  final double radius;
+  final double dashWidth;
+  final double dashSpace;
+
+  DashedCirclePainter({
+    required this.radius,
+    required this.dashWidth,
+    required this.dashSpace,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = ColorManager.grey
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0; // Adjust stroke width as needed
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final path = Path();
+    path.addOval(Rect.fromCircle(center: center, radius: radius));
+
+    final dashLength = dashWidth;
+    final spaceLength = dashSpace;
+    final totalLength = dashLength + spaceLength;
+    final circumference = 2 * math.pi * radius;
+    final dashCount = (circumference / totalLength).floor();
+
+    for (int i = 0; i <= dashCount; i++) {
+      final startAngle = (i * totalLength / circumference) * 2 * math.pi;
+      final endAngle = startAngle + (dashLength / circumference) * 2 * math.pi;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        endAngle - startAngle,
+        false,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false; // Repaint only if properties change
   }
 }

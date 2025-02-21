@@ -5,12 +5,16 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
+import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/filter_button.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/dummy_data/dummy_data.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/edit_task_screen.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/task_management_appbar.dart';
+
+import 'custom_widgets/image_builder.dart';
 
 class TaskManagementScreen extends StatefulWidget {
   const TaskManagementScreen({super.key});
@@ -21,13 +25,13 @@ class TaskManagementScreen extends StatefulWidget {
 
 class _TaskManagementScreenState extends State<TaskManagementScreen> {
   TaskStatus filterSelected = TaskStatus.all;
-  late TaskCubit taskCubit;
-  List<Task> tasks = DummyTasks.getTasks();
-  List<Task> filteredTasks = [];
+  late TaskCubit taskCubit = context.read<TaskCubit>();
+
+  List<TaskModel> tasks = DummyTasks.getTasks();
+  List<TaskModel> filteredTasks = [];
 
   @override
   void initState() {
-    taskCubit = context.read<TaskCubit>();
     taskCubit.getTasks();
     super.initState();
   }
@@ -48,7 +52,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                   Icons.search,
                   color: ColorManager.white,
                 ),
-                hintText: 'Search tasks...',
+                hintText: S.of(context).search_tasks,
                 hintStyle: TextStyle(
                   color: ColorManager.white,
                 ),
@@ -62,9 +66,10 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
             SizedBox(height: 2.h),
             Expanded(
               child: BlocConsumer<TaskCubit, TaskState>(
+                listenWhen: (previous, current) => current is ShowDeleteDialog,
                 listener: (context, state) {
                   if (state is ShowDeleteDialog) {
-                    _showDeleteDialog(context, state.taskId);
+                    _showDeleteDialog(state.taskId);
                   }
                 },
                 builder: (context, state) {
@@ -115,7 +120,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
     );
   }
 
-  Widget _buildTaskCard(Task task) {
+  Widget _buildTaskCard(TaskModel task) {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 500),
       child: Card(
@@ -135,7 +140,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      task.description,
+                      task.title,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -149,7 +154,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      task.status.name,
+                      _getTaskStatusLanguage(task.status),
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -166,11 +171,25 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                   ),
                   SizedBox(width: 2.w),
                   Text(
-                    task.workerName ?? "Not Accepted yet",
+                    task.workerName ?? S.of(context).not_accepted_yet,
                   ),
                 ],
               ),
               SizedBox(height: 2.h),
+              Text(
+                task.description,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 2.h),
+              if (task.imagesUrl != null)
+                Padding(
+                  padding: EdgeInsetsDirectional.only(bottom: 2.h),
+                  child: ImageBuilder(imagesUrl: task.imagesUrl!),
+                ),
+              if (task.voiceUrl != null)
+                AudioPlayerBuilder(audioUrl: task.voiceUrl!
+                    // 'https://firebasestorage.googleapis.com/v0/b/masheed-d942d.appspot.com/o/audios%2FZVSbJCtVxaTg8xKr1202XUwFNrH2%2Faudio6565445721400773739.m4a?alt=media&token=4bce69e7-3a88-4282-a155-dd5b09fd9c5c',
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -245,19 +264,19 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
     }
   }
 
-  void _showDeleteDialog(BuildContext context, String taskId) {
+  void _showDeleteDialog(String taskId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Task'),
-        content: Text('Are you sure you want to delete this task?'),
+        title: Text(S.of(context).delete_task),
+        content: Text(S.of(context).are_you_sure_you_want_to_delete_this_task),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: Text(S.of(context).cancel),
             onPressed: () => context.pop(),
           ),
           TextButton(
-            child: Text('Delete'),
+            child: Text(S.of(context).delete),
             onPressed: () {
               taskCubit.deleteTask(taskId);
               context.pop();
@@ -266,5 +285,22 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
         ],
       ),
     );
+  }
+
+  String _getTaskStatusLanguage(TaskStatus status) {
+    switch (status) {
+      case TaskStatus.pending:
+        return S.of(context).pending;
+      case TaskStatus.approved:
+        return S.of(context).approved;
+      case TaskStatus.inProgress:
+        return S.of(context).in_progress;
+      case TaskStatus.cancelled:
+        return S.of(context).cancelled;
+      case TaskStatus.completed:
+        return S.of(context).completed;
+      case TaskStatus.all:
+        return S.of(context).all;
+    }
   }
 }

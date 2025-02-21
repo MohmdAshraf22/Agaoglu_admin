@@ -1,23 +1,13 @@
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 
 class DummyTasks {
-  static List<Task> getTasks() => [
-        Task(
+  static List<TaskModel> getTasks() => [
+        TaskModel(
           id: "id",
-          description: "description",
-          status: TaskStatus.pending,
-          createdAt: DateTime.now(),
-        ),
-        Task(
-          id: "id",
+          title: "title",
+          voiceUrl: null,
           description: "description",
           status: TaskStatus.cancelled,
-          createdAt: DateTime.now(),
-        ),
-        Task(
-          id: "id",
-          description: "description",
-          status: TaskStatus.approved,
           createdAt: DateTime.now(),
         ),
       ];

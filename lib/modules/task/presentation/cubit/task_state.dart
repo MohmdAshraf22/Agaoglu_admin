@@ -9,10 +9,12 @@ sealed class TaskState extends Equatable {
 
 final class TaskInitial extends TaskState {}
 
+/// Get Task
+
 final class TaskLoading extends TaskState {}
 
 final class TaskLoaded extends TaskState {
-  final List<Task> tasks;
+  final List<TaskModel> tasks;
 
   const TaskLoaded({required this.tasks});
 
@@ -24,20 +26,6 @@ final class TaskError extends TaskState {
   final String errorMessage;
 
   const TaskError({required this.errorMessage});
-
-  @override
-  List<Object> get props => [errorMessage];
-}
-
-/// Get Task
-final class GetTaskLoading extends TaskState {}
-
-final class GetTaskSuccess extends TaskState {}
-
-final class GetTaskError extends TaskState {
-  final String errorMessage;
-
-  const GetTaskError({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];
@@ -85,14 +73,33 @@ final class CreateTaskError extends TaskState {
   List<Object> get props => [errorMessage];
 }
 
+/// Upload file
+final class UploadFileLoading extends TaskState {}
+
+final class UploadFileSuccess extends TaskState {
+  final String downloadUrl;
+  final String storagePath;
+
+  const UploadFileSuccess({required this.downloadUrl, required this.storagePath});
+}
+
+final class UploadFileError extends TaskState {
+  final String errorMessage;
+
+  const UploadFileError({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
 final class FilterTaskByStatus extends TaskState {
   final TaskStatus status;
-  final List<Task> tasks;
+  final List<TaskModel> tasks;
 
   const FilterTaskByStatus(this.status, this.tasks);
 
   @override
-  List<Object> get props => [status,tasks];
+  List<Object> get props => [status, tasks];
 }
 
 final class ShowDeleteDialog extends TaskState {
@@ -102,4 +109,44 @@ final class ShowDeleteDialog extends TaskState {
 
   @override
   List<Object> get props => [taskId];
-}final class CloseDeleteDialog extends TaskState {}
+}
+
+final class SelectDateTimeState extends TaskState {
+  final DateTime dateTime;
+
+  const SelectDateTimeState(this.dateTime);
+
+  @override
+  List<Object> get props => [dateTime];
+}
+
+final class SelectWorkerState extends TaskState {
+  final Worker workerId;
+
+  const SelectWorkerState(this.workerId);
+
+  @override
+  List<Object> get props => [workerId];
+}
+
+final class CloseDeleteDialog extends TaskState {}
+
+final class MediaImageSelected extends TaskState {
+  final List<File> selectedImages;
+
+  const MediaImageSelected(this.selectedImages);
+
+  @override
+  List<Object> get props => [selectedImages];
+}
+
+final class IsPressedRecordingState extends TaskState {
+  final bool isPressedRecording;
+
+  const IsPressedRecordingState(this.isPressedRecording);
+
+  @override
+  List<Object> get props => [isPressedRecording];
+}
+
+final class CompleteRecordingState extends TaskState {}
