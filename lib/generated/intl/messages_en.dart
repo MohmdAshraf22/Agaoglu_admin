@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "additional_files": MessageLookupByLibrary.simpleMessage(
       "Additional Files",
     ),
+    "admin_panel": MessageLookupByLibrary.simpleMessage("Admin Panel"),
     "all": MessageLookupByLibrary.simpleMessage("all"),
     "approved": MessageLookupByLibrary.simpleMessage("approved"),
     "are_you_sure_you_want_to_delete_this_task":
@@ -44,17 +45,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "delete_task": MessageLookupByLibrary.simpleMessage("Delete Task"),
     "due_date": MessageLookupByLibrary.simpleMessage("Due Date"),
+    "email": MessageLookupByLibrary.simpleMessage("Email"),
+    "enterEmail": MessageLookupByLibrary.simpleMessage("Please enter email"),
+    "enterValidEmail": MessageLookupByLibrary.simpleMessage(
+      "Please enter valid email",
+    ),
     "enter_task_description": MessageLookupByLibrary.simpleMessage(
       "Enter task description",
     ),
     "enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Enter task title",
     ),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage("forgot password?"),
     "in_progress": MessageLookupByLibrary.simpleMessage("in progress"),
     "location": MessageLookupByLibrary.simpleMessage("Location"),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Not Accepted yet",
     ),
+    "password": MessageLookupByLibrary.simpleMessage("Password"),
     "pending": MessageLookupByLibrary.simpleMessage("pending"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Please enter task title",
@@ -65,6 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search_tasks": MessageLookupByLibrary.simpleMessage("Search tasks..."),
     "select_date": MessageLookupByLibrary.simpleMessage("Select date"),
     "select_worker": MessageLookupByLibrary.simpleMessage("Select Worker"),
+    "signIn": MessageLookupByLibrary.simpleMessage("Sign In"),
     "submit_task": MessageLookupByLibrary.simpleMessage("Submit Task"),
     "task_description": MessageLookupByLibrary.simpleMessage(
       "Task Description",

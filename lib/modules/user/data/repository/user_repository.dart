@@ -14,9 +14,8 @@ class UserRepository {
     return _remoteUserServices.deleteWorker(workerId);
   }
 
-  Future<Either<Exception, List<Worker>>> getWorkers(
-      String email, String password) {
-    return _remoteUserServices.getWorkers(email, password);
+  Future<Either<Exception, List<Worker>>> getWorkers() {
+    return _remoteUserServices.getWorkers();
   }
 
   Future<Either<Exception, Admin>> login(String email, String password) {

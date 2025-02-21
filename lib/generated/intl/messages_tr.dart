@@ -28,6 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "add_site": MessageLookupByLibrary.simpleMessage("Site Ekle"),
     "add_voice": MessageLookupByLibrary.simpleMessage("Ses Ekle"),
     "additional_files": MessageLookupByLibrary.simpleMessage("Ek Dosyalar"),
+    "admin_panel": MessageLookupByLibrary.simpleMessage("yönetici paneli"),
     "all": MessageLookupByLibrary.simpleMessage("tümü"),
     "approved": MessageLookupByLibrary.simpleMessage("onaylandı"),
     "are_you_sure_you_want_to_delete_this_task":
@@ -44,17 +45,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete": MessageLookupByLibrary.simpleMessage("Sil"),
     "delete_task": MessageLookupByLibrary.simpleMessage("Görevi Sil"),
     "due_date": MessageLookupByLibrary.simpleMessage("Bitiş Tarihi"),
+    "email": MessageLookupByLibrary.simpleMessage("E-posta"),
+    "enterEmail": MessageLookupByLibrary.simpleMessage(
+      "Lütfen e-posta giriniz",
+    ),
+    "enterValidEmail": MessageLookupByLibrary.simpleMessage(
+      "Lütfen geçerli bir e-posta girin",
+    ),
     "enter_task_description": MessageLookupByLibrary.simpleMessage(
       "Görev Açıklaması",
     ),
     "enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Görev başlığını girin",
     ),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage(
+      "Parolanızı mı unuttunuz",
+    ),
     "in_progress": MessageLookupByLibrary.simpleMessage("devam ediyor"),
     "location": MessageLookupByLibrary.simpleMessage("Konum"),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Henüz kabul edilmedi",
     ),
+    "password": MessageLookupByLibrary.simpleMessage("Şifre"),
     "pending": MessageLookupByLibrary.simpleMessage("beklemede"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Lütfen görev başlığını girin",
@@ -65,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search_tasks": MessageLookupByLibrary.simpleMessage("Görevleri ara..."),
     "select_date": MessageLookupByLibrary.simpleMessage("Tarih seç"),
     "select_worker": MessageLookupByLibrary.simpleMessage("Çalışanı Seç"),
+    "signIn": MessageLookupByLibrary.simpleMessage("Oturum aç"),
     "submit_task": MessageLookupByLibrary.simpleMessage("Görevi Gönder"),
     "task_description": MessageLookupByLibrary.simpleMessage(
       "Görev Açıklaması",

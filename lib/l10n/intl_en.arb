@@ -1,4 +1,11 @@
 {
+  "signIn": "Sign In",
+  "email": "Email",
+  "password": "Password",
+  "enterEmail": "Please enter email",
+  "enterValidEmail": "Please enter valid email",
+  "forgotPassword": "forgot password?",
+  "admin_panel": "Admin Panel",
   "submit_task": "Submit Task",
   "cancel": "Cancel",
   "task_description": "Task Description",

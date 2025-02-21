@@ -55,6 +55,56 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Sign In`
+  String get signIn {
+    return Intl.message('Sign In', name: 'signIn', desc: '', args: []);
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message('Email', name: 'email', desc: '', args: []);
+  }
+
+  /// `Password`
+  String get password {
+    return Intl.message('Password', name: 'password', desc: '', args: []);
+  }
+
+  /// `Please enter email`
+  String get enterEmail {
+    return Intl.message(
+      'Please enter email',
+      name: 'enterEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter valid email`
+  String get enterValidEmail {
+    return Intl.message(
+      'Please enter valid email',
+      name: 'enterValidEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `forgot password?`
+  String get forgotPassword {
+    return Intl.message(
+      'forgot password?',
+      name: 'forgotPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Admin Panel`
+  String get admin_panel {
+    return Intl.message('Admin Panel', name: 'admin_panel', desc: '', args: []);
+  }
+
   /// `Submit Task`
   String get submit_task {
     return Intl.message('Submit Task', name: 'submit_task', desc: '', args: []);

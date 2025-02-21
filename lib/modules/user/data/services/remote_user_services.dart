@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,8 +10,7 @@ import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
 
 abstract class BaseRemoteUserServices {
   Future<Either<Exception, Admin>> login(String email, String password);
-  Future<Either<Exception, List<Worker>>> getWorkers(
-      String email, String password);
+  Future<Either<Exception, List<Worker>>> getWorkers();
   Future<Either<Exception, Worker>> addWorker(
       WorkerCreationForm workerCreationForm);
   Future<Either<Exception, Unit>> updateWorker(Worker worker);
@@ -22,21 +22,22 @@ class RemoteUserServices implements BaseRemoteUserServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseFunctions _functions = FirebaseFunctions.instance;
+
   @override
   Future<Either<Exception, Admin>> login(String email, String password) async {
     try {
-      late Admin admin;
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) => value.user!);
-      await _firestore
+      final adminDoc = await _firestore
           .collection("admins")
-          .doc(_auth.currentUser!.uid)
-          .get()
-          .then((value) {
-        admin = Admin.fromJson(value.data() as Map<String, dynamic>);
-      });
+          .doc(userCredential.user!.uid)
+          .get();
+
+      final admin = Admin.fromJson(adminDoc.data() as Map<String, dynamic>);
       return Right(admin);
     } on Exception catch (e) {
       return Left(e);
@@ -44,15 +45,11 @@ class RemoteUserServices implements BaseRemoteUserServices {
   }
 
   @override
-  Future<Either<Exception, List<Worker>>> getWorkers(
-      String email, String password) async {
+  Future<Either<Exception, List<Worker>>> getWorkers() async {
     try {
-      List<Worker> workers = [];
-      var response = await _firestore.collection("workers").get();
+      final response = await _firestore.collection("workers").get();
+      final workers = response.docs.map((doc) => Worker.fromJson(doc)).toList();
 
-      response.docs.map((e) {
-        workers.add(Worker.fromJson(e));
-      });
       return Right(workers);
     } on Exception catch (e) {
       return Left(e);
@@ -63,31 +60,32 @@ class RemoteUserServices implements BaseRemoteUserServices {
   Future<Either<Exception, Worker>> addWorker(
       WorkerCreationForm workerCreationForm) async {
     try {
-      // initialize future operations
-      Future<String?>? uploadImageFuture;
-      late Future<UserCredential> signUpFuture;
+      String? imageUrl;
 
+      // Upload image if provided
       if (workerCreationForm.image != null) {
-        uploadImageFuture =
-            _uploadImage(workerCreationForm.image!, workerCreationForm.email);
+        imageUrl = await _uploadImage(
+          workerCreationForm.image!,
+          workerCreationForm.email,
+        );
       }
-      signUpFuture =
-          _signUp(workerCreationForm.email, workerCreationForm.password);
 
-      // wait for all futures
-      final results = await Future.wait([
-        signUpFuture,
-        if (uploadImageFuture != null) uploadImageFuture,
-      ]);
-// create worker
-      final userCredential = results[0] as UserCredential;
-      final imageUrl = uploadImageFuture != null ? results[1] as String : null;
+      // Create Auth user using Cloud Function
+      final authResult =
+          await _functions.httpsCallable('createWorkerAuth').call({
+        'email': workerCreationForm.email,
+        'password': workerCreationForm.password,
+      });
+
+      final String workerId = authResult.data['uid'];
+
+      // Create worker document in Firestore directly
       final worker = workerCreationForm.toWorker(
-        id: userCredential.user!.uid,
+        id: workerId,
         imageUrl: imageUrl,
       );
 
-      await _setWorkerData(worker);
+      await _firestore.collection("workers").doc(workerId).set(worker.toJson());
 
       return Right(worker);
     } on Exception catch (e) {
@@ -98,7 +96,14 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Either<Exception, Unit>> deleteWorker(String workerId) async {
     try {
+      // Delete Auth user using Cloud Function
+      await _functions.httpsCallable('deleteWorkerAuth').call({
+        'workerId': workerId,
+      });
+
+      // Delete worker document from Firestore directly
       await _firestore.collection("workers").doc(workerId).delete();
+
       return const Right(unit);
     } on Exception catch (e) {
       return Left(e);
@@ -121,29 +126,16 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Either<Exception, Unit>> logout() async {
     try {
-      _auth.signOut();
+      await _auth.signOut();
       return const Right(unit);
     } on Exception catch (e) {
       return Left(e);
     }
   }
 
-  /// private methods
-  Future<UserCredential> _signUp(String email, String password) async {
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return userCredential;
-  }
-
   Future<String?> _uploadImage(File image, String imageName) async {
-    var uploadTask =
+    final uploadTask =
         _storage.ref().child("workerImages/$imageName").putFile(image);
     return await uploadTask.snapshot.ref.getDownloadURL();
-  }
-
-  Future<void> _setWorkerData(Worker worker) async {
-    await _firestore.collection("workers").doc(worker.id).set(worker.toJson());
   }
 }

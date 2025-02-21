@@ -7,10 +7,11 @@ class SemiTransparentContainer extends StatelessWidget {
   final Widget child;
   final double height;
   final double width;
-
+  final double borderRadius;
   const SemiTransparentContainer(
       {super.key,
       this.opacity = 0.4,
+      this.borderRadius = 20,
       required this.child,
       required this.height,
       required this.width});
@@ -21,7 +22,7 @@ class SemiTransparentContainer extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(borderRadius),
         color: ColorManager.white.withOpacity(opacity),
       ),
       child: child,
