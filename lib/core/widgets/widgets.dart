@@ -37,6 +37,7 @@ class DefaultButton extends StatelessWidget {
   final Color textColor;
   final Widget? icon;
   final VoidCallback? onPressed;
+
   const DefaultButton({
     super.key,
     this.height,
@@ -57,12 +58,18 @@ class DefaultButton extends StatelessWidget {
       ),
       child: MaterialButton(
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) icon!,
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
