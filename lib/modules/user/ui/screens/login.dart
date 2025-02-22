@@ -89,7 +89,9 @@ class LoginScreen extends StatelessWidget {
                                   return null;
                                 },
                               )),
-                              Expanded(child: BlocBuilder<UserCubit, UserState>(
+                              Expanded(
+                                  child: BlocBuilder<UserCubit, UserState>(
+                                bloc: cubit,
                                 builder: (context, state) {
                                   return AuthTextField(
                                     controller: passwordController,
