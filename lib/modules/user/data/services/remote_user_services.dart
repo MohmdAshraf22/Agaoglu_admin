@@ -110,6 +110,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Either<Exception, Unit>> deleteWorker(String workerId) async {
     try {
+      // Delete Auth user using Cloud Function
       await _functions.httpsCallable('deleteWorkerAuth').call({
         'workerId': workerId,
       });

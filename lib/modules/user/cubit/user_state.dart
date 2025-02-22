@@ -90,5 +90,5 @@ class ChangePasswordAppearanceState extends UserState {
   final bool isPasswordVisible;
   const ChangePasswordAppearanceState(this.isPasswordVisible);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isPasswordVisible];
 }
