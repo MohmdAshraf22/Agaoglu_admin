@@ -84,5 +84,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "task_management": MessageLookupByLibrary.simpleMessage("Görev Yönetimi"),
     "task_title": MessageLookupByLibrary.simpleMessage("Görev Baslığı"),
+    "update_task": MessageLookupByLibrary.simpleMessage("Görevi Güncelle"),
   };
 }

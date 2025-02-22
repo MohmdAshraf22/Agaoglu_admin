@@ -212,7 +212,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                   _deleteEditTask(
                     color: ColorManager.orange,
                     icon: Icons.edit,
-                    onPressed: () => context.push(EditTaskScreen()),
+                    onPressed: () => context.push(EditTaskScreen(task: task,)),
                   ),
                 ],
               ),

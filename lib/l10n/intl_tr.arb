@@ -37,5 +37,6 @@
   "location": "Konum",
   "add_flat": "Daire Ekle",
   "additional_files": "Ek Dosyalar",
+  "update_task": "Görevi Güncelle",
   "completed": "tamamlandı"
 }

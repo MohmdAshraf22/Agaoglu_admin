@@ -320,6 +320,11 @@ class S {
     );
   }
 
+  /// `Update Task`
+  String get update_task {
+    return Intl.message('Update Task', name: 'update_task', desc: '', args: []);
+  }
+
   /// `completed`
   String get completed {
     return Intl.message('completed', name: 'completed', desc: '', args: []);

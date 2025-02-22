@@ -80,5 +80,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "task_management": MessageLookupByLibrary.simpleMessage("Task Management"),
     "task_title": MessageLookupByLibrary.simpleMessage("Task Title"),
+    "update_task": MessageLookupByLibrary.simpleMessage("Update Task"),
   };
 }

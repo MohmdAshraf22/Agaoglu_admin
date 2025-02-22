@@ -13,36 +13,32 @@ import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/firebase_options.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/task_management.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
 import 'package:tasks_admin/modules/user/data/repository/user_repository.dart';
 import 'package:tasks_admin/modules/user/ui/screens/login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   await CacheHelper.init();
   await LocalizationManager.init();
-  await di.init(); // Initialize the service locator
-  Future<void> main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-    await UserRepository().addWorker(WorkerCreationForm(
-        name: "ali",
-        surname: "hassan",
-        email: "alijs@gmail.com",
-        password: "password",
-        categoryId: "",
-        phoneNumber: "+20 1080154358"));
-    print("************************** User ID **************************");
+  await UserRepository().addWorker(WorkerCreationForm(
+      name: "ali",
+      surname: "hassan",
+      email: "alijs@gmail.com",
+      password: "password",
+      categoryId: "",
+      phoneNumber: "+20 1080154358"));
+  print("************************** User ID **************************");
 
-    print(FirebaseAuth.instance.currentUser!.uid);
-    print("************************** User ID **************************");
+  print(FirebaseAuth.instance.currentUser!.uid);
+  print("************************** User ID **************************");
 
-    runApp(const MyApp());
-  }
+  await di.init();
 }
 
 class MyApp extends StatelessWidget {
@@ -64,7 +60,7 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          title: 'Flutter Demo',
+          title: 'Task Management',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: ColorManager.primary),
             inputDecorationTheme: InputDecorationTheme(
@@ -78,7 +74,7 @@ class MyApp extends StatelessWidget {
             appBarTheme: AppBarTheme(surfaceTintColor: Colors.white),
             useMaterial3: true,
           ),
-          home: const LoginScreen(),
+          home: const TaskManagementScreen(),
         ),
       ),
     );
