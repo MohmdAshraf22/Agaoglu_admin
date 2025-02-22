@@ -85,3 +85,10 @@ final class LogoutSuccessState extends UserState {
   @override
   List<Object> get props => [];
 }
+
+class ChangePasswordAppearanceState extends UserState {
+  final bool isPasswordVisible;
+  const ChangePasswordAppearanceState(this.isPasswordVisible);
+  @override
+  List<Object> get props => [];
+}

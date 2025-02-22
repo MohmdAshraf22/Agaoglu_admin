@@ -5,6 +5,6 @@
   "enterEmail": "Please enter email",
   "enterValidEmail": "Please enter valid email",
   "forgotPassword": "forgot password?",
-  "admin_panel": "Admin Panel"
-
+  "admin_panel": "Admin Panel",
+  "enterPassword": "Please enter password"
 }

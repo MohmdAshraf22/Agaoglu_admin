@@ -53,4 +53,8 @@ class UserCubit extends Cubit<UserState> {
     result.fold((l) => emit(UserErrorState(l)),
         (r) => emit(DeleteWorkerSuccessState(workerId)));
   }
+
+  void changePasswordAppearance(bool currentState) {
+    emit(ChangePasswordAppearanceState(!currentState));
+  }
 }

@@ -37,6 +37,7 @@ class AuthTextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         focusColor: ColorManager.white,
+        labelStyle: TextStyle(color: ColorManager.white),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
@@ -47,8 +48,13 @@ class AuthTextField extends StatelessWidget {
             borderSide: BorderSide(
               color: ColorManager.white,
             )),
-        suffix: suffixIcon,
-        prefix: prefixIcon,
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: ColorManager.red,
+            )),
+        // suffix: suffixIcon,
+        // prefix: prefixIcon,
         labelText: labelText,
         hintText: hintText,
       ),
@@ -57,6 +63,7 @@ class AuthTextField extends StatelessWidget {
       obscureText: obscureText,
       autofillHints: autoFillHints,
       keyboardType: keyboardType,
+      style: TextStyle(color: ColorManager.white),
     );
   }
 }

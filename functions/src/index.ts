@@ -1,19 +1,53 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+// تهيئة Firebase Admin
+admin.initializeApp(enforceAppCheck: false);
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+// دالة إنشاء مستخدم جديد
+export const createWorkerAuth = functions.runWith({
+    enforceAppCheck: false,
+    }).https.onCall(
+  async (data, context) => {
+    try {
+//       if (!context.auth) {
+//         throw new functions.https.HttpsError(
+//           "unauthenticated",
+//           "You must be logged in"
+//         );
+//       }
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+      // إنشاء المستخدم
+      const userRecord = await admin.auth().createUser({
+        email: data.email,
+        password: data.password,
+      });
+
+      return {uid: userRecord.uid};
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      console.log(message);
+      throw new functions.https.HttpsError("internal", message);
+    }
+  }
+);
+
+// دالة حذف مستخدم
+export const deleteWorkerAuth = functions.https.onCall(
+  async (data, context) => {
+    try {
+//       if (!context.auth) {
+//         throw new functions.https.HttpsError(
+//           "unauthenticated",
+//           "You must be logged in"
+//         );
+//       }
+
+      await admin.auth().deleteUser(data.workerId);
+      return {success: true};
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new functions.https.HttpsError("internal", message);
+    }
+  }
+);
