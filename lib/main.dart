@@ -1,19 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tasks_admin/core/local/shared_prefrences.dart';
 import 'package:tasks_admin/core/services/service_locator.dart' as di;
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/core/utils/localization_manager.dart';
 import 'package:tasks_admin/firebase_options.dart';
+import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/task_management.dart';
+import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
+import 'package:tasks_admin/modules/user/data/repository/user_repository.dart';
 import 'package:tasks_admin/modules/user/ui/screens/login.dart';
-
-class FirebaseConstants {
-  static FirebaseApp? firebaseApp;
-}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +26,25 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+  await CacheHelper.init();
+  await LocalizationManager.init();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await UserRepository().addWorker(WorkerCreationForm(
+      name: "ali",
+      surname: "hassan",
+      email: "alijs@gmail.com",
+      password: "password",
+      categoryId: "",
+      phoneNumber: "+20 1080154358"));
+  print("************************** User ID **************************");
+
+  print(FirebaseAuth.instance.currentUser!.uid);
+  print("************************** User ID **************************");
+
+  await di.init();
 }
 
 class MyApp extends StatelessWidget {
@@ -35,7 +58,15 @@ class MyApp extends StatelessWidget {
         value: TaskCubit(di.sl<TaskRepository>()),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
+          locale: LocalizationManager.getCurrentLocale(),
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          title: 'Task Management',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: ColorManager.primary),
             inputDecorationTheme: InputDecorationTheme(
@@ -49,13 +80,6 @@ class MyApp extends StatelessWidget {
             appBarTheme: AppBarTheme(surfaceTintColor: ColorManager.white),
             useMaterial3: true,
           ),
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
           home: const LoginScreen(),
         ),
       ),

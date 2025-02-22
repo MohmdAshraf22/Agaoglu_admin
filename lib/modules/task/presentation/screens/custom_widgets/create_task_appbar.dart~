@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 
 import '../../../../../generated/l10n.dart';
@@ -21,7 +20,7 @@ class CreateTaskAppbar extends StatelessWidget {
           Icons.arrow_back_ios,
           color: ColorManager.primary,
         ),
-        onPressed: () => context.pop(),
+        onPressed: () => Navigator.of(context).pop(),
       ),
     );
   }

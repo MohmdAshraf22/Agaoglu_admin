@@ -22,16 +22,67 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "admin_panel": MessageLookupByLibrary.simpleMessage("Admin Panel"),
-        "email": MessageLookupByLibrary.simpleMessage("Email"),
-        "enterEmail":
-            MessageLookupByLibrary.simpleMessage("Please enter email"),
-        "enterValidEmail": MessageLookupByLibrary.simpleMessage(
-          "Please enter valid email",
+    "add_block": MessageLookupByLibrary.simpleMessage("Add Block"),
+    "add_flat": MessageLookupByLibrary.simpleMessage("Add Flat"),
+    "add_image": MessageLookupByLibrary.simpleMessage("Add Image"),
+    "add_site": MessageLookupByLibrary.simpleMessage("Add Site"),
+    "add_voice": MessageLookupByLibrary.simpleMessage("Add Voice"),
+    "additional_files": MessageLookupByLibrary.simpleMessage(
+      "Additional Files",
+    ),
+    "admin_panel": MessageLookupByLibrary.simpleMessage("Admin Panel"),
+    "all": MessageLookupByLibrary.simpleMessage("all"),
+    "approved": MessageLookupByLibrary.simpleMessage("approved"),
+    "are_you_sure_you_want_to_delete_this_task":
+        MessageLookupByLibrary.simpleMessage(
+          "Are you sure you want to delete this task?",
         ),
-        "forgotPassword":
-            MessageLookupByLibrary.simpleMessage("forgot password?"),
-        "password": MessageLookupByLibrary.simpleMessage("Password"),
-        "signIn": MessageLookupByLibrary.simpleMessage("Sign In"),
-      };
+    "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "cancelled": MessageLookupByLibrary.simpleMessage("cancelled"),
+    "choose_a_worker": MessageLookupByLibrary.simpleMessage("Choose a worker"),
+    "completed": MessageLookupByLibrary.simpleMessage("completed"),
+    "create_task": MessageLookupByLibrary.simpleMessage("Create Task"),
+    "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "delete_task": MessageLookupByLibrary.simpleMessage("Delete Task"),
+    "due_date": MessageLookupByLibrary.simpleMessage("Due Date"),
+    "email": MessageLookupByLibrary.simpleMessage("Email"),
+    "enterEmail": MessageLookupByLibrary.simpleMessage("Please enter email"),
+    "enterPassword": MessageLookupByLibrary.simpleMessage(
+      "Please enter password",
+    ),
+    "enterValidEmail": MessageLookupByLibrary.simpleMessage(
+      "Please enter valid email",
+    ),
+    "enter_task_description": MessageLookupByLibrary.simpleMessage(
+      "Enter task description",
+    ),
+    "enter_task_title": MessageLookupByLibrary.simpleMessage(
+      "Enter task title",
+    ),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage("forgot password?"),
+    "in_progress": MessageLookupByLibrary.simpleMessage("in progress"),
+    "location": MessageLookupByLibrary.simpleMessage("Location"),
+    "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
+      "Not Accepted yet",
+    ),
+    "password": MessageLookupByLibrary.simpleMessage("Password"),
+    "pending": MessageLookupByLibrary.simpleMessage("pending"),
+    "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
+      "Please enter task title",
+    ),
+    "please_select_a_worker": MessageLookupByLibrary.simpleMessage(
+      "Please select a worker",
+    ),
+    "search_tasks": MessageLookupByLibrary.simpleMessage("Search tasks..."),
+    "select_date": MessageLookupByLibrary.simpleMessage("Select date"),
+    "select_worker": MessageLookupByLibrary.simpleMessage("Select Worker"),
+    "signIn": MessageLookupByLibrary.simpleMessage("Sign In"),
+    "submit_task": MessageLookupByLibrary.simpleMessage("Submit Task"),
+    "task_description": MessageLookupByLibrary.simpleMessage(
+      "Task Description",
+    ),
+    "task_management": MessageLookupByLibrary.simpleMessage("Task Management"),
+    "task_title": MessageLookupByLibrary.simpleMessage("Task Title"),
+    "update_task": MessageLookupByLibrary.simpleMessage("Update Task"),
+  };
 }

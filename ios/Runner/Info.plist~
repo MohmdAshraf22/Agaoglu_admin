@@ -33,8 +33,6 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>... explain why the app uses the microphone here ...</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>

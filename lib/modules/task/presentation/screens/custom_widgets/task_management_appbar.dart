@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/create_task_screen.dart';
 
 class TaskManagementAppBar extends StatelessWidget {
@@ -14,7 +15,7 @@ class TaskManagementAppBar extends StatelessWidget {
       elevation: 0,
       titleSpacing: 1,
       title: Text(
-        'Task Management',
+        S.of(context).task_management,
         style: TextStyle(
           color: ColorManager.white,
           fontWeight: FontWeight.bold,
