@@ -339,6 +339,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Reset Password`
+  String get resetPassword {
+    return Intl.message(
+      'Reset Password',
+      name: 'resetPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check your email`
+  String get checkYourEmail {
+    return Intl.message(
+      'Check your email',
+      name: 'checkYourEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A password reset link has been sent to your email address`
+  String get resetPasswordLinkSent {
+    return Intl.message(
+      'A password reset link has been sent to your email address',
+      name: 'resetPasswordLinkSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get ok {
+    return Intl.message('OK', name: 'ok', desc: '', args: []);
+  }
+
+  /// `Send Reset Link`
+  String get sendResetLink {
+    return Intl.message(
+      'Send Reset Link',
+      name: 'sendResetLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to login`
+  String get backToLogin {
+    return Intl.message(
+      'Back to login',
+      name: 'backToLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get edit {
+    return Intl.message('Edit', name: 'edit', desc: '', args: []);
+  }
+
+  /// `Workers Management`
+  String get workersManagement {
+    return Intl.message(
+      'Workers Management',
+      name: 'workersManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search workers...`
+  String get searchWorkers {
+    return Intl.message(
+      'Search workers...',
+      name: 'searchWorkers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Worker`
+  String get deleteWorker {
+    return Intl.message(
+      'Delete Worker',
+      name: 'deleteWorker',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this worker?`
+  String get deleteWorkerConfirmation {
+    return Intl.message(
+      'Are you sure you want to delete this worker?',
+      name: 'deleteWorkerConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

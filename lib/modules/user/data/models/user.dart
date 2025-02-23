@@ -24,7 +24,7 @@ class Admin extends AppUser {
 }
 
 class Worker extends AppUser {
-  final String categoryId;
+  final String job;
   final String surname;
   final String phoneNumber;
   final String? imageUrl;
@@ -33,7 +33,7 @@ class Worker extends AppUser {
     required super.id,
     required super.name,
     required super.email,
-    required this.categoryId,
+    required this.job,
     required this.surname,
     required this.phoneNumber,
     this.imageUrl,
@@ -48,7 +48,7 @@ class Worker extends AppUser {
       id: document.id,
       name: json['name'],
       email: json['email'],
-      categoryId: json['categoryId'],
+      job: json['job'] ?? json["categoryId"],
     );
   }
 
@@ -56,7 +56,7 @@ class Worker extends AppUser {
     return {
       'name': name,
       'email': email,
-      'categoryId': categoryId,
+      'job': job,
       'surname': surname,
       'phoneNumber': phoneNumber,
       'imageUrl': imageUrl
@@ -66,7 +66,7 @@ class Worker extends AppUser {
   Worker copyWith({
     String? name,
     String? email,
-    String? categoryId,
+    String? job,
     String? surname,
     String? phoneNumber,
     String? imageUrl,
@@ -75,7 +75,7 @@ class Worker extends AppUser {
       id: id,
       name: name ?? this.name,
       email: email ?? this.email,
-      categoryId: categoryId ?? this.categoryId,
+      job: job ?? this.job,
       surname: surname ?? this.surname,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       imageUrl: imageUrl ?? this.imageUrl,

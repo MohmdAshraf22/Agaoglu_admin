@@ -20,6 +20,7 @@ abstract class BaseRemoteUserServices {
   Future<Either<Exception, Unit>> updateWorker(Worker worker);
   Future<Either<Exception, Unit>> deleteWorker(String workerId);
   Future<Either<Exception, Unit>> logout();
+  Future<Either<Exception, Unit>> resetPassword(String email);
 }
 
 class RemoteUserServices implements BaseRemoteUserServices {
@@ -46,6 +47,17 @@ class RemoteUserServices implements BaseRemoteUserServices {
 
       final admin = Admin.fromJson(adminDoc.data() as Map<String, dynamic>);
       return Right(admin);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Unit>> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return const Right(unit);
     } on Exception catch (e) {
       return Left(e);
     }

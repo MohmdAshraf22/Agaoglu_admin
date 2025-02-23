@@ -22,6 +22,10 @@ class UserRepository {
     return _remoteUserServices.login(email, password);
   }
 
+  Future<Either<Exception, Unit>> resetPassword(String email) {
+    return _remoteUserServices.resetPassword(email);
+  }
+
   Future<Either<Exception, Unit>> logout() {
     return _remoteUserServices.logout();
   }

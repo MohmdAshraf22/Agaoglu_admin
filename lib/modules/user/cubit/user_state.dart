@@ -28,6 +28,16 @@ final class LoginSuccessState extends UserState {
   List<Object> get props => [admin];
 }
 
+final class ResetPasswordSuccessState extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+final class ResetPasswordLoadingState extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
 final class GetWorkersLoadingState extends UserState {
   @override
   List<Object> get props => [];
@@ -65,8 +75,10 @@ final class UpdateWorkerSuccessState extends UserState {
 }
 
 final class DeleteWorkerLoadingState extends UserState {
+  final String workerId;
+  const DeleteWorkerLoadingState(this.workerId);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [workerId];
 }
 
 final class DeleteWorkerSuccessState extends UserState {
@@ -91,4 +103,11 @@ class ChangePasswordAppearanceState extends UserState {
   const ChangePasswordAppearanceState(this.isPasswordVisible);
   @override
   List<Object> get props => [isPasswordVisible];
+}
+
+class SearchWorkersState extends UserState {
+  final List<Worker> workers;
+  const SearchWorkersState(this.workers);
+  @override
+  List<Object> get props => [workers];
 }

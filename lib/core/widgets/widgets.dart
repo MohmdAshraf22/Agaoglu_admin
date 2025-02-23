@@ -1,6 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
-import 'dart:math' as math;
 
 class SemiTransparentContainer extends StatelessWidget {
   final double opacity;
@@ -38,7 +39,7 @@ class DefaultButton extends StatelessWidget {
   final Color textColor;
   final Widget? icon;
   final VoidCallback? onPressed;
-
+  final bool? isLoading;
   const DefaultButton({
     super.key,
     this.height,
@@ -48,6 +49,7 @@ class DefaultButton extends StatelessWidget {
     this.textColor = ColorManager.white,
     this.icon,
     required this.onPressed,
+    this.isLoading,
   });
 
   @override
@@ -61,16 +63,24 @@ class DefaultButton extends StatelessWidget {
         onPressed: onPressed,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) icon!,
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+          children: isLoading == true
+              ? [
+                  Center(
+                    child: CircularProgressIndicator(
+                      color: textColor,
+                    ),
+                  ),
+                ]
+              : [
+                  if (icon != null) icon!,
+                  Text(
+                    text,
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
         ),
       ),
     );

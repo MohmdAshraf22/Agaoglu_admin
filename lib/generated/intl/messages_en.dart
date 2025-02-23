@@ -37,14 +37,21 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Are you sure you want to delete this task?",
         ),
+    "backToLogin": MessageLookupByLibrary.simpleMessage("Back to login"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "cancelled": MessageLookupByLibrary.simpleMessage("cancelled"),
+    "checkYourEmail": MessageLookupByLibrary.simpleMessage("Check your email"),
     "choose_a_worker": MessageLookupByLibrary.simpleMessage("Choose a worker"),
     "completed": MessageLookupByLibrary.simpleMessage("completed"),
     "create_task": MessageLookupByLibrary.simpleMessage("Create Task"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "deleteWorker": MessageLookupByLibrary.simpleMessage("Delete Worker"),
+    "deleteWorkerConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to delete this worker?",
+    ),
     "delete_task": MessageLookupByLibrary.simpleMessage("Delete Task"),
     "due_date": MessageLookupByLibrary.simpleMessage("Due Date"),
+    "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "enterEmail": MessageLookupByLibrary.simpleMessage("Please enter email"),
     "enterPassword": MessageLookupByLibrary.simpleMessage(
@@ -65,6 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Not Accepted yet",
     ),
+    "ok": MessageLookupByLibrary.simpleMessage("OK"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "pending": MessageLookupByLibrary.simpleMessage("pending"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
@@ -73,9 +81,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "please_select_a_worker": MessageLookupByLibrary.simpleMessage(
       "Please select a worker",
     ),
+    "resetPassword": MessageLookupByLibrary.simpleMessage("Reset Password"),
+    "resetPasswordLinkSent": MessageLookupByLibrary.simpleMessage(
+      "A password reset link has been sent to your email address",
+    ),
+    "searchWorkers": MessageLookupByLibrary.simpleMessage("Search workers..."),
     "search_tasks": MessageLookupByLibrary.simpleMessage("Search tasks..."),
     "select_date": MessageLookupByLibrary.simpleMessage("Select date"),
     "select_worker": MessageLookupByLibrary.simpleMessage("Select Worker"),
+    "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "signIn": MessageLookupByLibrary.simpleMessage("Sign In"),
     "submit_task": MessageLookupByLibrary.simpleMessage("Submit Task"),
     "task_description": MessageLookupByLibrary.simpleMessage(
@@ -84,5 +98,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "task_management": MessageLookupByLibrary.simpleMessage("Task Management"),
     "task_title": MessageLookupByLibrary.simpleMessage("Task Title"),
     "update_task": MessageLookupByLibrary.simpleMessage("Update Task"),
+    "workersManagement": MessageLookupByLibrary.simpleMessage(
+      "Workers Management",
+    ),
   };
 }

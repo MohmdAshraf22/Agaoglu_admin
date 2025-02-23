@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tasks_admin/core/error/exception_manager.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
@@ -8,6 +9,7 @@ import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/task_management.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
+import 'package:tasks_admin/modules/user/ui/screens/forgot_password_screen.dart';
 import 'package:tasks_admin/modules/user/ui/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -19,7 +21,7 @@ class LoginScreen extends StatelessWidget {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
-    UserCubit cubit = UserCubit();
+    UserCubit cubit = UserCubit.get();
     return BlocProvider(
       create: (context) => cubit,
       child: Scaffold(
@@ -131,12 +133,17 @@ class LoginScreen extends StatelessWidget {
                                         isPasswordAppears =
                                             state.isPasswordVisible;
                                       }
+                                      if (state is UserErrorState) {
+                                        ExceptionManager.showMessage(
+                                            state.exception);
+                                      }
                                     },
                                     bloc: cubit,
                                     builder: (context, state) {
                                       return DefaultButton(
                                         color: ColorManager.orange,
                                         textColor: ColorManager.white,
+                                        isLoading: state is LoginLoadingState,
                                         onPressed: () {
                                           if (formKey.currentState!
                                               .validate()) {
@@ -152,13 +159,13 @@ class LoginScreen extends StatelessWidget {
                               ),
                               FittedBox(
                                 child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      context.push(ForgotPasswordScreen());
+                                    },
                                     child: Text(
                                       S.of(context).forgotPassword,
-                                      style: TextStyle(
-                                          color: ColorManager.white,
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: ColorManager.white),
+                                      style:
+                                          TextStylesManager.authUnderLineText,
                                     )),
                               )
                             ],
