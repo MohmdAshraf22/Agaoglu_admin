@@ -35,12 +35,16 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> getWorkers() async {
-    emit(GetWorkersLoadingState());
-    final result = await _userRepository.getWorkers();
-    result.fold((l) => emit(UserErrorState(l)), (r) {
-      workers = r;
-      emit(GetWorkersSuccessState(r));
-    });
+    if (workers.isEmpty) {
+      emit(GetWorkersLoadingState());
+      final result = await _userRepository.getWorkers();
+      result.fold((l) => emit(UserErrorState(l)), (r) {
+        workers = r;
+        emit(GetWorkersSuccessState(r));
+      });
+    } else {
+      emit(GetWorkersSuccessState(workers));
+    }
   }
 
   Future<void> addWorker(WorkerCreationForm workerCreationForm) async {

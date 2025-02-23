@@ -10,6 +10,7 @@ import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
+import 'package:tasks_admin/modules/user/ui/dummy_data/dummy_workers.dart';
 import 'package:tasks_admin/modules/user/ui/screens/create_worker_screen.dart';
 
 class ManageWorkersScreen extends StatelessWidget {
@@ -19,7 +20,8 @@ class ManageWorkersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Worker> filteredWorkers = [];
     List<Worker> workers = [];
-    UserCubit cubit = UserCubit.get()..getWorkers();
+
+    UserCubit cubit = UserCubit.get();
     return BlocProvider(
       create: (context) => cubit..getWorkers(),
       child: Scaffold(
@@ -88,8 +90,6 @@ class ManageWorkersScreen extends StatelessWidget {
                       workers = state.workers;
                     } else if (state is UserErrorState) {
                       ExceptionManager.showMessage(state.exception);
-                      workers.clear();
-                      filteredWorkers.clear();
                     } else if (state is SearchWorkersState) {
                       filteredWorkers = state.workers;
                     } else if (state is DeleteWorkerSuccessState) {
@@ -105,12 +105,23 @@ class ManageWorkersScreen extends StatelessWidget {
                         Expanded(
                           child: Skeletonizer(
                             enabled: state is GetWorkersLoadingState,
-                            child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) => _buildWorkerCard(
-                                  filteredWorkers[index], context, cubit),
-                              itemCount: filteredWorkers.length,
-                            ),
+                            child: filteredWorkers.isEmpty &&
+                                    state is! GetWorkersLoadingState
+                                ? NoDataFoundWidget()
+                                : ListView.builder(
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) => state
+                                            is GetWorkersLoadingState
+                                        ? _buildWorkerCard(
+                                            dummyWorkers[index], context, cubit)
+                                        : _buildWorkerCard(
+                                            filteredWorkers[index],
+                                            context,
+                                            cubit),
+                                    itemCount: state is GetWorkersLoadingState
+                                        ? dummyWorkers.length
+                                        : filteredWorkers.length,
+                                  ),
                           ),
                         ),
                       ],
@@ -192,20 +203,22 @@ class ManageWorkersScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 1.h),
-                Row(
-                  spacing: 2.w,
-                  children: [
-                    Expanded(
-                        child: DefaultButton(
-                            color: ColorManager.red,
-                            text: S.of(context).delete,
-                            onPressed: () {
-                              _showDeleteDialog(worker.id, context, cubit);
-                            })),
-                    Expanded(
-                        child: DefaultButton(
-                            text: S.of(context).edit, onPressed: () {})),
-                  ],
+                Skeleton.shade(
+                  child: Row(
+                    spacing: 2.w,
+                    children: [
+                      Expanded(
+                          child: DefaultButton(
+                              color: ColorManager.red,
+                              text: S.of(context).delete,
+                              onPressed: () {
+                                _showDeleteDialog(worker.id, context, cubit);
+                              })),
+                      Expanded(
+                          child: DefaultButton(
+                              text: S.of(context).edit, onPressed: () {})),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -219,9 +232,11 @@ class ManageWorkersScreen extends StatelessWidget {
     return Row(
       spacing: 5,
       children: [
-        Icon(
-          icon,
-          color: ColorManager.descriptionGrey,
+        Skeleton.leaf(
+          child: Icon(
+            icon,
+            color: ColorManager.descriptionGrey,
+          ),
         ),
         Text(
           title,
@@ -244,7 +259,8 @@ class ManageWorkersScreen extends StatelessWidget {
           ),
           BlocConsumer<UserCubit, UserState>(
             listener: (context, state) {
-              if (state is DeleteWorkerSuccessState) {
+              if (state is DeleteWorkerSuccessState ||
+                  state is UserErrorState) {
                 context.pop();
               }
             },

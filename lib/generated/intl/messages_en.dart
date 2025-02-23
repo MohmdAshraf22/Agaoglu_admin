@@ -69,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forgotPassword": MessageLookupByLibrary.simpleMessage("forgot password?"),
     "in_progress": MessageLookupByLibrary.simpleMessage("in progress"),
     "location": MessageLookupByLibrary.simpleMessage("Location"),
+    "noDataFound": MessageLookupByLibrary.simpleMessage("No data found"),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Not Accepted yet",
     ),

@@ -52,5 +52,6 @@
   "workersManagement": "Workers Management",
   "searchWorkers": "Search workers...",
   "deleteWorker": "Delete Worker",
-  "deleteWorkerConfirmation": "Are you sure you want to delete this worker?"
+  "deleteWorkerConfirmation": "Are you sure you want to delete this worker?",
+  "noDataFound": "No data found"
 }

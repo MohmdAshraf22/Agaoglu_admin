@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/generated/l10n.dart';
 
 class SemiTransparentContainer extends StatelessWidget {
   final double opacity;
@@ -181,5 +182,22 @@ class DashedCirclePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false; // Repaint only if properties change
+  }
+}
+
+class NoDataFoundWidget extends StatelessWidget {
+  const NoDataFoundWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.search_off_rounded),
+          Text(S.of(context).noDataFound),
+        ],
+      ),
+    );
   }
 }
