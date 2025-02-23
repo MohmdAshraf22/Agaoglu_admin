@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/generated/l10n.dart';
+import 'package:tasks_admin/modules/task/data/model/task.dart';
 
 class SemiTransparentContainer extends StatelessWidget {
   final double opacity;
@@ -10,6 +11,7 @@ class SemiTransparentContainer extends StatelessWidget {
   final double height;
   final double width;
   final double borderRadius;
+
   const SemiTransparentContainer(
       {super.key,
       this.opacity = 0.4,
@@ -41,6 +43,7 @@ class DefaultButton extends StatelessWidget {
   final Widget? icon;
   final VoidCallback? onPressed;
   final bool? isLoading;
+
   const DefaultButton({
     super.key,
     this.height,
@@ -199,5 +202,39 @@ class NoDataFoundWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Color getStatusColor(TaskStatus status) {
+  switch (status) {
+    case TaskStatus.pending:
+      return ColorManager.yellow;
+    case TaskStatus.approved:
+      return ColorManager.green;
+    case TaskStatus.inProgress:
+      return ColorManager.blue;
+    case TaskStatus.cancelled:
+      return ColorManager.red;
+    case TaskStatus.completed:
+      return ColorManager.grey;
+    default:
+      return Colors.transparent;
+  }
+}
+
+String getTaskStatusLanguage(TaskStatus status, BuildContext context) {
+  switch (status) {
+    case TaskStatus.pending:
+      return S.of(context).pending;
+    case TaskStatus.approved:
+      return S.of(context).approved;
+    case TaskStatus.inProgress:
+      return S.of(context).in_progress;
+    case TaskStatus.cancelled:
+      return S.of(context).cancelled;
+    case TaskStatus.completed:
+      return S.of(context).completed;
+    case TaskStatus.all:
+      return S.of(context).all;
   }
 }

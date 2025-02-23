@@ -440,6 +440,66 @@ class S {
     );
   }
 
+  /// `Welcome back`
+  String get welcomeBack {
+    return Intl.message(
+      'Welcome back',
+      name: 'welcomeBack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Admin Dashboard`
+  String get adminDashboard {
+    return Intl.message(
+      'Admin Dashboard',
+      name: 'adminDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent Tasks`
+  String get recentTasks {
+    return Intl.message(
+      'Recent Tasks',
+      name: 'recentTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Workers`
+  String get totalWorkers {
+    return Intl.message(
+      'Total Workers',
+      name: 'totalWorkers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Tasks`
+  String get pendingTasks {
+    return Intl.message(
+      'Pending Tasks',
+      name: 'pendingTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completed Tasks`
+  String get completedTasks {
+    return Intl.message(
+      'Completed Tasks',
+      name: 'completedTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No data found`
   String get noDataFound {
     return Intl.message(

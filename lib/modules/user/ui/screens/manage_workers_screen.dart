@@ -8,6 +8,7 @@ import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/main_appbar.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/ui/dummy_data/dummy_workers.dart';
@@ -20,68 +21,57 @@ class ManageWorkersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Worker> filteredWorkers = [];
     List<Worker> workers = [];
-
     UserCubit cubit = UserCubit.get();
+
     return BlocProvider(
       create: (context) => cubit..getWorkers(),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: ColorManager.primary,
-          elevation: 0,
-          titleSpacing: 1,
-          title: Padding(
-            padding: EdgeInsetsDirectional.only(start: 5.w),
-            child: Text(
-              S.of(context).workersManagement,
-              style: TextStyle(
-                color: ColorManager.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          actions: [
-            Container(
-              width: 10.w,
-              margin: EdgeInsetsDirectional.only(end: 5.w),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorManager.orange,
-              ),
-              child: IconButton(
-                icon: Icon(Icons.add),
-                color: ColorManager.white,
-                onPressed: () {
-                  context.push(CreateWorkerScreen());
-                },
-              ),
-            ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: ColorManager.primary,
+        //   elevation: 0,
+        //   titleSpacing: 1,
+        //   title: Padding(
+        //     padding: EdgeInsetsDirectional.only(start: 5.w),
+        //     child: Text(
+        //       S.of(context).workersManagement,
+        //       style: TextStyle(
+        //         color: ColorManager.white,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        //   actions: [
+        //     Container(
+        //       width: 10.w,
+        //       margin: EdgeInsetsDirectional.only(end: 5.w),
+        //       decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         color: ColorManager.orange,
+        //       ),
+        //       child: IconButton(
+        //         icon: Icon(Icons.add),
+        //         color: ColorManager.white,
+        //         onPressed: () {
+        //           context.push(CreateWorkerScreen());
+        //         },
+        //       ),
+        //     ),
+        //   ],
+        // ),
         backgroundColor: ColorManager.primary,
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
-                onChanged: (value) => cubit.searchWorkers(value ?? ''),
-                decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: ColorManager.white,
-                  ),
-                  hintText: S.of(context).searchWorkers,
-                  hintStyle: TextStyle(
-                    color: ColorManager.white,
-                  ),
-                  fillColor: ColorManager.grey.withValues(alpha: 0.2),
-                  filled: true,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide.none),
-                ),
+              MainAppBar(
+                onSearched: (value) => cubit.searchWorkers(value ?? ''),
+                hintText: S.of(context).searchWorkers,
+                onAdd: () {
+                  context.push(CreateWorkerScreen());
+                },
+                title: S.of(context).workersManagement,
               ),
-              SizedBox(height: 2.h),
               Expanded(
                 child: BlocConsumer<UserCubit, UserState>(
                   listener: (context, state) {

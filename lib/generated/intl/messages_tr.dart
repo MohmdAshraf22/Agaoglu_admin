@@ -28,6 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "add_site": MessageLookupByLibrary.simpleMessage("Site Ekle"),
     "add_voice": MessageLookupByLibrary.simpleMessage("Ses Ekle"),
     "additional_files": MessageLookupByLibrary.simpleMessage("Ek Dosyalar"),
+    "adminDashboard": MessageLookupByLibrary.simpleMessage("Yönetici Paneli"),
     "admin_panel": MessageLookupByLibrary.simpleMessage("yönetici paneli"),
     "all": MessageLookupByLibrary.simpleMessage("tümü"),
     "approved": MessageLookupByLibrary.simpleMessage("onaylandı"),
@@ -41,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bir çalışan seçin",
     ),
     "completed": MessageLookupByLibrary.simpleMessage("tamamlandı"),
+    "completedTasks": MessageLookupByLibrary.simpleMessage(
+      "Tamamlanan Görevler",
+    ),
     "create_task": MessageLookupByLibrary.simpleMessage("Görev Oluştur"),
     "delete": MessageLookupByLibrary.simpleMessage("Sil"),
     "delete_task": MessageLookupByLibrary.simpleMessage("Görevi Sil"),
@@ -68,12 +72,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "password": MessageLookupByLibrary.simpleMessage("Şifre"),
     "pending": MessageLookupByLibrary.simpleMessage("beklemede"),
+    "pendingTasks": MessageLookupByLibrary.simpleMessage("Bekleyen Görevler"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Lütfen görev başlığını girin",
     ),
     "please_select_a_worker": MessageLookupByLibrary.simpleMessage(
       "Lütfen bir çalışan seçin",
     ),
+    "recentTasks": MessageLookupByLibrary.simpleMessage("Son Görevler"),
     "search_tasks": MessageLookupByLibrary.simpleMessage("Görevleri ara..."),
     "select_date": MessageLookupByLibrary.simpleMessage("Tarih seç"),
     "select_worker": MessageLookupByLibrary.simpleMessage("Çalışanı Seç"),
@@ -84,6 +90,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "task_management": MessageLookupByLibrary.simpleMessage("Görev Yönetimi"),
     "task_title": MessageLookupByLibrary.simpleMessage("Görev Baslığı"),
+    "totalWorkers": MessageLookupByLibrary.simpleMessage("Toplam Çalışanlar"),
     "update_task": MessageLookupByLibrary.simpleMessage("Görevi Güncelle"),
+    "welcomeBack": MessageLookupByLibrary.simpleMessage("Hos geldiniz"),
   };
 }

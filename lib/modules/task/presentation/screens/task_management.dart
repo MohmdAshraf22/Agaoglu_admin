@@ -5,14 +5,16 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
+import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/create_task_screen.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/filter_button.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/dummy_data/dummy_data.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/edit_task_screen.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/task_management_appbar.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/main_appbar.dart';
 
 import 'custom_widgets/image_builder.dart';
 
@@ -40,50 +42,39 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.primary,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TaskManagementAppBar(),
-            TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: ColorManager.white,
-                ),
-                hintText: S.of(context).search_tasks,
-                hintStyle: TextStyle(
-                  color: ColorManager.white,
-                ),
-                fillColor: ColorManager.grey.withValues(alpha: 0.2),
-                filled: true,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    borderSide: BorderSide.none),
-              ),
-            ),
-            SizedBox(height: 2.h),
-            Expanded(
-              child: BlocConsumer<TaskCubit, TaskState>(
-                listenWhen: (previous, current) => current is ShowDeleteDialog,
-                listener: (context, state) {
-                  if (state is ShowDeleteDialog) {
-                    _showDeleteDialog(state.taskId);
-                  }
-                },
-                builder: (context, state) {
-                  if (state is TaskLoaded) {
-                    filteredTasks = state.tasks;
-                    tasks = state.tasks;
-                  } else if (state is TaskError) {
-                    tasks.clear();
-                    filteredTasks.clear();
-                  } else if (state is FilterTaskByStatus) {
-                    filterSelected = state.status;
-                    filteredTasks = state.tasks;
-                  }
-                  return Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          MainAppBar(
+            title: S.of(context).task_management,
+            onAdd: () {
+              context.push(CreateTaskScreen());
+            },
+            onSearched: (value) {},
+            hintText: S.of(context).search_tasks,
+          ),
+          Expanded(
+            child: BlocConsumer<TaskCubit, TaskState>(
+              listenWhen: (previous, current) => current is ShowDeleteDialog,
+              listener: (context, state) {
+                if (state is ShowDeleteDialog) {
+                  _showDeleteDialog(state.taskId);
+                }
+              },
+              builder: (context, state) {
+                if (state is TaskLoaded) {
+                  filteredTasks = state.tasks;
+                  tasks = state.tasks;
+                } else if (state is TaskError) {
+                  tasks.clear();
+                  filteredTasks.clear();
+                } else if (state is FilterTaskByStatus) {
+                  filterSelected = state.status;
+                  filteredTasks = state.tasks;
+                }
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  child: Column(
                     children: [
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -110,12 +101,12 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                         ),
                       ),
                     ],
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -150,11 +141,11 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 3.w, vertical: .7.h),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(task.status),
+                      color: getStatusColor(task.status),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      _getTaskStatusLanguage(task.status),
+                      getTaskStatusLanguage(task.status,context),
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -249,23 +240,6 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
     );
   }
 
-  Color _getStatusColor(TaskStatus status) {
-    switch (status) {
-      case TaskStatus.pending:
-        return ColorManager.yellow;
-      case TaskStatus.approved:
-        return ColorManager.green;
-      case TaskStatus.inProgress:
-        return ColorManager.blue;
-      case TaskStatus.cancelled:
-        return ColorManager.red;
-      case TaskStatus.completed:
-        return ColorManager.grey;
-      default:
-        return Colors.transparent;
-    }
-  }
-
   void _showDeleteDialog(String taskId) {
     showDialog(
       context: context,
@@ -289,20 +263,4 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
     );
   }
 
-  String _getTaskStatusLanguage(TaskStatus status) {
-    switch (status) {
-      case TaskStatus.pending:
-        return S.of(context).pending;
-      case TaskStatus.approved:
-        return S.of(context).approved;
-      case TaskStatus.inProgress:
-        return S.of(context).in_progress;
-      case TaskStatus.cancelled:
-        return S.of(context).cancelled;
-      case TaskStatus.completed:
-        return S.of(context).completed;
-      case TaskStatus.all:
-        return S.of(context).all;
-    }
-  }
 }

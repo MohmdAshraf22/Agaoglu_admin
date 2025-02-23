@@ -30,19 +30,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "additional_files": MessageLookupByLibrary.simpleMessage(
       "Additional Files",
     ),
+    "adminDashboard": MessageLookupByLibrary.simpleMessage("Admin Dashboard"),
     "admin_panel": MessageLookupByLibrary.simpleMessage("Admin Panel"),
-    "all": MessageLookupByLibrary.simpleMessage("all"),
-    "approved": MessageLookupByLibrary.simpleMessage("approved"),
+    "all": MessageLookupByLibrary.simpleMessage("All"),
+    "approved": MessageLookupByLibrary.simpleMessage("Approved"),
     "are_you_sure_you_want_to_delete_this_task":
         MessageLookupByLibrary.simpleMessage(
           "Are you sure you want to delete this task?",
         ),
     "backToLogin": MessageLookupByLibrary.simpleMessage("Back to login"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-    "cancelled": MessageLookupByLibrary.simpleMessage("cancelled"),
+    "cancelled": MessageLookupByLibrary.simpleMessage("Cancelled"),
     "checkYourEmail": MessageLookupByLibrary.simpleMessage("Check your email"),
     "choose_a_worker": MessageLookupByLibrary.simpleMessage("Choose a worker"),
-    "completed": MessageLookupByLibrary.simpleMessage("completed"),
+    "completed": MessageLookupByLibrary.simpleMessage("Completed"),
+    "completedTasks": MessageLookupByLibrary.simpleMessage("Completed Tasks"),
     "create_task": MessageLookupByLibrary.simpleMessage("Create Task"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "deleteWorker": MessageLookupByLibrary.simpleMessage("Delete Worker"),
@@ -67,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter task title",
     ),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("forgot password?"),
-    "in_progress": MessageLookupByLibrary.simpleMessage("in progress"),
+    "in_progress": MessageLookupByLibrary.simpleMessage("In Progress"),
     "location": MessageLookupByLibrary.simpleMessage("Location"),
     "noDataFound": MessageLookupByLibrary.simpleMessage("No data found"),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
@@ -75,13 +77,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ok": MessageLookupByLibrary.simpleMessage("OK"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
-    "pending": MessageLookupByLibrary.simpleMessage("pending"),
+    "pending": MessageLookupByLibrary.simpleMessage("Pending"),
+    "pendingTasks": MessageLookupByLibrary.simpleMessage("Pending Tasks"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Please enter task title",
     ),
     "please_select_a_worker": MessageLookupByLibrary.simpleMessage(
       "Please select a worker",
     ),
+    "recentTasks": MessageLookupByLibrary.simpleMessage("Recent Tasks"),
     "resetPassword": MessageLookupByLibrary.simpleMessage("Reset Password"),
     "resetPasswordLinkSent": MessageLookupByLibrary.simpleMessage(
       "A password reset link has been sent to your email address",
@@ -98,7 +102,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "task_management": MessageLookupByLibrary.simpleMessage("Task Management"),
     "task_title": MessageLookupByLibrary.simpleMessage("Task Title"),
+    "totalWorkers": MessageLookupByLibrary.simpleMessage("Total Workers"),
     "update_task": MessageLookupByLibrary.simpleMessage("Update Task"),
+    "welcomeBack": MessageLookupByLibrary.simpleMessage("Welcome back"),
     "workersManagement": MessageLookupByLibrary.simpleMessage(
       "Workers Management",
     ),

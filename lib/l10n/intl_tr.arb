@@ -38,5 +38,11 @@
   "add_flat": "Daire Ekle",
   "additional_files": "Ek Dosyalar",
   "update_task": "Görevi Güncelle",
+  "welcomeBack": "Hos geldiniz",
+  "adminDashboard": "Yönetici Paneli",
+  "recentTasks": "Son Görevler",
+  "totalWorkers": "Toplam Çalışanlar",
+  "pendingTasks": "Bekleyen Görevler",
+  "completedTasks": "Tamamlanan Görevler",
   "completed": "tamamlandı"
 }

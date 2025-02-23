@@ -12,7 +12,6 @@ import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/create_task_appbar.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/location_builder.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/media_selection_builder.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 
 class EditTaskScreen extends StatefulWidget {
