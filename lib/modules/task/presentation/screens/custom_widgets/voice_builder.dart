@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+
 // import 'package:rxdart/rxdart.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:sizer/sizer.dart';
@@ -12,11 +14,13 @@ import 'package:tasks_admin/core/utils/color_manager.dart';
 class VoiceBuilder extends StatefulWidget {
   final Function(File?)? onRecordComplete;
   final String? initialAudioPath;
+  final String? audioUrl;
 
   const VoiceBuilder({
     super.key,
     this.onRecordComplete,
     this.initialAudioPath,
+    this.audioUrl,
   });
 
   @override
@@ -27,6 +31,7 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
   late final AudioRecorder _audioRecorder;
   late final AudioPlayer _audioPlayer;
   File? _audioFile;
+  String? _audioUrl;
   bool _isRecording = false;
   bool _isPlaying = false;
   Duration _position = Duration.zero;
@@ -34,6 +39,7 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
 
   @override
   void initState() {
+    _audioUrl = widget.audioUrl;
     super.initState();
     _audioRecorder = AudioRecorder();
     _audioPlayer = AudioPlayer();
@@ -75,11 +81,11 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
         await Permission.microphone.request();
         Directory tempDir = await getTemporaryDirectory();
         String filePath = '${tempDir.path}/audio.m4a';
-
         await _audioRecorder.start(const RecordConfig(), path: filePath);
         setState(() {
           _isRecording = true;
           _audioFile = null;
+          _audioUrl = null;
         });
       }
     } catch (e) {
@@ -102,8 +108,36 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
     }
   }
 
+  Future<void> _deleteAudio() async {
+    try {
+      if (_audioUrl != null) {
+        final Reference storageReference =
+            FirebaseStorage.instance.refFromURL(_audioUrl!);
+        await storageReference.delete();
+        setState(() {
+          _audioUrl = null;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error stopping recording: $e');
+    }
+  }
+
   Future<void> _playPauseAudio() async {
-    if (_audioFile != null) {
+    if (_audioUrl != null) {
+      try {
+        if (_isPlaying) {
+          await _audioPlayer.pause();
+        } else {
+          await _audioPlayer.play(UrlSource(_audioUrl!));
+        }
+        setState(() {
+          _isPlaying = !_isPlaying;
+        });
+      } catch (e) {
+        debugPrint('Error playing audio: $e');
+      }
+    } else if (_audioFile != null) {
       try {
         if (_isPlaying) {
           await _audioPlayer.pause();
@@ -124,7 +158,7 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (_audioFile != null)
+        if (_audioFile != null || _audioUrl != null)
           Slider(
             value: _position.inSeconds.toDouble(),
             min: 0,
@@ -138,13 +172,21 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
           children: [
             IconButton(
               icon: Icon(
-                _isRecording ? Icons.stop : Icons.mic,
-                size: 40,
+                _audioUrl != null
+                    ? Icons.delete
+                    : _isRecording
+                        ? Icons.stop
+                        : Icons.mic,
+                size: 35,
                 color: ColorManager.orange,
               ),
-              onPressed: _isRecording ? _stopRecording : _startRecording,
+              onPressed: _audioUrl != null
+                  ? _deleteAudio
+                  : _isRecording
+                      ? _stopRecording
+                      : _startRecording,
             ),
-            if (_audioFile != null)
+            if (_audioFile != null || _audioUrl != null)
               IconButton(
                 icon: Icon(
                   _isPlaying ? Icons.pause : Icons.play_arrow,

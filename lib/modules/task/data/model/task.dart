@@ -17,7 +17,7 @@ class TaskModel extends Equatable {
   final String? workerName;
   final String? workerPhoto;
   final String? voiceUrl;
-  final List<String>? imagesUrl;
+  final List<String> imagesUrl;
   final String? site;
   final String? block;
   final String? flat;
@@ -30,7 +30,7 @@ class TaskModel extends Equatable {
     required this.description,
     required this.status,
     this.voiceUrl,
-    this.imagesUrl,
+    required this.imagesUrl,
     this.workerName,
     this.block,
     this.flat,
@@ -41,18 +41,18 @@ class TaskModel extends Equatable {
 
   Map<String, dynamic> toMap(String id) {
     return {
-      'id': id,
+      "id": id,
       'description': description,
       'title': title,
       'workerName': workerName,
       'workerPhoto': workerPhoto,
-      'imageUrl': imagesUrl,
+      'imagesUrl': imagesUrl,
       'voiceUrl': voiceUrl,
       'block': block,
       'flat': flat,
       'site': site,
       'status': status.name,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 
@@ -84,7 +84,7 @@ class TaskModel extends Equatable {
         createdAt,
         title,
         voiceUrl,
-    imagesUrl,
+        imagesUrl,
         site,
         block,
         flat

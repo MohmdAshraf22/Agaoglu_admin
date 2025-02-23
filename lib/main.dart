@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,19 +11,22 @@ import 'package:tasks_admin/firebase_options.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/task_management.dart';
 import 'package:tasks_admin/modules/user/ui/screens/login.dart';
-
+import 'package:tasks_admin/core/local/shared_prefrences.dart';
 class FirebaseConstants {
   static FirebaseApp? firebaseApp;
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await di.init(); // Initialize the service locator
+  await CacheHelper.init();
+  await LocalizationManager.init();
+  await di.init();
   FirebaseConstants.firebaseApp = await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -59,7 +63,7 @@ class MyApp extends StatelessWidget {
             appBarTheme: AppBarTheme(surfaceTintColor: Colors.white),
             useMaterial3: true,
           ),
-          home: const LoginScreen(),
+          home: const TaskManagementScreen(),
         ),
       ),
     );

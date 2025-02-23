@@ -12,6 +12,8 @@ abstract class TaskDataSource {
 
   Future<Result<TaskModel>> getTask(String taskId);
 
+  Future<Result<bool>> deleteFile(String url);
+
   Future<Result<String>> createTask(TaskModel task);
 
   Future<Result<bool>> updateTask(TaskModel task);
@@ -33,6 +35,7 @@ class TaskDataSourceImpl implements TaskDataSource {
 
   @override
   Stream<List<TaskModel>> getTasks() {
+
     return _fireStore.collection(_collectionName).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => TaskModel.fromDocument(doc)).toList();
     }).handleError((error) {
@@ -141,6 +144,7 @@ class TaskDataSourceImpl implements TaskDataSource {
     }
   }
 
+  @override
   Future<Result<bool>> deleteFile(String url) async {
     try {
       final Reference storageReference = _storage.refFromURL(url);

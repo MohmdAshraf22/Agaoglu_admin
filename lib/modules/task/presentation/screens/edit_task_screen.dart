@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
@@ -11,12 +12,13 @@ import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/create_task_appbar.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/location_builder.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/media_selection_builder.dart';
+import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 
 class EditTaskScreen extends StatefulWidget {
-  TaskModel task;
+  final TaskModel task;
 
-  EditTaskScreen({super.key, required this.task});
+  const EditTaskScreen({super.key, required this.task});
 
   @override
   State<EditTaskScreen> createState() => _EditTaskScreenState();
@@ -36,7 +38,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   DateTime? _dueDate;
   final List<Worker> _workers = [
     Worker(
-      imageUrl: "",
+      imageUrl: null,
       id: "id",
       name: "name",
       email: "email",
@@ -56,6 +58,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _siteController = TextEditingController(text: widget.task.site);
     _blockController = TextEditingController(text: widget.task.block);
     _flatController = TextEditingController(text: widget.task.flat);
+    print(widget.task.imagesUrl);
     imagesUrl = List.from(widget.task.imagesUrl ?? []);
     audioUrl = widget.task.voiceUrl;
     _dueDate = widget.task.createdAt;
@@ -108,9 +111,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       siteController: _siteController,
                     ),
                     MediaSelectionBuilder(
-                        // initialImages: imagesUrl,
-                        // initialAudio: audioUrl,
-                        ),
+                        imagesUrl: imagesUrl, audioUrl: audioUrl),
                     BlocConsumer<TaskCubit, TaskState>(
                       listener: (context, state) {
                         if (state is UploadFileSuccess) {
@@ -119,36 +120,42 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           } else {
                             imagesUrl.add(state.downloadUrl);
                           }
+                        } else if (state is UpdateTaskSuccess) {
+                          context.pop();
                         }
                       },
                       builder: (context, state) {
-                        return DefaultButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              taskCubit.updateTask(
-                                widget.task = TaskModel(
-                                  title: _taskTitleController.text,
-                                  description: _taskDescriptionController.text,
-                                  createdAt: _dueDate ?? DateTime.now(),
-                                  workerName: _selectedWorker?.name,
-                                  workerPhoto: _selectedWorker?.imageUrl,
-                                  imagesUrl: imagesUrl,
-                                  voiceUrl: audioUrl,
-                                  block: _blockController.text,
-                                  flat: _flatController.text,
-                                  site: _siteController.text,
-                                  id: widget.task.id,
-                                  status: TaskStatus.pending,
-                                ),
-                              );
-                            }
-                          },
-                          text: S.of(context).update_task,
-                          textColor: ColorManager.white,
-                          icon: Padding(
-                            padding: EdgeInsetsDirectional.only(end: 1.w),
-                            child: Icon(Icons.check,
-                                color: Colors.white, size: 16),
+                        return Skeletonizer(
+                          enabled: state is UpdateTaskLoading,
+                          child: DefaultButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                taskCubit.updateTask(
+                                  TaskModel(
+                                    title: _taskTitleController.text,
+                                    description:
+                                        _taskDescriptionController.text,
+                                    createdAt: _dueDate ?? DateTime.now(),
+                                    workerName: _selectedWorker?.name,
+                                    workerPhoto: _selectedWorker?.imageUrl,
+                                    imagesUrl: imagesUrl,
+                                    voiceUrl: audioUrl,
+                                    block: _blockController.text,
+                                    flat: _flatController.text,
+                                    site: _siteController.text,
+                                    id: widget.task.id,
+                                    status: TaskStatus.pending,
+                                  ),
+                                );
+                              }
+                            },
+                            text: S.of(context).update_task,
+                            textColor: ColorManager.white,
+                            icon: Padding(
+                              padding: EdgeInsetsDirectional.only(end: 1.w),
+                              child: Icon(Icons.check,
+                                  color: Colors.white, size: 16),
+                            ),
                           ),
                         );
                       },

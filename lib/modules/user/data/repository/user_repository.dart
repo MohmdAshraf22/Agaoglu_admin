@@ -4,7 +4,7 @@ import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
 import 'package:tasks_admin/modules/user/data/services/remote_user_services.dart';
 
 class UserRepository {
-  RemoteUserServices _remoteUserServices = RemoteUserServices();
+  final RemoteUserServices _remoteUserServices = RemoteUserServices();
   Future<Either<Exception, Worker>> addWorker(
       WorkerCreationForm workerCreationForm) {
     return _remoteUserServices.addWorker(workerCreationForm);

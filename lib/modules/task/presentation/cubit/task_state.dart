@@ -73,6 +73,24 @@ final class CreateTaskError extends TaskState {
   List<Object> get props => [errorMessage];
 }
 
+/// Delete file
+final class DeleteFileLoading extends TaskState {}
+
+final class DeleteFileSuccess extends TaskState {
+  final String url;
+
+  const DeleteFileSuccess(this.url);
+}
+
+final class DeleteFileError extends TaskState {
+  final String errorMessage;
+
+  const DeleteFileError({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
 /// Upload file
 final class UploadFileLoading extends TaskState {}
 
@@ -80,7 +98,8 @@ final class UploadFileSuccess extends TaskState {
   final String downloadUrl;
   final String storagePath;
 
-  const UploadFileSuccess({required this.downloadUrl, required this.storagePath});
+  const UploadFileSuccess(
+      {required this.downloadUrl, required this.storagePath});
 }
 
 final class UploadFileError extends TaskState {
@@ -138,6 +157,15 @@ final class MediaImageSelected extends TaskState {
 
   @override
   List<Object> get props => [selectedImages];
+}
+
+final class ImagesUrlState extends TaskState {
+  final List<String> imagesUrl;
+
+  const ImagesUrlState(this.imagesUrl);
+
+  @override
+  List<Object> get props => [imagesUrl];
 }
 
 final class IsPressedRecordingState extends TaskState {

@@ -127,4 +127,19 @@ class TaskCubit extends Cubit<TaskState> {
     );
     emit(CompleteRecordingState());
   }
+
+  void deleteImageFile(File imageFile) {
+    selectedImages.remove(imageFile);
+    emit(MediaImageSelected(List.from(selectedImages)));
+  }
+
+  Future<void> deleteFile(String url) async {
+    emit(DeleteFileLoading());
+    final result = await _taskRepository.deleteFile(url);
+    if (result is Success<bool>) {
+      emit(DeleteFileSuccess(url));
+    } else if (result is Error<bool>) {
+      emit(DeleteFileError(errorMessage: result.errorMessage!));
+    }
+  }
 }

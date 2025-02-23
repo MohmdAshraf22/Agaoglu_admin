@@ -27,11 +27,11 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   TaskStatus filterSelected = TaskStatus.all;
   late TaskCubit taskCubit = context.read<TaskCubit>();
 
-  List<TaskModel> tasks = DummyTasks.getTasks();
-  List<TaskModel> filteredTasks = [];
+  List<TaskModel> tasks = [], filteredTasks = [];
 
   @override
   void initState() {
+    tasks = DummyTasks.getTasks();
     taskCubit.getTasks();
     super.initState();
   }
@@ -181,10 +181,10 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 2.h),
-              if (task.imagesUrl != null)
+              if (task.imagesUrl.isNotEmpty)
                 Padding(
                   padding: EdgeInsetsDirectional.only(bottom: 2.h),
-                  child: ImageBuilder(imagesUrl: task.imagesUrl!),
+                  child: ImageBuilder(imagesUrl: task.imagesUrl),
                 ),
               if (task.voiceUrl != null)
                 AudioPlayerBuilder(audioUrl: task.voiceUrl!
@@ -212,7 +212,9 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                   _deleteEditTask(
                     color: ColorManager.orange,
                     icon: Icons.edit,
-                    onPressed: () => context.push(EditTaskScreen(task: task,)),
+                    onPressed: () => context.push(EditTaskScreen(
+                      task: task,
+                    )),
                   ),
                 ],
               ),

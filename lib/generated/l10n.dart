@@ -250,29 +250,29 @@ class S {
     );
   }
 
-  /// `all`
+  /// `All`
   String get all {
-    return Intl.message('all', name: 'all', desc: '', args: []);
+    return Intl.message('All', name: 'all', desc: '', args: []);
   }
 
-  /// `pending`
+  /// `Pending`
   String get pending {
-    return Intl.message('pending', name: 'pending', desc: '', args: []);
+    return Intl.message('Pending', name: 'pending', desc: '', args: []);
   }
 
-  /// `in progress`
+  /// `In Progress`
   String get in_progress {
-    return Intl.message('in progress', name: 'in_progress', desc: '', args: []);
+    return Intl.message('In Progress', name: 'in_progress', desc: '', args: []);
   }
 
-  /// `approved`
+  /// `Approved`
   String get approved {
-    return Intl.message('approved', name: 'approved', desc: '', args: []);
+    return Intl.message('Approved', name: 'approved', desc: '', args: []);
   }
 
-  /// `cancelled`
+  /// `Cancelled`
   String get cancelled {
-    return Intl.message('cancelled', name: 'cancelled', desc: '', args: []);
+    return Intl.message('Cancelled', name: 'cancelled', desc: '', args: []);
   }
 
   /// `Add Image`
@@ -320,9 +320,9 @@ class S {
     return Intl.message('Update Task', name: 'update_task', desc: '', args: []);
   }
 
-  /// `completed`
+  /// `Completed`
   String get completed {
-    return Intl.message('completed', name: 'completed', desc: '', args: []);
+    return Intl.message('Completed', name: 'completed', desc: '', args: []);
   }
 
   /// `Admin Panel`

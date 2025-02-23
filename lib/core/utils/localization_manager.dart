@@ -11,7 +11,7 @@ class LocalizationManager {
       if (value != null) {
         currentLocale = value;
       } else {
-        currentLocale = 0;
+        currentLocale = 1;
       }
     });
   }

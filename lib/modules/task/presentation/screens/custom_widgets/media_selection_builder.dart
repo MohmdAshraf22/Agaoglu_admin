@@ -10,25 +10,37 @@ import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
 import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
 
 class MediaSelectionBuilder extends StatelessWidget {
-  const MediaSelectionBuilder({super.key});
+  final List<String> imagesUrl;
+  final String? audioUrl;
+
+  const MediaSelectionBuilder(
+      {super.key, required this.imagesUrl, this.audioUrl});
 
   @override
   Widget build(BuildContext context) {
-    return _MediaSelectionContent();
+    return _MediaSelectionContent(imagesUrl: imagesUrl);
   }
 }
 
 class _MediaSelectionContent extends StatefulWidget {
+  final List<String> imagesUrl;
+  final String? audioUrl;
+
+  const _MediaSelectionContent({required this.imagesUrl, this.audioUrl});
+
   @override
   State<_MediaSelectionContent> createState() => _MediaSelectionContentState();
 }
 
 class _MediaSelectionContentState extends State<_MediaSelectionContent> {
   late final TaskCubit cubit = context.read<TaskCubit>();
-  bool isPressedRecording = false;
+  late bool isPressedRecording = widget.audioUrl != null;
+
+  List<File> selectedImages = [];
 
   @override
   Widget build(BuildContext context) {
+    List<String> imagesUrl = widget.imagesUrl;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,7 +48,7 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
           S.of(context).additional_files,
           style: TextStyle(
             fontSize: 17.sp,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.bold, //qnb cip
           ),
         ),
         SizedBox(height: 2.h),
@@ -63,34 +75,51 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
           ),
         ),
         SizedBox(height: 2.h),
-          BlocBuilder<TaskCubit, TaskState>(
-            builder: (context, state) {
-              print(state);
-
-              if (state is IsPressedRecordingState) {
-                isPressedRecording = state.isPressedRecording;
-              }
-              return isPressedRecording ? AnimatedSwitcher(
-                duration: Duration(milliseconds: 500),
-                switchInCurve: Curves.bounceInOut,
-                child: VoiceBuilder(
-                  onRecordComplete: (value) {
-                    cubit.completeRecording(value!.path);
-                  },
-                ),
-              )
-                  : const SizedBox.shrink();
-            },
-          ),
+        BlocBuilder<TaskCubit, TaskState>(
+          builder: (context, state) {
+            if (state is IsPressedRecordingState) {
+              isPressedRecording = state.isPressedRecording;
+            }
+            return isPressedRecording
+                ? AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              switchInCurve: Curves.bounceInOut,
+              child: VoiceBuilder(
+                audioUrl:
+                // "",
+                'https://firebasestorage.googleapis.com/v0/b/masheed-d942d.appspot.com/o/audios%2FZVSbJCtVxaTg8xKr1202XUwFNrH2%2Faudio6565445721400773739.m4a?alt=media&token=4bce69e7-3a88-4282-a155-dd5b09fd9c5c',
+                onRecordComplete: (value) {
+                  cubit.completeRecording(value!.path);
+                },
+              ),
+            )
+                : const SizedBox.shrink();
+          },
+        ),
         SizedBox(height: 2.h),
         BlocBuilder<TaskCubit, TaskState>(
           builder: (context, state) {
             if (state is MediaImageSelected) {
-              return _buildSelectedImages(state.selectedImages);
+              selectedImages = state.selectedImages;
             }
-            return const SizedBox.shrink();
+            return selectedImages.isNotEmpty
+                ? _buildSelectedImages(selectedImages, [])
+                : const SizedBox.shrink();
           },
         ),
+        SizedBox(height: 2.h),
+        if (imagesUrl.isNotEmpty)
+          BlocBuilder<TaskCubit, TaskState>(
+            builder: (context, state) {
+              if (state is DeleteFileSuccess) {
+                if (imagesUrl.contains(state.url)) {
+                  imagesUrl.remove(state.url);
+                }
+              }
+              return _buildSelectedImages([], imagesUrl);
+              return const SizedBox.shrink();
+            },
+          ),
       ],
     );
   }
@@ -123,20 +152,57 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
     );
   }
 
-  Widget _buildSelectedImages(List<File> images) {
+  Widget _buildSelectedImages(List<File> imagesFile, List<String> imagesUrl) {
+    print("%%%%%%%%%%%%%%%%%%%");
+    print(imagesUrl);
+    print(imagesFile);
+    print("%%%%%%%%%%%%%%%%%%%");
     return SizedBox(
       height: 20.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: images.length,
+        itemCount: imagesUrl.isEmpty ? imagesFile.length : imagesUrl.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(right: 2.w),
-            child: Image.file(
-              width: 30.w,
-              images[index],
-              fit: BoxFit.cover,
-            ),
+          return Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 2.w),
+                child: imagesUrl.isEmpty
+                    ? Image.file(
+                  width: 30.w,
+                  imagesFile[index],
+                  fit: BoxFit.cover,
+                )
+                    : Image.network(
+                  width: 30.w,
+                  imagesUrl[index],
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: InkWell(
+                  onTap: () {
+                    if (imagesUrl.isEmpty) {
+                      cubit.deleteImageFile(imagesFile[index]);
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(2.w),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red.withOpacity(0.7),
+                    ),
+                    child: Icon(
+                      Icons.delete,
+                      size: 4.w,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),

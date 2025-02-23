@@ -5,6 +5,7 @@ class DummyTasks {
         TaskModel(
           id: "id",
           title: "title",
+          imagesUrl: [],
           voiceUrl: null,
           description: "description",
           status: TaskStatus.cancelled,

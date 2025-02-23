@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
@@ -35,7 +36,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   DateTime? _dueDate;
   final List<Worker> _workers = [
     Worker(
-      imageUrl: "",
+      imageUrl: null,
       id: "id",
       name: "name",
       email: "email",
@@ -91,7 +92,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                       flatController: _flatController,
                       siteController: _siteController,
                     ),
-                    MediaSelectionBuilder(),
+                    MediaSelectionBuilder(
+                      imagesUrl: [],
+                    ),
                     BlocConsumer<TaskCubit, TaskState>(
                       listener: (context, state) {
                         if (state is UploadFileSuccess) {
@@ -101,33 +104,39 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                             imagesUrl.add(state.downloadUrl);
                           }
                         }
+                        else if(state is CreateTaskSuccess){
+                          context.pop();
+                        }
                       },
                       builder: (context, state) {
-                        return DefaultButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              taskCubit.createTask(TaskModel(
-                                id: "id",
-                                title: _taskTitleController.text,
-                                description: _taskDescriptionController.text,
-                                status: TaskStatus.pending,
-                                createdAt: _dueDate ?? DateTime.now(),
-                                workerName: _selectedWorker?.name,
-                                workerPhoto: _selectedWorker?.imageUrl,
-                                imagesUrl: imagesUrl,
-                                voiceUrl: audioUrl,
-                                block: _blockController.text,
-                                flat: _flatController.text,
-                                site: _siteController.text,
-                              ));
-                            }
-                          },
-                          text: S.of(context).submit_task,
-                          textColor: ColorManager.white,
-                          icon: Padding(
-                            padding: EdgeInsetsDirectional.only(end: 1.w),
-                            child: Icon(Icons.check,
-                                color: Colors.white, size: 16),
+                        return Skeletonizer(
+                          enabled: state is CreateTaskLoading,
+                          child: DefaultButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                taskCubit.createTask(TaskModel(
+                                  id: "id",
+                                  title: _taskTitleController.text,
+                                  description: _taskDescriptionController.text,
+                                  status: TaskStatus.pending,
+                                  createdAt: _dueDate ?? DateTime.now(),
+                                  workerName: _selectedWorker?.name,
+                                  workerPhoto: _selectedWorker?.imageUrl,
+                                  imagesUrl: imagesUrl,
+                                  voiceUrl: audioUrl,
+                                  block: _blockController.text,
+                                  flat: _flatController.text,
+                                  site: _siteController.text,
+                                ));
+                              }
+                            },
+                            text: S.of(context).submit_task,
+                            textColor: ColorManager.white,
+                            icon: Padding(
+                              padding: EdgeInsetsDirectional.only(end: 1.w),
+                              child: Icon(Icons.check,
+                                  color: Colors.white, size: 16),
+                            ),
                           ),
                         );
                       },

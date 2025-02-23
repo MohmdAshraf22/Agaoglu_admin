@@ -29,6 +29,9 @@ class TaskRepository {
   Future<Result<String>> createTask(TaskModel task) async {
     return await _taskDataSource.createTask(task);
   }
+  Future<Result<bool>> deleteFile(String url) async {
+    return await _taskDataSource.deleteFile(url);
+  }
 
   Future<Result<String>> uploadFile(
       {required File file,
