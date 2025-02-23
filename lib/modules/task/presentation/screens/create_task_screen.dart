@@ -40,7 +40,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       id: "id",
       name: "name",
       email: "email",
-      categoryId: "categoryId",
+      job: "job",
       surname: "surname",
       phoneNumber: "phoneNumber",
     )

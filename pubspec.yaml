@@ -50,6 +50,7 @@ dependencies:
   audioplayers: ^6.2.0
 
   firebase_app_check: ^0.3.2+3
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +67,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/
+    - assets/images/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

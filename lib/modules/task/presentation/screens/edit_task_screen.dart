@@ -42,7 +42,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       id: "id",
       name: "name",
       email: "email",
-      categoryId: "categoryId",
+      job: "categoryId",
       surname: "surname",
       phoneNumber: "phoneNumber",
     )

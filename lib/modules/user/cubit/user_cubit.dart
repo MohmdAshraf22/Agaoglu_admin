@@ -9,6 +9,7 @@ part 'user_state.dart';
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitial());
   final UserRepository _userRepository = UserRepository();
+  List<Worker> workers = [];
 
   Future<void> login(String email, String password) async {
     emit(LoginLoadingState());
@@ -19,6 +20,13 @@ class UserCubit extends Cubit<UserState> {
         (l) => emit(UserErrorState(l)), (r) => emit(LoginSuccessState(r)));
   }
 
+  Future<void> resetPassword(String email) async {
+    emit(ResetPasswordLoadingState());
+    final result = await _userRepository.resetPassword(email);
+    result.fold((l) => emit(UserErrorState(l)),
+        (r) => emit(ResetPasswordSuccessState()));
+  }
+
   Future<void> logout() async {
     emit(LogoutLoadingState());
     final result = await _userRepository.logout();
@@ -27,10 +35,16 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> getWorkers() async {
-    emit(GetWorkersLoadingState());
-    final result = await _userRepository.getWorkers();
-    result.fold(
-        (l) => emit(UserErrorState(l)), (r) => emit(GetWorkersSuccessState(r)));
+    if (workers.isEmpty) {
+      emit(GetWorkersLoadingState());
+      final result = await _userRepository.getWorkers();
+      result.fold((l) => emit(UserErrorState(l)), (r) {
+        workers = r;
+        emit(GetWorkersSuccessState(r));
+      });
+    } else {
+      emit(GetWorkersSuccessState(workers));
+    }
   }
 
   Future<void> addWorker(WorkerCreationForm workerCreationForm) async {
@@ -48,7 +62,7 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> deleteWorker(String workerId) async {
-    emit(DeleteWorkerLoadingState());
+    emit(DeleteWorkerLoadingState(workerId));
     final result = await _userRepository.deleteWorker(workerId);
     result.fold((l) => emit(UserErrorState(l)),
         (r) => emit(DeleteWorkerSuccessState(workerId)));
@@ -57,4 +71,15 @@ class UserCubit extends Cubit<UserState> {
   void changePasswordAppearance(bool currentState) {
     emit(ChangePasswordAppearanceState(!currentState));
   }
+
+  void searchWorkers(String query) {
+    List<Worker> filteredWorkers = workers
+        .where((element) =>
+            element.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    emit(SearchWorkersState(filteredWorkers));
+  }
+
+  static UserCubit? _cubit;
+  static UserCubit get() => _cubit ??= UserCubit();
 }
