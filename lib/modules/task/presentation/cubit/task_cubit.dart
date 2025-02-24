@@ -1,10 +1,12 @@
 import 'dart:io';
+
 import 'package:bloc/bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tasks_admin/core/utils/api_handler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
+
 import '../../data/model/task.dart';
 
 part 'task_state.dart';
@@ -23,7 +25,7 @@ class TaskCubit extends Cubit<TaskState> {
         emit(TaskLoaded(tasks: tasks));
       },
       onError: (error) {
-        emit(TaskError(errorMessage: 'Failed to load tasks: $error'));
+        emit(TaskError(errorMessage: error));
       },
     );
   }
@@ -34,7 +36,7 @@ class TaskCubit extends Cubit<TaskState> {
     if (result is Success<bool>) {
       emit(DeleteTaskSuccess());
     } else if (result is Error<bool>) {
-      emit(DeleteTaskError(errorMessage: result.errorMessage!));
+      emit(DeleteTaskError(errorMessage: result.exception));
     }
   }
 
@@ -44,7 +46,7 @@ class TaskCubit extends Cubit<TaskState> {
     if (result is Success<bool>) {
       emit(UpdateTaskSuccess());
     } else if (result is Error<bool>) {
-      emit(UpdateTaskError(errorMessage: result.errorMessage!));
+      emit(UpdateTaskError(errorMessage: result.exception));
     }
   }
 
@@ -54,7 +56,7 @@ class TaskCubit extends Cubit<TaskState> {
     if (result is Success<String>) {
       emit(CreateTaskSuccess());
     } else if (result is Error<String>) {
-      emit(CreateTaskError(errorMessage: result.errorMessage!));
+      emit(CreateTaskError(errorMessage: result.exception));
     }
   }
 
@@ -73,7 +75,7 @@ class TaskCubit extends Cubit<TaskState> {
         storagePath: storagePath,
       ));
     } else if (result is Error<String>) {
-      emit(UploadFileError(errorMessage: result.errorMessage!));
+      emit(UploadFileError(errorMessage: result.exception));
     }
   }
 
@@ -139,7 +141,7 @@ class TaskCubit extends Cubit<TaskState> {
     if (result is Success<bool>) {
       emit(DeleteFileSuccess(url));
     } else if (result is Error<bool>) {
-      emit(DeleteFileError(errorMessage: result.errorMessage!));
+      emit(DeleteFileError(errorMessage: result.exception));
     }
   }
 }

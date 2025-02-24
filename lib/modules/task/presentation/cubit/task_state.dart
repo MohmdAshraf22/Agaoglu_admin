@@ -23,7 +23,7 @@ final class TaskLoaded extends TaskState {
 }
 
 final class TaskError extends TaskState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const TaskError({required this.errorMessage});
 
@@ -37,7 +37,7 @@ final class DeleteTaskLoading extends TaskState {}
 final class DeleteTaskSuccess extends TaskState {}
 
 final class DeleteTaskError extends TaskState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const DeleteTaskError({required this.errorMessage});
 
@@ -51,7 +51,7 @@ final class UpdateTaskLoading extends TaskState {}
 final class UpdateTaskSuccess extends TaskState {}
 
 final class UpdateTaskError extends TaskState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const UpdateTaskError({required this.errorMessage});
 
@@ -65,7 +65,7 @@ final class CreateTaskLoading extends TaskState {}
 final class CreateTaskSuccess extends TaskState {}
 
 final class CreateTaskError extends TaskState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const CreateTaskError({required this.errorMessage});
 
@@ -83,7 +83,7 @@ final class DeleteFileSuccess extends TaskState {
 }
 
 final class DeleteFileError extends TaskState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const DeleteFileError({required this.errorMessage});
 
@@ -103,7 +103,7 @@ final class UploadFileSuccess extends TaskState {
 }
 
 final class UploadFileError extends TaskState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const UploadFileError({required this.errorMessage});
 

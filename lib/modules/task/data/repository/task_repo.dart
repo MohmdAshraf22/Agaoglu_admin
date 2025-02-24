@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:tasks_admin/core/utils/api_handler.dart';
+import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/task/data/data_source/remote_data_source.dart';
 
 import '../model/task.dart';
@@ -29,14 +29,16 @@ class TaskRepository {
   Future<Result<String>> createTask(TaskModel task) async {
     return await _taskDataSource.createTask(task);
   }
+
   Future<Result<bool>> deleteFile(String url) async {
     return await _taskDataSource.deleteFile(url);
   }
 
   Future<Result<String>> uploadFile(
-      {required File file,
-      required String storagePath}) async {
+      {required File file, required String storagePath}) async {
     return await _taskDataSource.uploadFile(
-        file: file, storagePath: storagePath,);
+      file: file,
+      storagePath: storagePath,
+    );
   }
 }

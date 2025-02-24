@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:tasks_admin/core/utils/api_handler.dart';
-import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:path/path.dart' as path;
+import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
+import 'package:tasks_admin/modules/task/data/model/task.dart';
 
 abstract class TaskDataSource {
   Stream<List<TaskModel>> getTasks();
@@ -35,7 +35,6 @@ class TaskDataSourceImpl implements TaskDataSource {
 
   @override
   Stream<List<TaskModel>> getTasks() {
-
     return _fireStore.collection(_collectionName).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => TaskModel.fromDocument(doc)).toList();
     }).handleError((error) {
@@ -52,7 +51,7 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(task);
     } on FirebaseException catch (e) {
       debugPrint('Firebase error getting task status: $e');
-      return Result.error('Firebase error: ${e.message}');
+      return Result.error(e);
     }
   }
 
@@ -65,10 +64,10 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success("TaskModel added successfully");
     } on FirebaseException catch (e) {
       debugPrint('Firebase error creating task status: $e');
-      return Result.error('Firebase error: ${e.message}');
-    } catch (e) {
+      return Result.error(e);
+    } on Exception catch (e) {
       debugPrint('Error creating task status: $e');
-      return Result.error('An unexpected error occurred.');
+      return Result.error(e);
     }
   }
 
@@ -80,10 +79,10 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(true);
     } on FirebaseException catch (e) {
       debugPrint('Firebase error deleting task status: $e');
-      return Result.error('Firebase error: ${e.message}');
-    } catch (e) {
+      return Result.error(e);
+    } on Exception catch (e) {
       debugPrint('Error deleting task status: $e');
-      return Result.error('An unexpected error occurred.');
+      return Result.error(e);
     }
   }
 
@@ -95,10 +94,10 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(true);
     } on FirebaseException catch (e) {
       debugPrint('Firebase error updating task status: $e');
-      return Result.error('Firebase error: ${e.message}');
-    } catch (e) {
+      return Result.error(e);
+    } on Exception catch (e) {
       debugPrint('Error updating task status: $e');
-      return Result.error('An unexpected error occurred.');
+      return Result.error(e);
     }
   }
 
@@ -110,10 +109,10 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(true);
     } on FirebaseException catch (e) {
       debugPrint('Firebase error updating task status: $e');
-      return Result.error('Firebase error: ${e.message}');
-    } catch (e) {
+      return Result.error(e);
+    } on Exception catch (e) {
       debugPrint('Error updating task status: $e');
-      return Result.error('An unexpected error occurred.');
+      return Result.error(e);
     }
   }
 
@@ -133,14 +132,14 @@ class TaskDataSourceImpl implements TaskDataSource {
         print(downloadUrl);
         return Result.success(downloadUrl);
       } else {
-        return Result.error('File upload failed.');
+        return Result.error(Exception());
       }
     } on FirebaseException catch (e) {
       debugPrint('Firebase Storage error: $e');
-      return Result.error('Firebase Storage error: ${e.message}');
-    } catch (e) {
+      return Result.error(e);
+    } on Exception catch (e) {
       debugPrint('Error uploading file: $e');
-      return Result.error('An unexpected error occurred during file upload.');
+      return Result.error(Exception());
     }
   }
 
@@ -152,10 +151,10 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(true);
     } on FirebaseException catch (e) {
       debugPrint('Firebase Storage error: $e');
-      return Result.error('Firebase Storage error: ${e.message}');
+      return Result.error(e);
     } catch (e) {
       debugPrint('Error deleting file: $e');
-      return Result.error('An unexpected error occurred during file deletion.');
+      return Result.error(Exception());
     }
   }
 }
