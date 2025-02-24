@@ -184,7 +184,7 @@ class DashedCirclePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false; // Repaint only if properties change
+    return false;
   }
 }
 

@@ -21,10 +21,10 @@ class ManageWorkersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Worker> filteredWorkers = [];
     List<Worker> workers = [];
-    UserCubit cubit = UserCubit.get();
 
+    UserCubit cubit = UserCubit.get()..getWorkers();
     return BlocProvider(
-      create: (context) => cubit..getWorkers(),
+      create: (context) => cubit,
       child: Scaffold(
         // appBar: AppBar(
         //   backgroundColor: ColorManager.primary,
@@ -76,6 +76,7 @@ class ManageWorkersScreen extends StatelessWidget {
                 child: BlocConsumer<UserCubit, UserState>(
                   listener: (context, state) {
                     if (state is GetWorkersSuccessState) {
+                      debugPrint('workers: ${state.workers}');
                       filteredWorkers = state.workers;
                       workers = state.workers;
                     } else if (state is UserErrorState) {
@@ -93,12 +94,12 @@ class ManageWorkersScreen extends StatelessWidget {
                     return Column(
                       children: [
                         Expanded(
-                          child: Skeletonizer(
-                            enabled: state is GetWorkersLoadingState,
-                            child: filteredWorkers.isEmpty &&
-                                    state is! GetWorkersLoadingState
-                                ? NoDataFoundWidget()
-                                : ListView.builder(
+                          child: filteredWorkers.isEmpty &&
+                                  state is! GetWorkersLoadingState
+                              ? NoDataFoundWidget()
+                              : Skeletonizer(
+                                  enabled: state is GetWorkersLoadingState,
+                                  child: ListView.builder(
                                     physics: BouncingScrollPhysics(),
                                     itemBuilder: (context, index) => state
                                             is GetWorkersLoadingState
@@ -112,7 +113,7 @@ class ManageWorkersScreen extends StatelessWidget {
                                         ? dummyWorkers.length
                                         : filteredWorkers.length,
                                   ),
-                          ),
+                                ),
                         ),
                       ],
                     );

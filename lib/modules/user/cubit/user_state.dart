@@ -111,3 +111,18 @@ class SearchWorkersState extends UserState {
   @override
   List<Object> get props => [workers];
 }
+
+class ImageSelectedState extends UserState {
+  final File? image;
+  ImageSelectedState(this.image);
+
+  @override
+  List<Object?> get props => [];
+}
+
+class SelectJobTitleState extends UserState {
+  final String jobTitle;
+  const SelectJobTitleState(this.jobTitle);
+  @override
+  List<Object> get props => [jobTitle];
+}

@@ -509,6 +509,136 @@ class S {
       args: [],
     );
   }
+
+  /// `Create Worker`
+  String get createWorker {
+    return Intl.message(
+      'Create Worker',
+      name: 'createWorker',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message('Name', name: 'name', desc: '', args: []);
+  }
+
+  /// `Select Job`
+  String get selectJob {
+    return Intl.message('Select Job', name: 'selectJob', desc: '', args: []);
+  }
+
+  /// `Job Title`
+  String get jobTitle {
+    return Intl.message('Job Title', name: 'jobTitle', desc: '', args: []);
+  }
+
+  /// `Please enter name`
+  String get enterName {
+    return Intl.message(
+      'Please enter name',
+      name: 'enterName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter worker name`
+  String get enterWorkerName {
+    return Intl.message(
+      'enter worker name',
+      name: 'enterWorkerName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter phone number`
+  String get enterPhone {
+    return Intl.message(
+      'Please enter phone number',
+      name: 'enterPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone Number`
+  String get phoneNumber {
+    return Intl.message(
+      'Phone Number',
+      name: 'phoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Worker added successfully`
+  String get workerAddedSuccessfully {
+    return Intl.message(
+      'Worker added successfully',
+      name: 'workerAddedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Surname`
+  String get surName {
+    return Intl.message('Surname', name: 'surName', desc: '', args: []);
+  }
+
+  /// `Please enter surname`
+  String get enterSurname {
+    return Intl.message(
+      'Please enter surname',
+      name: 'enterSurname',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Worker`
+  String get editWorker {
+    return Intl.message('Edit Worker', name: 'editWorker', desc: '', args: []);
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message('Save', name: 'save', desc: '', args: []);
+  }
+
+  /// `Worker updated successfully`
+  String get workerUpdatedSuccessfully {
+    return Intl.message(
+      'Worker updated successfully',
+      name: 'workerUpdatedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave empty to keep current`
+  String get leaveEmptyToKeepCurrent {
+    return Intl.message(
+      'Leave empty to keep current',
+      name: 'leaveEmptyToKeepCurrent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Password`
+  String get newPassword {
+    return Intl.message(
+      'New Password',
+      name: 'newPassword',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

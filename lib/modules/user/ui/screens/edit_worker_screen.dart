@@ -9,21 +9,29 @@ import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
-import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
+import 'package:tasks_admin/modules/user/data/models/user.dart';
+import 'package:tasks_admin/modules/user/data/models/worker_edition_form.dart';
+import 'package:tasks_admin/modules/user/ui/screens/create_worker_screen.dart';
 import 'package:tasks_admin/modules/user/ui/widgets/widgets.dart';
 
-class CreateWorkerScreen extends StatelessWidget {
-  const CreateWorkerScreen({super.key});
+class EditWorkerScreen extends StatelessWidget {
+  final Worker worker;
+
+  const EditWorkerScreen({super.key, required this.worker});
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController nameController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
+    TextEditingController nameController =
+        TextEditingController(text: worker.name);
+    TextEditingController phoneController =
+        TextEditingController(text: worker.phoneNumber);
+    TextEditingController emailController =
+        TextEditingController(text: worker.email);
     TextEditingController passwordController = TextEditingController();
-    TextEditingController surnameController = TextEditingController();
-    UserCubit cubit = UserCubit.get();
+    TextEditingController surnameController =
+        TextEditingController(text: worker.surname);
+    UserCubit cubit = UserCubit.get()..selectJobTitle(worker.job);
     bool isPasswordAppears = false;
 
     return BlocProvider(
@@ -38,7 +46,7 @@ class CreateWorkerScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            S.of(context).createWorker,
+            S.of(context).editWorker,
             style: TextStylesManager.authTitle,
           ),
         ),
@@ -71,11 +79,25 @@ class CreateWorkerScreen extends StatelessWidget {
                                         fit: BoxFit.cover,
                                       ),
                                     )
-                                  : Icon(
-                                      Icons.person_outline,
-                                      size: 15.w,
-                                      color: ColorManager.grey,
-                                    ),
+                                  : worker.imageUrl != null
+                                      ? ClipOval(
+                                          child: Image.network(
+                                            worker.imageUrl!,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Icon(
+                                              Icons.person_outline,
+                                              size: 15.w,
+                                              color: ColorManager.grey,
+                                            ),
+                                          ),
+                                        )
+                                      : Icon(
+                                          Icons.person_outline,
+                                          size: 15.w,
+                                          color: ColorManager.grey,
+                                        ),
                             );
                           },
                         ),
@@ -144,6 +166,7 @@ class CreateWorkerScreen extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                         ),
+                        value: cubit.selectedJobTitle,
                         hint: Text(S.of(context).selectJob),
                         items:
                             ConstanceManger.jobsInTurkish.map((String value) {
@@ -174,7 +197,6 @@ class CreateWorkerScreen extends StatelessWidget {
                       if (value == null || value.isEmpty) {
                         return S.of(context).enterPhone;
                       }
-                      // Add phone validation regex if needed
                       return null;
                     },
                   ),
@@ -196,13 +218,13 @@ class CreateWorkerScreen extends StatelessWidget {
                       return null;
                     },
                   ),
-                  LabelText(text: S.of(context).password),
+                  LabelText(text: S.of(context).newPassword),
                   BlocBuilder<UserCubit, UserState>(
                     bloc: cubit,
                     builder: (context, state) {
                       return CustomTextField(
                         controller: passwordController,
-                        hintText: "********",
+                        hintText: S.of(context).leaveEmptyToKeepCurrent,
                         obscureText: isPasswordAppears,
                         suffixIcon: IconButton(
                           onPressed: () {
@@ -214,22 +236,16 @@ class CreateWorkerScreen extends StatelessWidget {
                         ),
                         prefixIcon: Icon(Icons.lock_outlined),
                         keyboardType: TextInputType.visiblePassword,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return S.of(context).enterPassword;
-                          }
-                          return null;
-                        },
                       );
                     },
                   ),
                   SizedBox(height: 2.h),
                   BlocConsumer<UserCubit, UserState>(
                     listener: (context, state) {
-                      if (state is AddWorkerSuccessState) {
+                      if (state is UpdateWorkerSuccessState) {
                         Navigator.pop(context);
                         Fluttertoast.showToast(
-                            msg: S.of(context).workerAddedSuccessfully);
+                            msg: S.of(context).workerUpdatedSuccessfully);
                       }
                       if (state is ChangePasswordAppearanceState) {
                         isPasswordAppears = state.isPasswordVisible;
@@ -243,18 +259,29 @@ class CreateWorkerScreen extends StatelessWidget {
                         spacing: 2.h,
                         children: [
                           DefaultButton(
-                            text: S.of(context).createWorker,
-                            isLoading: state is AddWorkerLoadingState,
+                            text: S.of(context).save,
+                            isLoading: state is UpdateWorkerLoadingState,
                             onPressed: () {
                               if (formKey.currentState!.validate() &&
                                   cubit.selectedJobTitle != null) {
-                                cubit.addWorker(WorkerCreationForm(
-                                    name: nameController.text,
-                                    surname: surnameController.text,
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                    job: cubit.selectedJobTitle!,
-                                    phoneNumber: phoneController.text));
+                                cubit.updateWorker(
+                                  WorkerEditionForm(
+                                      id: worker.id,
+                                      name: nameController.text,
+                                      surname: surnameController.text,
+                                      email: emailController.text,
+                                      password: passwordController
+                                                  .text.isEmpty ||
+                                              passwordController.text ==
+                                                  S
+                                                      .of(context)
+                                                      .leaveEmptyToKeepCurrent ||
+                                              passwordController.text == ''
+                                          ? null
+                                          : passwordController.text,
+                                      job: cubit.selectedJobTitle!,
+                                      phoneNumber: phoneController.text),
+                                );
                               }
                             },
                           ),
@@ -272,24 +299,6 @@ class CreateWorkerScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Add this widget for text labels
-class LabelText extends StatelessWidget {
-  final String text;
-
-  const LabelText({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 1.h),
-      child: Text(
-        text,
-        style: TextStylesManager.label,
       ),
     );
   }

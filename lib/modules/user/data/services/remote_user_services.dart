@@ -11,12 +11,13 @@ import 'package:tasks_admin/firebase_options.dart';
 import 'package:tasks_admin/main.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
+import 'package:tasks_admin/modules/user/data/models/worker_edition_form.dart';
 
 abstract class BaseRemoteUserServices {
   Future<Result<Admin>> login(String email, String password);
   Future<Result<List<Worker>>> getWorkers();
   Future<Result<Worker>> addWorker(WorkerCreationForm workerCreationForm);
-  Future<Result<void>> updateWorker(Worker worker);
+  Future<Result<Worker>> updateWorker(WorkerEditionForm editedWorker);
   Future<Result<void>> deleteWorker(String workerId);
   Future<Result<void>> logout();
   Future<Result<void>> resetPassword(String email);
@@ -111,7 +112,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
       await _firestore
           .collection("workers")
           .doc(worker.id)
-          .set(worker.toJson());
+          .update(worker.toJson());
       debugPrint("add worker cloud completed...");
       return Result.success(worker);
     } on Exception catch (e) {
@@ -135,13 +136,46 @@ class RemoteUserServices implements BaseRemoteUserServices {
   }
 
   @override
-  Future<Result<void>> updateWorker(Worker worker) async {
+  Future<Result<Worker>> updateWorker(WorkerEditionForm editedWorker) async {
     try {
+      debugPrint("add worker started...");
+      String? imageUrl;
+
+      if (editedWorker.image != null) {
+        imageUrl = await _uploadImage(
+          editedWorker.image!,
+          editedWorker.email,
+        );
+        debugPrint("image uploaded..");
+        debugPrint("$imageUrl");
+      }
+      if (editedWorker.password != null) {
+        await _editPassword(editedWorker.id, editedWorker.password);
+      }
+      debugPrint("add worker cloud functions started...");
+      //
+      // final result = await _functions.httpsCallable('createWorkerAuth').call({
+      //   'email': editedWorker.email,
+      //   'password': editedWorker.password,
+      // }).then((v) {
+      //   debugPrint(v.data);
+      //   debugPrint(v.runtimeType.toString());
+      //   debugPrint(v.hashCode.toString());
+      // });
+
+      final worker = editedWorker.toWorker(imageUrl: imageUrl);
+      debugPrint("${worker.toJson()}");
       await _firestore
           .collection("workers")
           .doc(worker.id)
-          .update(worker.toJson());
-      return Result.success(null);
+          .set(worker.toJson());
+      debugPrint("add worker cloud completed...");
+      return Result.success(worker);
+      // await _firestore
+      //     .collection("workers")
+      //     .doc(worker.id)
+      //     .update(worker.toJson());
+      // return Result.success(editedWorker.toWorker(id: id));
     } on Exception catch (e) {
       return Result.error(e);
     }
@@ -174,5 +208,16 @@ class RemoteUserServices implements BaseRemoteUserServices {
     final userCredential = await workerAuth!
         .createUserWithEmailAndPassword(email: email, password: password);
     return userCredential.user!.uid;
+  }
+
+  Future<void> _editPassword(String id, String? password) async {
+    // final result = await _functions.httpsCallable('updateWorkerPassword').call({
+    //   'email': editedWorker.email,
+    //   'password': editedWorker.password,
+    // }).then((v) {
+    //   debugPrint(v.data);
+    //   debugPrint(v.runtimeType.toString());
+    //   debugPrint(v.hashCode.toString());
+    // });
   }
 }

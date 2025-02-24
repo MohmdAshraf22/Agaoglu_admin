@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
+import 'package:tasks_admin/modules/user/data/models/worker_edition_form.dart';
 import 'package:tasks_admin/modules/user/data/repository/user_repository.dart';
 
 part 'user_state.dart';
@@ -11,6 +15,7 @@ class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitial());
   final UserRepository _userRepository = UserRepository();
   List<Worker> workers = [];
+  List<Worker> filteredWorkers = [];
 
   Future<void> login(String email, String password) async {
     emit(LoginLoadingState());
@@ -57,18 +62,19 @@ class UserCubit extends Cubit<UserState> {
     emit(AddWorkerLoadingState());
     final result = await _userRepository.addWorker(workerCreationForm);
     if (result is Success<Worker>) {
+      workers.add(result.data);
       emit(AddWorkerSuccessState(result.data));
     } else if (result is Error<Worker>) {
       emit(UserErrorState(result.exception));
     }
   }
 
-  Future<void> updateWorker(Worker worker) async {
+  Future<void> updateWorker(WorkerEditionForm worker) async {
     emit(UpdateWorkerLoadingState());
     final result = await _userRepository.updateWorker(worker);
-    if (result is Success<void>) {
-      emit(UpdateWorkerSuccessState(worker));
-    } else if (result is Error<void>) {
+    if (result is Success<Worker>) {
+      emit(UpdateWorkerSuccessState(result.data));
+    } else if (result is Error<Worker>) {
       emit(UserErrorState(result.exception));
     }
   }
@@ -95,6 +101,24 @@ class UserCubit extends Cubit<UserState> {
     emit(SearchWorkersState(filteredWorkers));
   }
 
+  File? selectedImage;
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      selectedImage = File(image.path);
+      emit(ImageSelectedState(selectedImage));
+    }
+  }
+
   static UserCubit? _cubit;
   static UserCubit get() => _cubit ??= UserCubit();
+
+  String? selectedJobTitle;
+  void selectJobTitle(String s) {
+    selectedJobTitle = s;
+    emit(SelectJobTitleState(s));
+  }
 }
