@@ -1,0 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:tasks_admin/core/utils/api_handler.dart';
+import 'package:tasks_admin/modules/main/data/models/dashboard_details.dart';
+
+abstract class DashboardDataSource {
+  Result<DashboardDetails> getDashboardDetails();
+}
+
+class DashboardDataSourceImpl implements DashboardDataSource {
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  final String _dashboardDetails = 'dashboardDetails';
+
+  @override
+  Stream<DashboardDetails> getDashboardDetails() {
+    return _fireStore.collection(_dashboardDetails).snapshots().map((snapshot) {
+      return DashboardDetails.fromDocument(
+          snapshot.docs.first); //return the first document.
+    }).handleError((error) {
+      debugPrint('Error getting dashboard details: $error');
+      return Stream.value(DashboardDetails(
+          totalWorkers: 0,
+          pendingTasks: 0,
+          completedTasks: 0)); //return default value on error.
+    });
+  }
+}

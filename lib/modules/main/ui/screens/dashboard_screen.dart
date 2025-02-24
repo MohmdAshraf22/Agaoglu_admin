@@ -8,7 +8,6 @@ import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
-import 'package:tasks_admin/modules/main/data/models/dashboard_details.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:tasks_admin/modules/task/ui/screens/task_management.dart';
 import 'package:tasks_admin/modules/task/ui/screens/task_management_view.dart';
