@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tasks_admin/core/utils/api_handler.dart';
+import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/main/data/models/dashboard_details.dart';
 import 'package:tasks_admin/modules/main/data/repository/dashboard_repo.dart';
 
@@ -14,9 +14,10 @@ class DashboardCubit extends Cubit<DashboardState> {
     emit(DashboardDetailsLoading());
     final result = await _dashboardRepo.getDashboardDetails();
     if (result is Success<DashboardDetails>) {
+      // print(result.data);
       emit(DashboardDetailsSuccess(dashboardDetails: result.data));
     } else if (result is Error<DashboardDetails>) {
-      emit(DashboardDetailsError(errorMessage: result.errorMessage!));
+      emit(DashboardDetailsError(errorMessage: result.exception));
     }
   }
 }

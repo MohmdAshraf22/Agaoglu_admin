@@ -3,52 +3,28 @@ import 'package:equatable/equatable.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 
 class DashboardDetails extends Equatable {
-  final String id;
-  final String description;
-  final String title;
-  final String? workerName;
-  final TaskStatus status;
-  final DateTime createdAt;
   final int totalWorkers;
   final int pendingTasks;
   final int completedTasks;
+  List<TaskModel> tasks;
 
-  const DashboardDetails(
-      {required this.id,
-      required this.description,
-      required this.title,
-      required this.workerName,
-      required this.status,
-      required this.createdAt,
-      required this.totalWorkers,
+  DashboardDetails(
+      {required this.totalWorkers,
+      required this.tasks,
       required this.pendingTasks,
       required this.completedTasks});
 
   factory DashboardDetails.fromDocument(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return DashboardDetails(
-      id: doc.id,
-      workerName: data['workerName'],
       totalWorkers: data['totalWorkers'],
       pendingTasks: data['pendingTasks'],
       completedTasks: data['completedTasks'],
-      title: data['title'],
-      description: data['description'],
-      status: TaskStatus.values.byName(data['status']),
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      tasks: [],
     );
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        description,
-        workerName,
-        status,
-        createdAt,
-        title,
-        totalWorkers,
-        pendingTasks,
-        completedTasks
-      ];
+  List<Object?> get props =>
+      [totalWorkers, pendingTasks, completedTasks, tasks];
 }

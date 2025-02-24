@@ -17,9 +17,10 @@ import 'package:tasks_admin/modules/task/ui/dummy_data/dummy_data.dart';
 import 'package:tasks_admin/modules/task/ui/screens/edit_task_screen.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/main_appbar.dart';
 
-
 class TaskManagementScreen extends StatefulWidget {
-  const TaskManagementScreen({super.key});
+  final List<TaskModel> tasks;
+
+  const TaskManagementScreen({super.key, required this.tasks});
 
   @override
   State<TaskManagementScreen> createState() => _TaskManagementScreenState();
@@ -33,7 +34,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
 
   @override
   void initState() {
-    tasks = DummyTasks.getTasks();
+    tasks = widget.tasks;
     taskCubit.getTasks();
     super.initState();
   }
@@ -145,7 +146,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      getTaskStatusLanguage(task.status,context),
+                      getTaskStatusLanguage(task.status, context),
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -262,5 +263,4 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
       ),
     );
   }
-
 }

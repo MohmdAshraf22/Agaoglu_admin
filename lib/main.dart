@@ -9,10 +9,11 @@ import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/localization_manager.dart';
 import 'package:tasks_admin/firebase_options.dart';
 import 'package:tasks_admin/generated/l10n.dart';
+import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
 import 'package:tasks_admin/modules/main/ui/screens/dashboard_screen.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
-import 'package:tasks_admin/modules/task/ui/screens/task_management.dart';
+import 'package:tasks_admin/modules/task/ui/screens/task_management_screen.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/ui/screens/manage_workers_screen.dart';
 
@@ -40,8 +41,8 @@ class MyApp extends StatelessWidget {
     return Sizer(
       builder: (context, orientation, deviceType) => MultiBlocProvider(
           providers: [
-
-            BlocProvider(create: (context) => UserCubit.get())
+            BlocProvider(create: (context) => UserCubit.get()),
+            BlocProvider<DashboardCubit>.value(value: DashboardCubit())
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tasks_admin/core/error/exception_manager.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/core/utils/constance_manger.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
+import 'package:tasks_admin/modules/main/data/models/dashboard_details.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
-import 'package:tasks_admin/modules/task/ui/screens/task_management.dart';
+import 'package:tasks_admin/modules/task/ui/dummy_data/dummy_data.dart';
+import 'package:tasks_admin/modules/task/ui/screens/task_management_screen.dart';
 import 'package:tasks_admin/modules/task/ui/screens/task_management_view.dart';
+import 'package:tasks_admin/modules/user/ui/screens/manage_workers_screen.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -21,9 +26,11 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   late final DashboardCubit cubit = context.read<DashboardCubit>();
+  late DashboardDetails dashboardDetails;
 
   @override
   void initState() {
+    dashboardDetails = DummyTasks.getDashboardTasks();
     cubit.getDashboardDetails();
     super.initState();
   }
@@ -44,12 +51,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
               SizedBox(height: 4.h),
               BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
+                  print(state);
+                  if (state is DashboardDetailsSuccess) {
+                    dashboardDetails = state.dashboardDetails;
+                  }
                   return Skeletonizer(
                     enabled: state is DashboardDetailsLoading,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _buildStats(),
+                        _buildStats(dashboardDetails),
                         SizedBox(height: 4.h),
                         Text(
                           S.of(context).recentTasks,
@@ -60,14 +71,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           ),
                         ),
                         SizedBox(height: 2.h),
-                        _buildTaskList(),
+                        _buildTaskList(dashboardDetails),
                         SizedBox(height: 4.h),
-                        _buildButtons(),
                       ],
                     ),
                   );
                 },
               ),
+              _buildButtons(),
             ],
           ),
         ),
@@ -101,13 +112,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
-  Widget _buildStats() {
+  Widget _buildStats(DashboardDetails dashboardDetails) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        _buildStatCard('156', S.of(context).totalWorkers, Icons.people),
-        _buildStatCard('43', S.of(context).pendingTasks, Icons.list),
-        _buildStatCard('289', S.of(context).completedTasks, Icons.check_circle),
+        _buildStatCard(dashboardDetails.totalWorkers,
+            S.of(context).totalWorkers, Icons.people),
+        _buildStatCard(dashboardDetails.pendingTasks,
+            S.of(context).pendingTasks, Icons.list),
+        _buildStatCard(dashboardDetails.completedTasks,
+            S.of(context).completedTasks, Icons.check_circle),
       ]
           .expand(
             (element) => [
@@ -121,7 +135,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
-  Widget _buildStatCard(String count, String label, IconData icon) {
+  Widget _buildStatCard(int count, String label, IconData icon) {
     return Expanded(
       child: SemiTransparentContainer(
         height: 18.h,
@@ -135,7 +149,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               Expanded(child: Icon(icon, color: Colors.white, size: 8.w)),
               Expanded(
                 child: Text(
-                  count,
+                  count.toString(),
                   style: TextStylesManager.authTitle,
                 ),
               ),
@@ -160,27 +174,22 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
-  Widget _buildTaskList() {
+  Widget _buildTaskList(DashboardDetails dashboardDetails) {
+    List<TaskModel> recentTasks = dashboardDetails.tasks.take(5).toList();
     return SizedBox(
       height: 15.h,
       child: ListView.separated(
         separatorBuilder: (context, index) => SizedBox(
           width: 4.w,
         ),
-        itemCount: 4,
+        itemCount: recentTasks.length,
         scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) => _buildTaskCard('Website Redesign',
-            'John Smith', TaskStatus.cancelled, 'Dec 15, 2023'),
+        itemBuilder: (context, index) => _buildTaskCard(recentTasks[index]),
       ),
     );
   }
 
-  Widget _buildTaskCard(
-    String title,
-    String assignedTo,
-    TaskStatus status,
-    String date,
-  ) {
+  Widget _buildTaskCard(TaskModel task) {
     return SemiTransparentContainer(
       width: 60.w,
       height: 15.h,
@@ -193,13 +202,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              title,
+              task.title,
               style: TextStylesManager.authTitle.copyWith(
                 fontSize: 16.sp,
               ),
             ),
             SizedBox(height: 1.h),
-            Text('Assigned to: $assignedTo',
+            Text('Assigned to: ${task.workerName}',
                 style:
                     TextStyle(color: ColorManager.greyLight, fontSize: 13.sp)),
             SizedBox(height: 2.h),
@@ -209,14 +218,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.w),
                   decoration: BoxDecoration(
-                    color: getStatusColor(status),
+                    color: getStatusColor(task.status),
                     borderRadius: BorderRadius.circular(1.w),
                   ),
-                  child: Text(getTaskStatusLanguage(status, context),
+                  child: Text(getTaskStatusLanguage(task.status, context),
                       style: TextStyle(
                           color: ColorManager.white, fontSize: 12.sp)),
                 ),
-                Text(date,
+                Text(ConstanceManger.formatDateTime(task.createdAt),
                     style:
                         TextStyle(color: ColorManager.white, fontSize: 12.sp)),
               ],
@@ -235,7 +244,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           child: DefaultButton(
               text: "View Workers ",
               onPressed: () {
-                context.push(TaskManagementView());
+                context.push(ManageWorkersScreen());
               }),
         ),
         SizedBox(width: 4.w),
@@ -243,7 +252,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           child: DefaultButton(
               text: "View Tasks ",
               onPressed: () {
-                context.push(TaskManagementScreen());
+                context.push(TaskManagementView(tasks: dashboardDetails.tasks));
               }),
         ),
       ],

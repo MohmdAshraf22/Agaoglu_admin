@@ -14,10 +14,6 @@ class TaskRepository {
     return _taskDataSource.getTasks();
   }
 
-  Future<Result<bool>> assignTask(String taskId, List<String> workerIds) async {
-    return await _taskDataSource.assignTask(taskId, workerIds);
-  }
-
   Future<Result<bool>> deleteTask(String taskId) async {
     return await _taskDataSource.deleteTask(taskId);
   }
@@ -34,8 +30,10 @@ class TaskRepository {
     return await _taskDataSource.deleteFile(url);
   }
 
-  Future<Result<String>> uploadFile(
-      {required File file, required String storagePath}) async {
+  Future<Result<String>> uploadFile({
+    required File file,
+    required String storagePath,
+  }) async {
     return await _taskDataSource.uploadFile(
       file: file,
       storagePath: storagePath,

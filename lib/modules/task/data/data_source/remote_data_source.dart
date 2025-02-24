@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,6 @@ import 'package:tasks_admin/modules/task/data/model/task.dart';
 
 abstract class TaskDataSource {
   Stream<List<TaskModel>> getTasks();
-
-  Future<Result<TaskModel>> getTask(String taskId);
 
   Future<Result<bool>> deleteFile(String url);
 
@@ -24,18 +21,16 @@ abstract class TaskDataSource {
     required File file,
     required String storagePath,
   });
-
-  Future<Result<bool>> assignTask(String taskId, List<String> workerIds);
 }
 
 class TaskDataSourceImpl implements TaskDataSource {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  final String _collectionName = 'tasks';
+  final String _tasks = 'tasks';
 
   @override
   Stream<List<TaskModel>> getTasks() {
-    return _fireStore.collection(_collectionName).snapshots().map((snapshot) {
+    return _fireStore.collection(_tasks).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => TaskModel.fromDocument(doc)).toList();
     }).handleError((error) {
       debugPrint('Error getting tasks: $error');
@@ -43,22 +38,9 @@ class TaskDataSourceImpl implements TaskDataSource {
   }
 
   @override
-  Future<Result<TaskModel>> getTask(String taskId) async {
-    try {
-      final snapshot =
-          await _fireStore.collection(_collectionName).doc(taskId).get();
-      TaskModel task = TaskModel.fromDocument(snapshot);
-      return Result.success(task);
-    } on FirebaseException catch (e) {
-      debugPrint('Firebase error getting task status: $e');
-      return Result.error(e);
-    }
-  }
-
-  @override
   Future<Result<String>> createTask(TaskModel task) async {
     try {
-      final collection = _fireStore.collection(_collectionName);
+      final collection = _fireStore.collection(_tasks);
       final id = collection.doc().id;
       await collection.doc(id).set(task.toMap(id));
       return Result.success("TaskModel added successfully");
@@ -74,7 +56,7 @@ class TaskDataSourceImpl implements TaskDataSource {
   @override
   Future<Result<bool>> deleteTask(String taskId) async {
     try {
-      final collection = _fireStore.collection(_collectionName);
+      final collection = _fireStore.collection(_tasks);
       await collection.doc(taskId).delete();
       return Result.success(true);
     } on FirebaseException catch (e) {
@@ -89,23 +71,8 @@ class TaskDataSourceImpl implements TaskDataSource {
   @override
   Future<Result<bool>> updateTask(TaskModel task) async {
     try {
-      final collection = _fireStore.collection(_collectionName);
+      final collection = _fireStore.collection(_tasks);
       await collection.doc(task.id).update(task.toMap(task.id));
-      return Result.success(true);
-    } on FirebaseException catch (e) {
-      debugPrint('Firebase error updating task status: $e');
-      return Result.error(e);
-    } on Exception catch (e) {
-      debugPrint('Error updating task status: $e');
-      return Result.error(e);
-    }
-  }
-
-  @override
-  Future<Result<bool>> assignTask(String taskId, List<String> workerIds) async {
-    try {
-      final collection = _fireStore.collection(_collectionName);
-      await collection.doc(taskId).update({'workerAssignedId': workerIds});
       return Result.success(true);
     } on FirebaseException catch (e) {
       debugPrint('Firebase error updating task status: $e');

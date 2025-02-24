@@ -3,10 +3,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
+import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
-
-import '../../data/model/task.dart';
 
 part 'task_state.dart';
 

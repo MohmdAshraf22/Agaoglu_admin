@@ -7,7 +7,8 @@ import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
-import 'package:tasks_admin/modules/task/ui/screens/task_management.dart';
+import 'package:tasks_admin/modules/main/ui/screens/dashboard_screen.dart';
+import 'package:tasks_admin/modules/task/ui/screens/task_management_screen.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/ui/screens/forgot_password_screen.dart';
 import 'package:tasks_admin/modules/user/ui/widgets/widgets.dart';
@@ -126,7 +127,7 @@ class LoginScreen extends StatelessWidget {
                                   child: BlocConsumer<UserCubit, UserState>(
                                     listener: (context, state) {
                                       if (state is LoginSuccessState) {
-                                        context.push(TaskManagementScreen());
+                                        context.push(AdminDashboard());
                                       }
                                       if (state
                                           is ChangePasswordAppearanceState) {

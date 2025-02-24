@@ -24,7 +24,7 @@ final class DashboardDetailsSuccess extends DashboardState {
 }
 
 final class DashboardDetailsError extends DashboardState {
-  final String errorMessage;
+  final Exception errorMessage;
 
   const DashboardDetailsError({required this.errorMessage});
 
