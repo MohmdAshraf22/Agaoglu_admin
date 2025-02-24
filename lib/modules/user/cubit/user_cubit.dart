@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
 import 'package:tasks_admin/modules/user/data/repository/user_repository.dart';
@@ -13,59 +14,73 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> login(String email, String password) async {
     emit(LoginLoadingState());
-
     final result = await _userRepository.login(email, password);
-
-    result.fold(
-        (l) => emit(UserErrorState(l)), (r) => emit(LoginSuccessState(r)));
+    if (result is Success<Admin>) {
+      emit(LoginSuccessState(result.data));
+    } else if (result is Error<Admin>) {
+      emit(UserErrorState(result.exception));
+    }
   }
 
   Future<void> resetPassword(String email) async {
     emit(ResetPasswordLoadingState());
     final result = await _userRepository.resetPassword(email);
-    result.fold((l) => emit(UserErrorState(l)),
-        (r) => emit(ResetPasswordSuccessState()));
+    if (result is Success<void>) {
+      emit(ResetPasswordSuccessState());
+    } else if (result is Error<void>) {
+      emit(UserErrorState(result.exception));
+    }
   }
 
   Future<void> logout() async {
     emit(LogoutLoadingState());
     final result = await _userRepository.logout();
-    result.fold(
-        (l) => emit(UserErrorState(l)), (r) => emit(LogoutSuccessState()));
+    if (result is Success<void>) {
+      emit(LogoutSuccessState());
+    } else if (result is Error<void>) {
+      emit(UserErrorState(result.exception));
+    }
   }
 
   Future<void> getWorkers() async {
-    if (workers.isEmpty) {
-      emit(GetWorkersLoadingState());
-      final result = await _userRepository.getWorkers();
-      result.fold((l) => emit(UserErrorState(l)), (r) {
-        workers = r;
-        emit(GetWorkersSuccessState(r));
-      });
-    } else {
-      emit(GetWorkersSuccessState(workers));
+    emit(GetWorkersLoadingState());
+    final result = await _userRepository.getWorkers();
+    if (result is Success<List<Worker>>) {
+      workers = result.data;
+      emit(GetWorkersSuccessState(result.data));
+    } else if (result is Error<List<Worker>>) {
+      emit(UserErrorState(result.exception));
     }
   }
 
   Future<void> addWorker(WorkerCreationForm workerCreationForm) async {
     emit(AddWorkerLoadingState());
     final result = await _userRepository.addWorker(workerCreationForm);
-    result.fold(
-        (l) => emit(UserErrorState(l)), (r) => emit(AddWorkerSuccessState(r)));
+    if (result is Success<Worker>) {
+      emit(AddWorkerSuccessState(result.data));
+    } else if (result is Error<Worker>) {
+      emit(UserErrorState(result.exception));
+    }
   }
 
   Future<void> updateWorker(Worker worker) async {
     emit(UpdateWorkerLoadingState());
     final result = await _userRepository.updateWorker(worker);
-    result.fold((l) => emit(UserErrorState(l)),
-        (r) => emit(UpdateWorkerSuccessState(worker)));
+    if (result is Success<void>) {
+      emit(UpdateWorkerSuccessState(worker));
+    } else if (result is Error<void>) {
+      emit(UserErrorState(result.exception));
+    }
   }
 
   Future<void> deleteWorker(String workerId) async {
     emit(DeleteWorkerLoadingState(workerId));
     final result = await _userRepository.deleteWorker(workerId);
-    result.fold((l) => emit(UserErrorState(l)),
-        (r) => emit(DeleteWorkerSuccessState(workerId)));
+    if (result is Success<void>) {
+      emit(DeleteWorkerSuccessState(workerId));
+    } else if (result is Error<void>) {
+      emit(UserErrorState(result.exception));
+    }
   }
 
   void changePasswordAppearance(bool currentState) {

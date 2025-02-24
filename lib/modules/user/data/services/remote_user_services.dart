@@ -2,25 +2,24 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/firebase_options.dart';
 import 'package:tasks_admin/main.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
 
 abstract class BaseRemoteUserServices {
-  Future<Either<Exception, Admin>> login(String email, String password);
-  Future<Either<Exception, List<Worker>>> getWorkers();
-  Future<Either<Exception, Worker>> addWorker(
-      WorkerCreationForm workerCreationForm);
-  Future<Either<Exception, Unit>> updateWorker(Worker worker);
-  Future<Either<Exception, Unit>> deleteWorker(String workerId);
-  Future<Either<Exception, Unit>> logout();
-  Future<Either<Exception, Unit>> resetPassword(String email);
+  Future<Result<Admin>> login(String email, String password);
+  Future<Result<List<Worker>>> getWorkers();
+  Future<Result<Worker>> addWorker(WorkerCreationForm workerCreationForm);
+  Future<Result<void>> updateWorker(Worker worker);
+  Future<Result<void>> deleteWorker(String workerId);
+  Future<Result<void>> logout();
+  Future<Result<void>> resetPassword(String email);
 }
 
 class RemoteUserServices implements BaseRemoteUserServices {
@@ -32,8 +31,9 @@ class RemoteUserServices implements BaseRemoteUserServices {
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
   FirebaseApp? _app;
   FirebaseAuth? workerAuth;
+
   @override
-  Future<Either<Exception, Admin>> login(String email, String password) async {
+  Future<Result<Admin>> login(String email, String password) async {
     try {
       final userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -46,37 +46,37 @@ class RemoteUserServices implements BaseRemoteUserServices {
           .get();
 
       final admin = Admin.fromJson(adminDoc.data() as Map<String, dynamic>);
-      return Right(admin);
+      return Result.success(admin);
     } on Exception catch (e) {
       debugPrint(e.toString());
-      return Left(e);
+      return Result.error(e);
     }
   }
 
   @override
-  Future<Either<Exception, Unit>> resetPassword(String email) async {
+  Future<Result<void>> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return const Right(unit);
+      return Result.success(null);
     } on Exception catch (e) {
-      return Left(e);
+      return Result.error(e);
     }
   }
 
   @override
-  Future<Either<Exception, List<Worker>>> getWorkers() async {
+  Future<Result<List<Worker>>> getWorkers() async {
     try {
       final response = await _firestore.collection("workers").get();
       final workers = response.docs.map((doc) => Worker.fromJson(doc)).toList();
 
-      return Right(workers);
+      return Result.success(workers);
     } on Exception catch (e) {
-      return Left(e);
+      return Result.error(e);
     }
   }
 
   @override
-  Future<Either<Exception, Worker>> addWorker(
+  Future<Result<Worker>> addWorker(
       WorkerCreationForm workerCreationForm) async {
     try {
       debugPrint("add worker started...");
@@ -113,47 +113,47 @@ class RemoteUserServices implements BaseRemoteUserServices {
           .doc(worker.id)
           .set(worker.toJson());
       debugPrint("add worker cloud completed...");
-      return Right(worker);
+      return Result.success(worker);
     } on Exception catch (e) {
-      return Left(e);
+      return Result.error(e);
     }
   }
 
   @override
-  Future<Either<Exception, Unit>> deleteWorker(String workerId) async {
+  Future<Result<void>> deleteWorker(String workerId) async {
     try {
       // Delete Auth user using Cloud Function
-      await _functions.httpsCallable('deleteWorkerAuth').call({
-        'workerId': workerId,
-      });
+      // await _functions.httpsCallable('deleteWorkerAuth').call({
+      //   'workerId': workerId,
+      // });
 
       await _firestore.doc("workers/$workerId").delete();
-      return const Right(unit);
+      return Result.success(null);
     } on Exception catch (e) {
-      return Left(e);
+      return Result.error(e);
     }
   }
 
   @override
-  Future<Either<Exception, Unit>> updateWorker(Worker worker) async {
+  Future<Result<void>> updateWorker(Worker worker) async {
     try {
       await _firestore
           .collection("workers")
           .doc(worker.id)
           .update(worker.toJson());
-      return const Right(unit);
+      return Result.success(null);
     } on Exception catch (e) {
-      return Left(e);
+      return Result.error(e);
     }
   }
 
   @override
-  Future<Either<Exception, Unit>> logout() async {
+  Future<Result<void>> logout() async {
     try {
       await _auth.signOut();
-      return const Right(unit);
+      return Result.success(null);
     } on Exception catch (e) {
-      return Left(e);
+      return Result.error(e);
     }
   }
 
