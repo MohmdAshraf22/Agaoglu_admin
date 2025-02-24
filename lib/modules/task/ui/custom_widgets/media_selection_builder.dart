@@ -117,7 +117,6 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
                 }
               }
               return _buildSelectedImages([], imagesUrl);
-              return const SizedBox.shrink();
             },
           ),
       ],

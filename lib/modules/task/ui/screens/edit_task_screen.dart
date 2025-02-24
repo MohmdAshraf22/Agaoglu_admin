@@ -57,8 +57,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _siteController = TextEditingController(text: widget.task.site);
     _blockController = TextEditingController(text: widget.task.block);
     _flatController = TextEditingController(text: widget.task.flat);
-    print(widget.task.imagesUrl);
-    imagesUrl = List.from(widget.task.imagesUrl ?? []);
+    // print(widget.task.imagesUrl);
+    imagesUrl = List.from(widget.task.imagesUrl);
     audioUrl = widget.task.voiceUrl;
     _dueDate = widget.task.createdAt;
     _selectedWorker = _workers.firstWhere(

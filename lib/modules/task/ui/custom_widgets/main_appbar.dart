@@ -72,6 +72,7 @@ class MainAppBar extends StatelessWidget {
               hintStyle: TextStyle(
                 color: ColorManager.white,
               ),
+              focusColor: ColorManager.white,
               fillColor: ColorManager.grey.withValues(alpha: 0.2),
               filled: true,
               border: OutlineInputBorder(

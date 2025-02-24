@@ -15,11 +15,17 @@ import 'package:tasks_admin/modules/user/data/models/worker_edition_form.dart';
 
 abstract class BaseRemoteUserServices {
   Future<Result<Admin>> login(String email, String password);
+
   Future<Result<List<Worker>>> getWorkers();
+
   Future<Result<Worker>> addWorker(WorkerCreationForm workerCreationForm);
+
   Future<Result<Worker>> updateWorker(WorkerEditionForm editedWorker);
+
   Future<Result<void>> deleteWorker(String workerId);
+
   Future<Result<void>> logout();
+
   Future<Result<void>> resetPassword(String email);
 }
 
@@ -32,6 +38,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
   FirebaseApp? _app;
   FirebaseAuth? workerAuth;
+  final String _dashboardDetails = 'dashboardDetails';
 
   @override
   Future<Result<Admin>> login(String email, String password) async {
@@ -105,14 +112,21 @@ class RemoteUserServices implements BaseRemoteUserServices {
       final String id =
           await _signUp(workerCreationForm.email, workerCreationForm.password);
       debugPrint("add worker cloud functions ended...");
-      debugPrint("$id");
+      debugPrint(id);
 
       final worker = workerCreationForm.toWorker(id: id, imageUrl: imageUrl);
       debugPrint("${worker.toJson()}");
-      await _firestore
-          .collection("workers")
-          .doc(worker.id)
-          .update(worker.toJson());
+      WriteBatch batch = _firestore.batch();
+
+      DocumentReference workerRef =
+          _firestore.collection("workers").doc(worker.id);
+      batch.update(workerRef, worker.toJson());
+
+      DocumentReference dashboardRef =
+          _firestore.collection(_dashboardDetails).doc(_dashboardDetails);
+      batch.update(dashboardRef, {'totalWorkers': FieldValue.increment(1)});
+
+      await batch.commit();
       debugPrint("add worker cloud completed...");
       return Result.success(worker);
     } on Exception catch (e) {
@@ -127,8 +141,14 @@ class RemoteUserServices implements BaseRemoteUserServices {
       // await _functions.httpsCallable('deleteWorkerAuth').call({
       //   'workerId': workerId,
       // });
+      WriteBatch batch = _firestore.batch();
+      DocumentReference workerRef = _firestore.doc("workers/$workerId");
+      batch.delete(workerRef);
 
-      await _firestore.doc("workers/$workerId").delete();
+      DocumentReference dashboardRef =
+          _firestore.collection(_dashboardDetails).doc(_dashboardDetails);
+      batch.update(dashboardRef, {'totalWorkers': FieldValue.increment(-1)});
+      await batch.commit();
       return Result.success(null);
     } on Exception catch (e) {
       return Result.error(e);

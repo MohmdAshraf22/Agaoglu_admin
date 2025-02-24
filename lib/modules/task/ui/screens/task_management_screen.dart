@@ -13,7 +13,6 @@ import 'package:tasks_admin/modules/task/ui/screens/create_task_screen.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/filter_button.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/voice_builder.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/image_builder.dart';
-import 'package:tasks_admin/modules/task/ui/dummy_data/dummy_data.dart';
 import 'package:tasks_admin/modules/task/ui/screens/edit_task_screen.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/main_appbar.dart';
 
@@ -30,7 +29,9 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   TaskStatus filterSelected = TaskStatus.all;
   late TaskCubit taskCubit = context.read<TaskCubit>();
 
-  List<TaskModel> tasks = [], filteredTasks = [];
+  List<TaskModel> tasks = [],
+      filteredTasksByStatus = [],
+      filteredTasks = [];
 
   @override
   void initState() {
@@ -51,7 +52,9 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
             onAdd: () {
               context.push(CreateTaskScreen());
             },
-            onSearched: (value) {},
+            onSearched: (value) {
+              taskCubit.searchTasks(value, filteredTasksByStatus);
+            },
             hintText: S.of(context).search_tasks,
           ),
           Expanded(
@@ -64,13 +67,18 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
               },
               builder: (context, state) {
                 if (state is TaskLoaded) {
+                  filteredTasksByStatus = state.tasks;
                   filteredTasks = state.tasks;
                   tasks = state.tasks;
                 } else if (state is TaskError) {
                   tasks.clear();
+                  filteredTasksByStatus.clear();
                   filteredTasks.clear();
                 } else if (state is FilterTaskByStatus) {
                   filterSelected = state.status;
+                  filteredTasksByStatus = state.tasks;
+                  filteredTasks = filteredTasksByStatus;
+                } else if (state is SearchTasksState) {
                   filteredTasks = state.tasks;
                 }
                 return Padding(

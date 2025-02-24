@@ -142,4 +142,12 @@ class TaskCubit extends Cubit<TaskState> {
       emit(DeleteFileError(errorMessage: result.exception));
     }
   }
+
+  void searchTasks(String query, List<TaskModel> tasks) {
+    List<TaskModel> filteredWorkers = tasks
+        .where((element) =>
+            element.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    emit(SearchTasksState(filteredWorkers));
+  }
 }

@@ -178,3 +178,12 @@ final class IsPressedRecordingState extends TaskState {
 }
 
 final class CompleteRecordingState extends TaskState {}
+
+class SearchTasksState extends TaskState {
+  final List<TaskModel> tasks;
+
+  const SearchTasksState(this.tasks);
+
+  @override
+  List<Object> get props => [tasks];
+}

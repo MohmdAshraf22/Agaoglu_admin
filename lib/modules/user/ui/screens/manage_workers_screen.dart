@@ -65,7 +65,7 @@ class ManageWorkersScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               MainAppBar(
-                onSearched: (value) => cubit.searchWorkers(value ?? ''),
+                onSearched: (value) => cubit.searchWorkers(value),
                 hintText: S.of(context).searchWorkers,
                 onAdd: () {
                   context.push(CreateWorkerScreen());
