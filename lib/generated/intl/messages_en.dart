@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "choose_a_worker": MessageLookupByLibrary.simpleMessage("Choose a worker"),
     "completed": MessageLookupByLibrary.simpleMessage("Completed"),
     "completedTasks": MessageLookupByLibrary.simpleMessage("Completed Tasks"),
+    "createWorker": MessageLookupByLibrary.simpleMessage("Create Worker"),
     "create_task": MessageLookupByLibrary.simpleMessage("Create Task"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "deleteWorker": MessageLookupByLibrary.simpleMessage("Delete Worker"),
@@ -54,13 +55,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete_task": MessageLookupByLibrary.simpleMessage("Delete Task"),
     "due_date": MessageLookupByLibrary.simpleMessage("Due Date"),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "editWorker": MessageLookupByLibrary.simpleMessage("Edit Worker"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "enterEmail": MessageLookupByLibrary.simpleMessage("Please enter email"),
+    "enterName": MessageLookupByLibrary.simpleMessage("Please enter name"),
     "enterPassword": MessageLookupByLibrary.simpleMessage(
       "Please enter password",
     ),
+    "enterPhone": MessageLookupByLibrary.simpleMessage(
+      "Please enter phone number",
+    ),
+    "enterSurname": MessageLookupByLibrary.simpleMessage(
+      "Please enter surname",
+    ),
     "enterValidEmail": MessageLookupByLibrary.simpleMessage(
       "Please enter valid email",
+    ),
+    "enterWorkerName": MessageLookupByLibrary.simpleMessage(
+      "enter worker name",
     ),
     "enter_task_description": MessageLookupByLibrary.simpleMessage(
       "Enter task description",
@@ -70,7 +82,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("forgot password?"),
     "in_progress": MessageLookupByLibrary.simpleMessage("In Progress"),
+    "jobTitle": MessageLookupByLibrary.simpleMessage("Job Title"),
+    "leaveEmptyToKeepCurrent": MessageLookupByLibrary.simpleMessage(
+      "Leave empty to keep current",
+    ),
     "location": MessageLookupByLibrary.simpleMessage("Location"),
+    "name": MessageLookupByLibrary.simpleMessage("Name"),
+    "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
     "noDataFound": MessageLookupByLibrary.simpleMessage("No data found"),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Not Accepted yet",
@@ -79,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "pending": MessageLookupByLibrary.simpleMessage("Pending"),
     "pendingTasks": MessageLookupByLibrary.simpleMessage("Pending Tasks"),
+    "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Please enter task title",
     ),
@@ -90,13 +109,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "resetPasswordLinkSent": MessageLookupByLibrary.simpleMessage(
       "A password reset link has been sent to your email address",
     ),
+    "save": MessageLookupByLibrary.simpleMessage("Save"),
     "searchWorkers": MessageLookupByLibrary.simpleMessage("Search workers..."),
     "search_tasks": MessageLookupByLibrary.simpleMessage("Search tasks..."),
+    "selectJob": MessageLookupByLibrary.simpleMessage("Select Job"),
     "select_date": MessageLookupByLibrary.simpleMessage("Select date"),
     "select_worker": MessageLookupByLibrary.simpleMessage("Select Worker"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "signIn": MessageLookupByLibrary.simpleMessage("Sign In"),
     "submit_task": MessageLookupByLibrary.simpleMessage("Submit Task"),
+    "surName": MessageLookupByLibrary.simpleMessage("Surname"),
     "task_description": MessageLookupByLibrary.simpleMessage(
       "Task Description",
     ),
@@ -105,6 +127,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalWorkers": MessageLookupByLibrary.simpleMessage("Total Workers"),
     "update_task": MessageLookupByLibrary.simpleMessage("Update Task"),
     "welcomeBack": MessageLookupByLibrary.simpleMessage("Welcome back"),
+    "workerAddedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Worker added successfully",
+    ),
+    "workerUpdatedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Worker updated successfully",
+    ),
     "workersManagement": MessageLookupByLibrary.simpleMessage(
       "Workers Management",
     ),

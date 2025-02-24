@@ -1,6 +1,7 @@
 import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
+import 'package:tasks_admin/modules/user/data/models/worker_edition_form.dart';
 import 'package:tasks_admin/modules/user/data/services/remote_user_services.dart';
 
 class UserRepository {
@@ -31,7 +32,7 @@ class UserRepository {
     return await _remoteUserServices.logout();
   }
 
-  Future<Result<void>> updateWorker(Worker worker) async {
-    return await _remoteUserServices.updateWorker(worker);
+  Future<Result<Worker>> updateWorker(WorkerEditionForm editionForm) async {
+    return await _remoteUserServices.updateWorker(editionForm);
   }
 }

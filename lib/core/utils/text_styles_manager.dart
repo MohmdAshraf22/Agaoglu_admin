@@ -21,4 +21,10 @@ class TextStylesManager {
       color: ColorManager.white,
       decoration: TextDecoration.underline,
       decorationColor: ColorManager.white);
+
+  static TextStyle label = TextStyle(
+    color: ColorManager.white,
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w500,
+  );
 }

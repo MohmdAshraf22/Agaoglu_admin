@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tasks_admin/core/error/handlers/auth_exception_handler.dart';
 import 'package:tasks_admin/core/error/handlers/firebase_exception_handler.dart';
@@ -17,6 +18,9 @@ class ExceptionManager {
   };
 
   static String getMessage(Exception exception) {
+    debugPrint("***************************error*************************");
+    debugPrint(exception.toString());
+    debugPrint("***************************error*************************");
     return _handlers[exception.runtimeType]?.handle(exception) ??
         _handlers[UnexpectedExceptionHandler]!.handle(exception);
   }
@@ -24,7 +28,7 @@ class ExceptionManager {
   static void showMessage(Exception exception) {
     Fluttertoast.showToast(
       msg: getMessage(exception),
-      backgroundColor: ColorManager.primary,
+      backgroundColor: ColorManager.red,
     );
   }
 }

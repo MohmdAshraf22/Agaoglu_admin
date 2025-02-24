@@ -57,5 +57,21 @@
   "totalWorkers": "Total Workers",
   "pendingTasks": "Pending Tasks",
   "completedTasks": "Completed Tasks",
-  "noDataFound": "No data found"
+  "noDataFound": "No data found",
+  "createWorker": "Create Worker",
+  "name": "Name",
+  "selectJob": "Select Job",
+  "jobTitle": "Job Title",
+  "enterName": "Please enter name",
+  "enterWorkerName": "enter worker name",
+  "enterPhone" : "Please enter phone number",
+  "phoneNumber": "Phone Number",
+  "workerAddedSuccessfully": "Worker added successfully",
+  "surName"   : "Surname",
+  "enterSurname": "Please enter surname",
+  "editWorker": "Edit Worker",
+  "save": "Save",
+  "workerUpdatedSuccessfully": "Worker updated successfully",
+  "leaveEmptyToKeepCurrent": "Leave empty to keep current",
+  "newPassword": "New Password"
 }

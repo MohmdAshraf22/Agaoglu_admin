@@ -32,6 +32,31 @@ export const createWorkerAuth = functions.runWith({
   }
 );
 
+// دالة تعديل كلمة المرور للمستخدم
+export const updateWorkerPassword = functions.https.onCall(
+  async (data, context) => {
+    try {
+//       if (!context.auth) {
+//         throw new functions.https.HttpsError(
+//           "unauthenticated",
+//           "You must be logged in"
+//         );
+//       }
+
+      // تحديث كلمة المرور للمستخدم
+      await admin.auth().updateUser(data.workerId, {
+        password: data.newPassword,
+      });
+
+      return {success: true};
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      console.log(message);
+      throw new functions.https.HttpsError("internal", message);
+    }
+  }
+);
+
 // دالة حذف مستخدم
 export const deleteWorkerAuth = functions.https.onCall(
   async (data, context) => {

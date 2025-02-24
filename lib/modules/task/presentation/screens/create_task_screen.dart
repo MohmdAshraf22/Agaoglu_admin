@@ -103,8 +103,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                           } else {
                             imagesUrl.add(state.downloadUrl);
                           }
-                        }
-                        else if(state is CreateTaskSuccess){
+                        } else if (state is CreateTaskSuccess) {
                           context.pop();
                         }
                       },
@@ -185,12 +184,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       maxLines: 3,
       labelText: S.of(context).task_description,
       hintText: S.of(context).enter_task_description,
-      // validator: (value) {
-      //   if (value == null || value.isEmpty) {
-      //     return S.of(context).please_enter_task_;
-      //   }
-      //   return null;
-      // },
     );
   }
 
