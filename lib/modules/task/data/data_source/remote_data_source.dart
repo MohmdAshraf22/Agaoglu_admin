@@ -35,7 +35,6 @@ class TaskDataSourceImpl implements TaskDataSource {
 
   @override
   Stream<List<TaskModel>> getTasks() {
-
     return _fireStore.collection(_collectionName).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => TaskModel.fromDocument(doc)).toList();
     }).handleError((error) {

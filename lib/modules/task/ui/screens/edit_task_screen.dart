@@ -8,10 +8,10 @@ import 'package:tasks_admin/core/utils/constance_manger.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
-import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/create_task_appbar.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/location_builder.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/media_selection_builder.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/create_task_appbar.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/location_builder.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/media_selection_builder.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 
 class EditTaskScreen extends StatefulWidget {
