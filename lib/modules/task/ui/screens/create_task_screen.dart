@@ -8,28 +8,27 @@ import 'package:tasks_admin/core/utils/constance_manger.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
-import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/create_task_appbar.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/location_builder.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/media_selection_builder.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/create_task_appbar.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/location_builder.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/media_selection_builder.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 
-class EditTaskScreen extends StatefulWidget {
-  final TaskModel task;
-
-  const EditTaskScreen({super.key, required this.task});
+class CreateTaskScreen extends StatefulWidget {
+  const CreateTaskScreen({super.key});
 
   @override
-  State<EditTaskScreen> createState() => _EditTaskScreenState();
+  State<CreateTaskScreen> createState() => _CreateTaskScreenState();
 }
 
-class _EditTaskScreenState extends State<EditTaskScreen> {
+class _CreateTaskScreenState extends State<CreateTaskScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late final TextEditingController _taskTitleController;
-  late final TextEditingController _taskDescriptionController;
-  late final TextEditingController _siteController;
-  late final TextEditingController _blockController;
-  late final TextEditingController _flatController;
+  final TextEditingController _taskTitleController = TextEditingController();
+  final TextEditingController _taskDescriptionController =
+      TextEditingController();
+  final TextEditingController _siteController = TextEditingController();
+  final TextEditingController _blockController = TextEditingController();
+  final TextEditingController _flatController = TextEditingController();
   List<String> imagesUrl = [];
   String? audioUrl;
   late final TaskCubit taskCubit;
@@ -41,39 +40,23 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       id: "id",
       name: "name",
       email: "email",
-      job: "categoryId",
+      job: "job",
       surname: "surname",
       phoneNumber: "phoneNumber",
     )
   ];
 
   @override
-  void initState() {
-    super.initState();
-    taskCubit = context.read<TaskCubit>();
-    _taskTitleController = TextEditingController(text: widget.task.title);
-    _taskDescriptionController =
-        TextEditingController(text: widget.task.description);
-    _siteController = TextEditingController(text: widget.task.site);
-    _blockController = TextEditingController(text: widget.task.block);
-    _flatController = TextEditingController(text: widget.task.flat);
-    print(widget.task.imagesUrl);
-    imagesUrl = List.from(widget.task.imagesUrl ?? []);
-    audioUrl = widget.task.voiceUrl;
-    _dueDate = widget.task.createdAt;
-    _selectedWorker = _workers.firstWhere(
-        (element) => element.name == widget.task.workerName,
-        orElse: () => _workers.first);
-  }
-
-  @override
   void dispose() {
     _taskTitleController.dispose();
     _taskDescriptionController.dispose();
-    _siteController.dispose();
-    _blockController.dispose();
-    _flatController.dispose();
     super.dispose();
+  }
+
+  @override
+  initState() {
+    taskCubit = context.read<TaskCubit>();
+    super.initState();
   }
 
   Future<DateTime?> _selectDate(BuildContext context) async {
@@ -110,7 +93,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       siteController: _siteController,
                     ),
                     MediaSelectionBuilder(
-                        imagesUrl: imagesUrl, audioUrl: audioUrl),
+                      imagesUrl: [],
+                    ),
                     BlocConsumer<TaskCubit, TaskState>(
                       listener: (context, state) {
                         if (state is UploadFileSuccess) {
@@ -119,36 +103,33 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           } else {
                             imagesUrl.add(state.downloadUrl);
                           }
-                        } else if (state is UpdateTaskSuccess) {
+                        } else if (state is CreateTaskSuccess) {
                           context.pop();
                         }
                       },
                       builder: (context, state) {
                         return Skeletonizer(
-                          enabled: state is UpdateTaskLoading,
+                          enabled: state is CreateTaskLoading,
                           child: DefaultButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                taskCubit.updateTask(
-                                  TaskModel(
-                                    title: _taskTitleController.text,
-                                    description:
-                                        _taskDescriptionController.text,
-                                    createdAt: _dueDate ?? DateTime.now(),
-                                    workerName: _selectedWorker?.name,
-                                    workerPhoto: _selectedWorker?.imageUrl,
-                                    imagesUrl: imagesUrl,
-                                    voiceUrl: audioUrl,
-                                    block: _blockController.text,
-                                    flat: _flatController.text,
-                                    site: _siteController.text,
-                                    id: widget.task.id,
-                                    status: TaskStatus.pending,
-                                  ),
-                                );
+                                taskCubit.createTask(TaskModel(
+                                  id: "id",
+                                  title: _taskTitleController.text,
+                                  description: _taskDescriptionController.text,
+                                  status: TaskStatus.pending,
+                                  createdAt: _dueDate ?? DateTime.now(),
+                                  workerName: _selectedWorker?.name,
+                                  workerPhoto: _selectedWorker?.imageUrl,
+                                  imagesUrl: imagesUrl,
+                                  voiceUrl: audioUrl,
+                                  block: _blockController.text,
+                                  flat: _flatController.text,
+                                  site: _siteController.text,
+                                ));
                               }
                             },
-                            text: S.of(context).update_task,
+                            text: S.of(context).submit_task,
                             textColor: ColorManager.white,
                             icon: Padding(
                               padding: EdgeInsetsDirectional.only(end: 1.w),
@@ -160,13 +141,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       },
                     ),
                     DefaultButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      text: S.of(context).cancel,
-                      textColor: ColorManager.grey,
-                      color: ColorManager.greyLight,
-                    ),
+                        onPressed: () {
+                          context.pop();
+                        },
+                        text: S.of(context).cancel,
+                        textColor: ColorManager.grey,
+                        color: ColorManager.greyLight),
                   ]
                       .expand(
                         (element) => [

@@ -8,7 +8,7 @@ import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/main_appbar.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/main_appbar.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/ui/dummy_data/dummy_workers.dart';

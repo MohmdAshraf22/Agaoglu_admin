@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
+import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/task_management.dart';
-import 'package:tasks_admin/modules/user/ui/screens/manage_workers_screen.dart'; // Add sizer for responsiveness
+import 'package:tasks_admin/modules/task/ui/screens/task_management.dart';
+import 'package:tasks_admin/modules/task/ui/screens/task_management_view.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -17,6 +20,14 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
+  late final DashboardCubit cubit = context.read<DashboardCubit>();
+
+  @override
+  void initState() {
+    cubit.getDashboardDetails();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,24 +39,35 @@ class _AdminDashboardState extends State<AdminDashboard> {
             vertical: 2.h,
           ), // Responsive padding
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               _buildHeader(),
-              SizedBox(height: 4.h), // Responsive spacing
-              _buildStats(),
               SizedBox(height: 4.h),
-              Text(
-                S.of(context).recentTasks,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.sp, // Responsive font size
-                  fontWeight: FontWeight.bold,
-                ),
+              BlocBuilder<DashboardCubit, DashboardState>(
+                builder: (context, state) {
+                  return Skeletonizer(
+                    enabled: state is DashboardDetailsLoading,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildStats(),
+                        SizedBox(height: 4.h),
+                        Text(
+                          S.of(context).recentTasks,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp, // Responsive font size
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        _buildTaskList(),
+                        SizedBox(height: 4.h),
+                        _buildButtons(),
+                      ],
+                    ),
+                  );
+                },
               ),
-              SizedBox(height: 2.h),
-              _buildTaskList(),
-              SizedBox(height: 4.h),
-              _buildButtons(),
             ],
           ),
         ),
@@ -154,7 +176,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildTaskCard(
-      String title, String assignedTo, TaskStatus status, String date) {
+    String title,
+    String assignedTo,
+    TaskStatus status,
+    String date,
+  ) {
     return SemiTransparentContainer(
       width: 60.w,
       height: 15.h,
@@ -174,8 +200,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ),
             SizedBox(height: 1.h),
             Text('Assigned to: $assignedTo',
-                style: TextStyle(
-                    color: ColorManager.greyLight, fontSize: 13.sp)),
+                style:
+                    TextStyle(color: ColorManager.greyLight, fontSize: 13.sp)),
             SizedBox(height: 2.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,7 +235,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           child: DefaultButton(
               text: "View Workers ",
               onPressed: () {
-                context.push(ManageWorkersScreen());
+                context.push(TaskManagementView());
               }),
         ),
         SizedBox(width: 4.w),

@@ -6,8 +6,8 @@ import 'package:sizer/sizer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
-import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/voice_builder.dart';
 
 class MediaSelectionBuilder extends StatelessWidget {
   final List<String> imagesUrl;

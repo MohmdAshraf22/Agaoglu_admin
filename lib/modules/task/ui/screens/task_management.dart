@@ -8,15 +8,15 @@ import 'package:tasks_admin/core/utils/constance_manger.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
-import 'package:tasks_admin/modules/task/presentation/cubit/task_cubit.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/create_task_screen.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/filter_button.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/voice_builder.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/dummy_data/dummy_data.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/edit_task_screen.dart';
-import 'package:tasks_admin/modules/task/presentation/screens/custom_widgets/main_appbar.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/ui/screens/create_task_screen.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/filter_button.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/voice_builder.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/image_builder.dart';
+import 'package:tasks_admin/modules/task/ui/dummy_data/dummy_data.dart';
+import 'package:tasks_admin/modules/task/ui/screens/edit_task_screen.dart';
+import 'package:tasks_admin/modules/task/ui/custom_widgets/main_appbar.dart';
 
-import 'custom_widgets/image_builder.dart';
 
 class TaskManagementScreen extends StatefulWidget {
   const TaskManagementScreen({super.key});
