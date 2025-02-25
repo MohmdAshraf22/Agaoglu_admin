@@ -120,7 +120,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
 
       DocumentReference workerRef =
           _firestore.collection("workers").doc(worker.id);
-      batch.update(workerRef, worker.toJson());
+      batch.set(workerRef, worker.toJson());
 
       DocumentReference dashboardRef =
           _firestore.collection(_dashboardDetails).doc(_dashboardDetails);

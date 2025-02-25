@@ -126,7 +126,7 @@ class LoginScreen extends StatelessWidget {
                                   child: BlocConsumer<UserCubit, UserState>(
                                     listener: (context, state) {
                                       if (state is LoginSuccessState) {
-                                        context.push(AdminDashboard());
+                                        context.push(AdminDashboardScreen());
                                       }
                                       if (state
                                           is ChangePasswordAppearanceState) {

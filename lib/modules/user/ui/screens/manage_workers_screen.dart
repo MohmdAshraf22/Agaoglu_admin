@@ -13,6 +13,7 @@ import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/ui/dummy_data/dummy_workers.dart';
 import 'package:tasks_admin/modules/user/ui/screens/create_worker_screen.dart';
+import 'package:tasks_admin/modules/user/ui/screens/edit_worker_screen.dart';
 
 class ManageWorkersScreen extends StatelessWidget {
   const ManageWorkersScreen({super.key});
@@ -23,105 +24,100 @@ class ManageWorkersScreen extends StatelessWidget {
     List<Worker> workers = [];
 
     UserCubit cubit = UserCubit.get()..getWorkers();
-    return BlocProvider(
-      create: (context) => cubit,
-      child: Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: ColorManager.primary,
-        //   elevation: 0,
-        //   titleSpacing: 1,
-        //   title: Padding(
-        //     padding: EdgeInsetsDirectional.only(start: 5.w),
-        //     child: Text(
-        //       S.of(context).workersManagement,
-        //       style: TextStyle(
-        //         color: ColorManager.white,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),
-        //   actions: [
-        //     Container(
-        //       width: 10.w,
-        //       margin: EdgeInsetsDirectional.only(end: 5.w),
-        //       decoration: BoxDecoration(
-        //         shape: BoxShape.circle,
-        //         color: ColorManager.orange,
-        //       ),
-        //       child: IconButton(
-        //         icon: Icon(Icons.add),
-        //         color: ColorManager.white,
-        //         onPressed: () {
-        //           context.push(CreateWorkerScreen());
-        //         },
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        backgroundColor: ColorManager.primary,
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              MainAppBar(
-                onSearched: (value) => cubit.searchWorkers(value),
-                hintText: S.of(context).searchWorkers,
-                onAdd: () {
-                  context.push(CreateWorkerScreen());
+    return Scaffold(
+      // appBar: AppBar(
+      //   backgroundColor: ColorManager.primary,
+      //   elevation: 0,
+      //   titleSpacing: 1,
+      //   title: Padding(
+      //     padding: EdgeInsetsDirectional.only(start: 5.w),
+      //     child: Text(
+      //       S.of(context).workersManagement,
+      //       style: TextStyle(
+      //         color: ColorManager.white,
+      //         fontWeight: FontWeight.bold,
+      //       ),
+      //     ),
+      //   ),
+      //   actions: [
+      //     Container(
+      //       width: 10.w,
+      //       margin: EdgeInsetsDirectional.only(end: 5.w),
+      //       decoration: BoxDecoration(
+      //         shape: BoxShape.circle,
+      //         color: ColorManager.orange,
+      //       ),
+      //       child: IconButton(
+      //         icon: Icon(Icons.add),
+      //         color: ColorManager.white,
+      //         onPressed: () {
+      //           context.push(CreateWorkerScreen());
+      //         },
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      backgroundColor: ColorManager.primary,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MainAppBar(
+              onSearched: (value) => cubit.searchWorkers(value),
+              hintText: S.of(context).searchWorkers,
+              onAdd: () {
+                context.push(CreateWorkerScreen());
+              },
+              title: S.of(context).workersManagement,
+            ),
+            Expanded(
+              child: BlocConsumer<UserCubit, UserState>(
+                listener: (context, state) {
+                  if (state is GetWorkersSuccessState) {
+                    debugPrint('workers: ${state.workers}');
+                    filteredWorkers = state.workers;
+                    workers = state.workers;
+                  } else if (state is UserErrorState) {
+                    ExceptionManager.showMessage(state.exception);
+                  } else if (state is SearchWorkersState) {
+                    filteredWorkers = state.workers;
+                  } else if (state is DeleteWorkerSuccessState) {
+                    filteredWorkers
+                        .removeWhere((element) => element.id == state.workerId);
+                    workers
+                        .removeWhere((element) => element.id == state.workerId);
+                  }
                 },
-                title: S.of(context).workersManagement,
-              ),
-              Expanded(
-                child: BlocConsumer<UserCubit, UserState>(
-                  listener: (context, state) {
-                    if (state is GetWorkersSuccessState) {
-                      debugPrint('workers: ${state.workers}');
-                      filteredWorkers = state.workers;
-                      workers = state.workers;
-                    } else if (state is UserErrorState) {
-                      ExceptionManager.showMessage(state.exception);
-                    } else if (state is SearchWorkersState) {
-                      filteredWorkers = state.workers;
-                    } else if (state is DeleteWorkerSuccessState) {
-                      filteredWorkers.removeWhere(
-                          (element) => element.id == state.workerId);
-                      workers.removeWhere(
-                          (element) => element.id == state.workerId);
-                    }
-                  },
-                  builder: (context, state) {
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: filteredWorkers.isEmpty &&
-                                  state is! GetWorkersLoadingState
-                              ? NoDataFoundWidget()
-                              : Skeletonizer(
-                                  enabled: state is GetWorkersLoadingState,
-                                  child: ListView.builder(
-                                    physics: BouncingScrollPhysics(),
-                                    itemBuilder: (context, index) => state
-                                            is GetWorkersLoadingState
-                                        ? _buildWorkerCard(
-                                            dummyWorkers[index], context, cubit)
-                                        : _buildWorkerCard(
-                                            filteredWorkers[index],
-                                            context,
-                                            cubit),
-                                    itemCount: state is GetWorkersLoadingState
-                                        ? dummyWorkers.length
-                                        : filteredWorkers.length,
-                                  ),
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: filteredWorkers.isEmpty &&
+                                state is! GetWorkersLoadingState
+                            ? NoDataFoundWidget()
+                            : Skeletonizer(
+                                enabled: state is GetWorkersLoadingState,
+                                child: ListView.builder(
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) => state
+                                          is GetWorkersLoadingState
+                                      ? _buildWorkerCard(
+                                          dummyWorkers[index], context, cubit)
+                                      : _buildWorkerCard(filteredWorkers[index],
+                                          context, cubit),
+                                  itemCount: state is GetWorkersLoadingState
+                                      ? dummyWorkers.length
+                                      : filteredWorkers.length,
                                 ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                              ),
+                      ),
+                    ],
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -170,7 +166,7 @@ class ManageWorkersScreen extends StatelessWidget {
                             spacing: 3,
                             children: [
                               Text(
-                                worker.name,
+                                worker.name + ' ' + worker.surname,
                                 style: TextStylesManager.cardTitle,
                               ),
                               FittedBox(
@@ -207,7 +203,10 @@ class ManageWorkersScreen extends StatelessWidget {
                               })),
                       Expanded(
                           child: DefaultButton(
-                              text: S.of(context).edit, onPressed: () {})),
+                              text: S.of(context).edit,
+                              onPressed: () {
+                                context.push(EditWorkerScreen(worker: worker));
+                              })),
                     ],
                   ),
                 ),
