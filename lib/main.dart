@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sizer/sizer.dart';
-import 'package:tasks_admin/core/local/shared_prefrences.dart';
-import 'package:tasks_admin/core/services/service_locator.dart' as di;
+import 'package:tasks_admin/core/utils/app_initializer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/localization_manager.dart';
-import 'package:tasks_admin/firebase_options.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
-import 'package:tasks_admin/modules/main/ui/screens/dashboard_screen.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 
 class FirebaseConstants {
@@ -19,13 +16,7 @@ class FirebaseConstants {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await CacheHelper.init();
-  await LocalizationManager.init();
-  await di.init(); // Initialize the service locator
-  FirebaseConstants.firebaseApp = await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+  await AppInitializer.init();
   runApp(const MyApp());
 }
 
@@ -65,7 +56,7 @@ class MyApp extends StatelessWidget {
               appBarTheme: AppBarTheme(surfaceTintColor: Colors.white),
               useMaterial3: true,
             ),
-            home: const AdminDashboard(),
+            home: AppInitializer.getFirstScreen(),
           )),
     );
   }
@@ -81,5 +72,4 @@ class MyApp extends StatelessWidget {
         .doc(v.user!.uid)
         .set({'id': v.user!.uid, 'name': "admin", "email": "admin@amdin.com"});
   });
-
  */

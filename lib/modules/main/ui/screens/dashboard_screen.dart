@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:tasks_admin/core/error/exception_manager.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
@@ -13,18 +12,17 @@ import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
 import 'package:tasks_admin/modules/main/data/models/dashboard_details.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 import 'package:tasks_admin/modules/task/ui/dummy_data/dummy_data.dart';
-import 'package:tasks_admin/modules/task/ui/screens/task_management_screen.dart';
 import 'package:tasks_admin/modules/task/ui/screens/task_management_view.dart';
 import 'package:tasks_admin/modules/user/ui/screens/manage_workers_screen.dart';
 
-class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({super.key});
+class AdminDashboardScreen extends StatefulWidget {
+  const AdminDashboardScreen({super.key});
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   late final DashboardCubit cubit = context.read<DashboardCubit>();
   late DashboardDetails dashboardDetails;
 
