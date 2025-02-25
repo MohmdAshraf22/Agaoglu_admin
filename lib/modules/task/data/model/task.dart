@@ -16,6 +16,7 @@ class TaskModel extends Equatable {
   final String title;
   final String? workerName;
   final String? workerPhoto;
+  final String? workerId;
   final String? voiceUrl;
   final List<String> imagesUrl;
   final String? site;
@@ -33,6 +34,7 @@ class TaskModel extends Equatable {
     required this.imagesUrl,
     this.workerName,
     this.block,
+    this.workerId,
     this.flat,
     this.site,
     this.workerPhoto,
@@ -50,6 +52,7 @@ class TaskModel extends Equatable {
       'voiceUrl': voiceUrl,
       'block': block,
       'flat': flat,
+      'workerId': workerId,
       'site': site,
       'status': status.name,
       'createdAt': Timestamp.fromDate(createdAt),
@@ -63,6 +66,7 @@ class TaskModel extends Equatable {
       workerName: data['workerName'],
       title: data['title'],
       workerPhoto: data['workerPhoto'],
+      workerId: data['workerId'],
       voiceUrl: data['voiceUrl'],
       imagesUrl: List<String>.from(data['imagesUrl']),
       site: data['site'],
@@ -87,6 +91,7 @@ class TaskModel extends Equatable {
         imagesUrl,
         site,
         block,
+        workerId,
         flat
       ];
 }

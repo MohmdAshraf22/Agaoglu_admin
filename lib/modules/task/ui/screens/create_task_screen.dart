@@ -126,6 +126,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                   block: _blockController.text,
                                   flat: _flatController.text,
                                   site: _siteController.text,
+                                  workerId: _selectedWorker?.id,
                                 ));
                               }
                             },
