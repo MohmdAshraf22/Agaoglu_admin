@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
-import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
 
 class FilterButton extends StatefulWidget {

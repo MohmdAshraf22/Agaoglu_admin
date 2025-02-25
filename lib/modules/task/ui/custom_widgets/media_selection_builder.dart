@@ -18,7 +18,7 @@ class MediaSelectionBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _MediaSelectionContent(imagesUrl: imagesUrl);
+    return _MediaSelectionContent(imagesUrl: imagesUrl, audioUrl: audioUrl);
   }
 }
 
@@ -82,17 +82,17 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
             }
             return isPressedRecording
                 ? AnimatedSwitcher(
-              duration: Duration(milliseconds: 500),
-              switchInCurve: Curves.bounceInOut,
-              child: VoiceBuilder(
-                audioUrl:
-                // "",
-                'https://firebasestorage.googleapis.com/v0/b/masheed-d942d.appspot.com/o/audios%2FZVSbJCtVxaTg8xKr1202XUwFNrH2%2Faudio6565445721400773739.m4a?alt=media&token=4bce69e7-3a88-4282-a155-dd5b09fd9c5c',
-                onRecordComplete: (value) {
-                  cubit.completeRecording(value!.path);
-                },
-              ),
-            )
+                    duration: Duration(milliseconds: 500),
+                    switchInCurve: Curves.bounceInOut,
+                    child: VoiceBuilder(
+                      audioUrl: widget.audioUrl,
+                      // "",
+                      // 'https://firebasestorage.googleapis.com/v0/b/masheed-d942d.appspot.com/o/audios%2FZVSbJCtVxaTg8xKr1202XUwFNrH2%2Faudio6565445721400773739.m4a?alt=media&token=4bce69e7-3a88-4282-a155-dd5b09fd9c5c',
+                      onRecordComplete: (value) {
+                        cubit.completeRecording(value!.path);
+                      },
+                    ),
+                  )
                 : const SizedBox.shrink();
           },
         ),
@@ -168,15 +168,15 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
                 padding: EdgeInsets.only(right: 2.w),
                 child: imagesUrl.isEmpty
                     ? Image.file(
-                  width: 30.w,
-                  imagesFile[index],
-                  fit: BoxFit.cover,
-                )
+                        width: 30.w,
+                        imagesFile[index],
+                        fit: BoxFit.cover,
+                      )
                     : Image.network(
-                  width: 30.w,
-                  imagesUrl[index],
-                  fit: BoxFit.cover,
-                ),
+                        width: 30.w,
+                        imagesUrl[index],
+                        fit: BoxFit.cover,
+                      ),
               ),
               Positioned(
                 top: 0,
