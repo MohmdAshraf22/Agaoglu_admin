@@ -14,7 +14,6 @@ class DashboardCubit extends Cubit<DashboardState> {
     emit(DashboardDetailsLoading());
     final result = await _dashboardRepo.getDashboardDetails();
     if (result is Success<DashboardDetails>) {
-      // print(result.data);
       emit(DashboardDetailsSuccess(dashboardDetails: result.data));
     } else if (result is Error<DashboardDetails>) {
       emit(DashboardDetailsError(errorMessage: result.exception));

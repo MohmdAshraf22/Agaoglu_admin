@@ -144,6 +144,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                     site: _siteController.text,
                                     id: widget.task.id,
                                     status: TaskStatus.pending,
+                                    workerId: _selectedWorker?.id,
                                   ),
                                 );
                               }
