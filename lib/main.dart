@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +18,14 @@ class FirebaseConstants {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppInitializer.init();
+  await FirebaseFirestore.instance
+      .collection("admins")
+      .doc("DVzkhPKnKsc9Gk77ibDYj2ofO0T2")
+      .set({
+    'id': "DVzkhPKnKsc9Gk77ibDYj2ofO0T2",
+    'name': "admin",
+    "email": "asalappy@gmail.com"
+  });
   runApp(const MyApp());
 }
 
@@ -33,7 +42,7 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            locale: LocalizationManager.getCurrentLocale(),
+            locale: Locale("en"),
             localizationsDelegates: const [
               S.delegate,
               GlobalMaterialLocalizations.delegate,

@@ -100,6 +100,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
       }
       debugPrint("add worker cloud functions started...");
       //
+      // Todo: use Cloud Functions after adding billing account
       // final result = await _functions.httpsCallable('createWorkerAuth').call({
       //   'email': workerCreationForm.email,
       //   'password': workerCreationForm.password,
@@ -137,7 +138,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Result<void>> deleteWorker(String workerId) async {
     try {
-      // Delete Auth user using Cloud Function
+      // Todo: use Cloud Functions after adding billing account
       // await _functions.httpsCallable('deleteWorkerAuth').call({
       //   'workerId': workerId,
       // });
@@ -173,7 +174,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
         await _editPassword(editedWorker.id, editedWorker.password);
       }
       debugPrint("add worker cloud functions started...");
-      //
+      //  Todo: use Cloud Functions after adding billing account
       // final result = await _functions.httpsCallable('createWorkerAuth').call({
       //   'email': editedWorker.email,
       //   'password': editedWorker.password,
@@ -231,6 +232,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
   }
 
   Future<void> _editPassword(String id, String? password) async {
+    //    Todo: use Cloud Functions after adding billing account
     // final result = await _functions.httpsCallable('updateWorkerPassword').call({
     //   'email': editedWorker.email,
     //   'password': editedWorker.password,
