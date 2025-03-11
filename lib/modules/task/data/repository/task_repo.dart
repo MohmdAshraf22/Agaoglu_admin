@@ -14,8 +14,8 @@ class TaskRepository {
     return _taskDataSource.getTasks();
   }
 
-  Future<Result<bool>> deleteTask(String taskId) async {
-    return await _taskDataSource.deleteTask(taskId);
+  Future<Result<bool>> deleteTask(TaskModel task) async {
+    return await _taskDataSource.deleteTask(task);
   }
 
   Future<Result<bool>> updateTask(TaskModel task) async {
@@ -26,8 +26,8 @@ class TaskRepository {
     return await _taskDataSource.createTask(task);
   }
 
-  Future<Result<bool>> deleteFile(String url) async {
-    return await _taskDataSource.deleteFile(url);
+  Future<Result<bool>> deleteFile(String url,String taskId) async {
+    return await _taskDataSource.deleteFile(url,taskId);
   }
 
   Future<Result<String>> uploadFile({

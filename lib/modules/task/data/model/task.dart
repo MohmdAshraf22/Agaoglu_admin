@@ -41,6 +41,38 @@ class TaskModel extends Equatable {
     required this.createdAt,
   });
 
+  TaskModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? workerName,
+    String? workerPhoto,
+    String? workerId,
+    String? voiceUrl,
+    List<String>? imagesUrl,
+    String? site,
+    String? block,
+    String? flat,
+    TaskStatus? status,
+    DateTime? createdAt,
+  }) {
+    return TaskModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      workerName: workerName ?? this.workerName,
+      workerPhoto: workerPhoto ?? this.workerPhoto,
+      workerId: workerId ?? this.workerId,
+      voiceUrl: voiceUrl ?? this.voiceUrl,
+      imagesUrl: imagesUrl ?? this.imagesUrl,
+      site: site ?? this.site,
+      block: block ?? this.block,
+      flat: flat ?? this.flat,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   Map<String, dynamic> toMap(String id) {
     return {
       "id": id,
@@ -80,18 +112,18 @@ class TaskModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        description,
-        workerName,
-        workerPhoto,
-        status,
-        createdAt,
-        title,
-        voiceUrl,
-        imagesUrl,
-        site,
-        block,
-        workerId,
-        flat
-      ];
+    id,
+    description,
+    workerName,
+    workerPhoto,
+    status,
+    createdAt,
+    title,
+    voiceUrl,
+    imagesUrl,
+    site,
+    block,
+    workerId,
+    flat,
+  ];
 }

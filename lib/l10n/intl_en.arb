@@ -73,5 +73,9 @@
   "save": "Save",
   "workerUpdatedSuccessfully": "Worker updated successfully",
   "leaveEmptyToKeepCurrent": "Leave empty to keep current",
-  "newPassword": "New Password"
+  "newPassword": "New Password",
+  "viewWorkers": "View Workers",
+  "edit_task": "Edit Task",
+  "assignedTo": "Assigned to",
+  "viewTasks": "View Tasks"
 }

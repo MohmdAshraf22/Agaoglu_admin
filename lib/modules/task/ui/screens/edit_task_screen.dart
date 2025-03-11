@@ -12,6 +12,7 @@ import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/create_task_appbar.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/location_builder.dart';
 import 'package:tasks_admin/modules/task/ui/custom_widgets/media_selection_builder.dart';
+import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 
 class EditTaskScreen extends StatefulWidget {
@@ -35,35 +36,22 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   late final TaskCubit taskCubit;
   Worker? _selectedWorker;
   DateTime? _dueDate;
-  final List<Worker> _workers = [
-    Worker(
-      imageUrl: null,
-      id: "id",
-      name: "name",
-      email: "email",
-      job: "categoryId",
-      surname: "surname",
-      phoneNumber: "phoneNumber",
-    )
-  ];
+  List<Worker> _workers = [];
 
   @override
   void initState() {
     super.initState();
     taskCubit = context.read<TaskCubit>();
+    context.read<UserCubit>().getWorkers();
     _taskTitleController = TextEditingController(text: widget.task.title);
     _taskDescriptionController =
         TextEditingController(text: widget.task.description);
     _siteController = TextEditingController(text: widget.task.site);
     _blockController = TextEditingController(text: widget.task.block);
     _flatController = TextEditingController(text: widget.task.flat);
-    // print(widget.task.imagesUrl);
-    imagesUrl = List.from(widget.task.imagesUrl);
+    //     imagesUrl = List.from(widget.task.imagesUrl);
     audioUrl = widget.task.voiceUrl;
     _dueDate = widget.task.createdAt;
-    _selectedWorker = _workers.firstWhere(
-        (element) => element.name == widget.task.workerName,
-        orElse: () => _workers.first);
   }
 
   @override
@@ -73,6 +61,11 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _siteController.dispose();
     _blockController.dispose();
     _flatController.dispose();
+    imagesUrl.clear();
+    audioUrl = null;
+    _dueDate = null;
+    _selectedWorker = null;
+    _workers.clear();
     super.dispose();
   }
 
@@ -92,7 +85,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       backgroundColor: ColorManager.white,
       body: Column(
         children: [
-          const CreateTaskAppbar(),
+          TaskAppbar(
+            title: S.of(context).edit_task,
+          ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w),
@@ -110,16 +105,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       siteController: _siteController,
                     ),
                     MediaSelectionBuilder(
-                        imagesUrl: imagesUrl, audioUrl: audioUrl),
+                        taskId: widget.task.id,
+                        imagesUrl: imagesUrl,
+                        audioUrl: audioUrl),
                     BlocConsumer<TaskCubit, TaskState>(
                       listener: (context, state) {
-                        if (state is UploadFileSuccess) {
-                          if (state.storagePath == "audios") {
-                            audioUrl = state.downloadUrl;
-                          } else {
-                            imagesUrl.add(state.downloadUrl);
-                          }
-                        } else if (state is UpdateTaskSuccess) {
+                          if (state is UpdateTaskSuccess) {
                           context.pop();
                         }
                       },
@@ -209,35 +200,45 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   }
 
   Widget _buildWorkerDropdown() {
-    return BlocBuilder<TaskCubit, TaskState>(
+    return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
-        if (state is SelectWorkerState) {
-          _selectedWorker = state.workerId;
+        if (state is GetWorkersSuccessState) {
+          _workers = state.workers;
+          _selectedWorker = _workers.firstWhere(
+              (element) => element.name == widget.task.workerName,
+              orElse: () => _workers.first);
         }
-        return DropdownButtonFormField<Worker>(
-          value: _selectedWorker,
-          decoration: InputDecoration(
-            labelText: S.of(context).select_worker,
-            hintText: S.of(context).choose_a_worker,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          items: _workers.map<DropdownMenuItem<Worker>>((Worker value) {
-            return DropdownMenuItem<Worker>(
-              value: value,
-              child: Text(value.name),
-            );
-          }).toList(),
-          onChanged: (Worker? newValue) {
-            if (newValue == null) return;
-            taskCubit.selectWorker(newValue);
-          },
-          validator: (value) {
-            if (value == null) {
-              return S.of(context).please_select_a_worker;
+        return BlocBuilder<TaskCubit, TaskState>(
+          builder: (context, state) {
+            if (state is SelectWorkerState) {
+              _selectedWorker = state.workerId;
             }
-            return null;
+            return DropdownButtonFormField<Worker>(
+              value: _selectedWorker,
+              decoration: InputDecoration(
+                labelText: S.of(context).select_worker,
+                hintText: S.of(context).choose_a_worker,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              items: _workers.map<DropdownMenuItem<Worker>>((Worker value) {
+                return DropdownMenuItem<Worker>(
+                  value: value,
+                  child: Text(value.name),
+                );
+              }).toList(),
+              onChanged: (Worker? newValue) {
+                if (newValue == null) return;
+                taskCubit.selectWorker(newValue);
+              },
+              validator: (value) {
+                if (value == null) {
+                  return S.of(context).please_select_a_worker;
+                }
+                return null;
+              },
+            );
           },
         );
       },

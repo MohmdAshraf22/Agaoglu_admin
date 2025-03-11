@@ -6,9 +6,9 @@ class DashboardDetails extends Equatable {
   final int totalWorkers;
   final int pendingTasks;
   final int completedTasks;
-  List<TaskModel> tasks;
+  final List<TaskModel> tasks;
 
-  DashboardDetails(
+  const DashboardDetails(
       {required this.totalWorkers,
       required this.tasks,
       required this.pendingTasks,
@@ -21,6 +21,20 @@ class DashboardDetails extends Equatable {
       pendingTasks: data['pendingTasks'],
       completedTasks: data['completedTasks'],
       tasks: [],
+    );
+  }
+
+  DashboardDetails copyWith({
+    int? totalWorkers,
+    int? pendingTasks,
+    int? completedTasks,
+    List<TaskModel>? tasks,
+  }) {
+    return DashboardDetails(
+      totalWorkers: totalWorkers ?? this.totalWorkers,
+      pendingTasks: pendingTasks ?? this.pendingTasks,
+      completedTasks: completedTasks ?? this.completedTasks,
+      tasks: tasks ?? this.tasks,
     );
   }
 

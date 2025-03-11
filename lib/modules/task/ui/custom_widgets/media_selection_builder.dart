@@ -12,21 +12,31 @@ import 'package:tasks_admin/modules/task/ui/custom_widgets/voice_builder.dart';
 class MediaSelectionBuilder extends StatelessWidget {
   final List<String> imagesUrl;
   final String? audioUrl;
+  final String taskId;
 
   const MediaSelectionBuilder(
-      {super.key, required this.imagesUrl, this.audioUrl});
+      {super.key,
+      required this.imagesUrl,
+      this.audioUrl,
+      required this.taskId});
 
   @override
   Widget build(BuildContext context) {
-    return _MediaSelectionContent(imagesUrl: imagesUrl, audioUrl: audioUrl);
+    return _MediaSelectionContent(
+      imagesUrl: imagesUrl,
+      audioUrl: audioUrl,
+      taskId: taskId,
+    );
   }
 }
 
 class _MediaSelectionContent extends StatefulWidget {
   final List<String> imagesUrl;
-  final String? audioUrl;
+  String? audioUrl;
+  final String taskId;
 
-  const _MediaSelectionContent({required this.imagesUrl, this.audioUrl});
+  _MediaSelectionContent(
+      {required this.imagesUrl, this.audioUrl, required this.taskId});
 
   @override
   State<_MediaSelectionContent> createState() => _MediaSelectionContentState();
@@ -86,8 +96,7 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
                     switchInCurve: Curves.bounceInOut,
                     child: VoiceBuilder(
                       audioUrl: widget.audioUrl,
-                      // "",
-                      // 'https://firebasestorage.googleapis.com/v0/b/masheed-d942d.appspot.com/o/audios%2FZVSbJCtVxaTg8xKr1202XUwFNrH2%2Faudio6565445721400773739.m4a?alt=media&token=4bce69e7-3a88-4282-a155-dd5b09fd9c5c',
+                      taskId: widget.taskId,
                       onRecordComplete: (value) {
                         cubit.completeRecording(value!.path);
                       },
@@ -96,27 +105,25 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
                 : const SizedBox.shrink();
           },
         ),
-        SizedBox(height: 2.h),
         BlocBuilder<TaskCubit, TaskState>(
           builder: (context, state) {
             if (state is MediaImageSelected) {
               selectedImages = state.selectedImages;
             }
             return selectedImages.isNotEmpty
-                ? _buildSelectedImages(selectedImages, [])
+                ? _buildSelectedImagesFile(selectedImages)
                 : const SizedBox.shrink();
           },
         ),
-        SizedBox(height: 2.h),
         if (imagesUrl.isNotEmpty)
           BlocBuilder<TaskCubit, TaskState>(
             builder: (context, state) {
               if (state is DeleteFileSuccess) {
                 if (imagesUrl.contains(state.url)) {
                   imagesUrl.remove(state.url);
-                }
+                                  }
               }
-              return _buildSelectedImages([], imagesUrl);
+              return _buildSelectedImagesUrl(imagesUrl, widget.taskId);
             },
           ),
       ],
@@ -151,41 +158,78 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
     );
   }
 
-  Widget _buildSelectedImages(List<File> imagesFile, List<String> imagesUrl) {
-    print("%%%%%%%%%%%%%%%%%%%");
-    print(imagesUrl);
-    print(imagesFile);
-    print("%%%%%%%%%%%%%%%%%%%");
+  Widget _buildSelectedImagesUrl(List<String> imagesUrl, String taskId) {
+    return Column(
+      children: [
+        SizedBox(height: 1.h),
+        SizedBox(
+          height: 10.h,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: imagesUrl.length,
+            itemBuilder: (context, index) {
+              return Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 2.w),
+                    child: Image.network(
+                      width: 30.w,
+                      imagesUrl[index],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: InkWell(
+                      onTap: () {
+                        cubit.deleteFile(imagesUrl[index], taskId);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(2.w),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red.withOpacity(0.7),
+                        ),
+                        child: Icon(
+                          Icons.delete,
+                          size: 4.w,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSelectedImagesFile(List<File> imagesFile) {
     return SizedBox(
-      height: 20.h,
+      height: 10.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: imagesUrl.isEmpty ? imagesFile.length : imagesUrl.length,
+        itemCount: imagesFile.length,
         itemBuilder: (context, index) {
           return Stack(
             children: [
               Padding(
-                padding: EdgeInsets.only(right: 2.w),
-                child: imagesUrl.isEmpty
-                    ? Image.file(
-                        width: 30.w,
-                        imagesFile[index],
-                        fit: BoxFit.cover,
-                      )
-                    : Image.network(
-                        width: 30.w,
-                        imagesUrl[index],
-                        fit: BoxFit.cover,
-                      ),
-              ),
+                  padding: EdgeInsets.only(right: 2.w),
+                  child: Image.file(
+                    width: 30.w,
+                    imagesFile[index],
+                    fit: BoxFit.cover,
+                  )),
               Positioned(
                 top: 0,
                 right: 0,
                 child: InkWell(
                   onTap: () {
-                    if (imagesUrl.isEmpty) {
-                      cubit.deleteImageFile(imagesFile[index]);
-                    }
+                    cubit.deleteImageFile(imagesFile[index]);
                   },
                   child: Container(
                     padding: EdgeInsets.all(2.w),

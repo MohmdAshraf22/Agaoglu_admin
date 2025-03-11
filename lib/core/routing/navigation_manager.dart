@@ -22,21 +22,19 @@ extension NavigationMethods on BuildContext {
 
   void push(
     Widget route, {
-    bool fromTop = false,
     Object? arguments,
   }) {
     Navigator.push(
       this,
-      SlidePageRoute(child: route, fromTop: fromTop),
+      SlidePageRoute(child: route),
     );
   }
 }
 
 class SlidePageRoute extends PageRouteBuilder {
   final Widget child;
-  final bool fromTop;
 
-  SlidePageRoute({required this.child, this.fromTop = false})
+  SlidePageRoute({required this.child})
       : super(
           transitionDuration: const Duration(milliseconds: 400),
           pageBuilder: (context, animation, secondaryAnimation) => child,
@@ -47,7 +45,7 @@ class SlidePageRoute extends PageRouteBuilder {
       Animation<double> secondaryAnimation, Widget child) {
     return SlideTransition(
       position: Tween<Offset>(
-        begin: fromTop ? const Offset(0, -1) : const Offset(-1, 0),
+        begin: const Offset(-1, 0),
         end: Offset.zero,
       ).animate(animation),
       child: child,

@@ -29,9 +29,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   TaskStatus filterSelected = TaskStatus.all;
   late TaskCubit taskCubit = context.read<TaskCubit>();
 
-  List<TaskModel> tasks = [],
-      filteredTasksByStatus = [],
-      filteredTasks = [];
+  List<TaskModel> tasks = [], filteredTasksByStatus = [], filteredTasks = [];
 
   @override
   void initState() {
@@ -62,25 +60,11 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
               listenWhen: (previous, current) => current is ShowDeleteDialog,
               listener: (context, state) {
                 if (state is ShowDeleteDialog) {
-                  _showDeleteDialog(state.taskId);
+                  _showDeleteDialog(state.task);
                 }
               },
               builder: (context, state) {
-                if (state is TaskLoaded) {
-                  filteredTasksByStatus = state.tasks;
-                  filteredTasks = state.tasks;
-                  tasks = state.tasks;
-                } else if (state is TaskError) {
-                  tasks.clear();
-                  filteredTasksByStatus.clear();
-                  filteredTasks.clear();
-                } else if (state is FilterTaskByStatus) {
-                  filterSelected = state.status;
-                  filteredTasksByStatus = state.tasks;
-                  filteredTasks = filteredTasksByStatus;
-                } else if (state is SearchTasksState) {
-                  filteredTasks = state.tasks;
-                }
+                _handleBuildState(state);
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4.w),
                   child: Column(
@@ -102,6 +86,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                         child: Skeletonizer(
                           enabled: state is TaskLoading,
                           child: ListView.builder(
+                            padding: EdgeInsets.zero,
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) =>
                                 _buildTaskCard(filteredTasks[index]),
@@ -180,6 +165,10 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                 task.description,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              Text(
+                _getTaskAddressDetails(task),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 2.h),
               if (task.imagesUrl.isNotEmpty)
                 Padding(
@@ -187,9 +176,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                   child: ImageBuilder(imagesUrl: task.imagesUrl),
                 ),
               if (task.voiceUrl != null)
-                AudioPlayerBuilder(audioUrl: task.voiceUrl!
-                    // 'https://firebasestorage.googleapis.com/v0/b/masheed-d942d.appspot.com/o/audios%2FZVSbJCtVxaTg8xKr1202XUwFNrH2%2Faudio6565445721400773739.m4a?alt=media&token=4bce69e7-3a88-4282-a155-dd5b09fd9c5c',
-                    ),
+                AudioPlayerBuilder(audioUrl: task.voiceUrl!),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -206,7 +193,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                   _deleteEditTask(
                     color: ColorManager.red,
                     icon: Icons.delete,
-                    onPressed: () => taskCubit.showDeleteDialog(task.id),
+                    onPressed: () => taskCubit.showDeleteDialog(task),
                   ),
                   SizedBox(width: 2.w),
                   _deleteEditTask(
@@ -249,7 +236,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
     );
   }
 
-  void _showDeleteDialog(String taskId) {
+  void _showDeleteDialog(TaskModel task) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -263,12 +250,45 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
           TextButton(
             child: Text(S.of(context).delete),
             onPressed: () {
-              taskCubit.deleteTask(taskId);
+              taskCubit.deleteTask(task);
               context.pop();
             },
           ),
         ],
       ),
     );
+  }
+
+  void _handleBuildState(TaskState state) {
+    if (state is TaskLoaded) {
+      filteredTasksByStatus = state.tasks;
+      filteredTasks = state.tasks;
+      tasks = state.tasks;
+    } else if (state is TaskError) {
+      tasks.clear();
+      filteredTasksByStatus.clear();
+      filteredTasks.clear();
+    } else if (state is FilterTaskByStatus) {
+      filterSelected = state.status;
+      filteredTasksByStatus = state.tasks;
+      filteredTasks = filteredTasksByStatus;
+    } else if (state is SearchTasksState) {
+      filteredTasks = state.tasks;
+    }
+  }
+
+  String _getTaskAddressDetails(TaskModel task) {
+    List<String> addressParts = [];
+
+    if (task.site?.isNotEmpty ?? false) {
+      addressParts.add(task.site!);
+    }
+    if (task.block?.isNotEmpty ?? false) {
+      addressParts.add(task.block!);
+    }
+    if (task.flat?.isNotEmpty ?? false) {
+      addressParts.add(task.flat!);
+    }
+    return addressParts.join(', ');
   }
 }

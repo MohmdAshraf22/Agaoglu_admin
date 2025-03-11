@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Are you sure you want to delete this task?",
         ),
+    "assignedTo": MessageLookupByLibrary.simpleMessage("Assigned to"),
     "backToLogin": MessageLookupByLibrary.simpleMessage("Back to login"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "cancelled": MessageLookupByLibrary.simpleMessage("Cancelled"),
@@ -56,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "due_date": MessageLookupByLibrary.simpleMessage("Due Date"),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editWorker": MessageLookupByLibrary.simpleMessage("Edit Worker"),
+    "edit_task": MessageLookupByLibrary.simpleMessage("Edit Task"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "enterEmail": MessageLookupByLibrary.simpleMessage("Please enter email"),
     "enterName": MessageLookupByLibrary.simpleMessage("Please enter name"),
@@ -126,6 +128,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "task_title": MessageLookupByLibrary.simpleMessage("Task Title"),
     "totalWorkers": MessageLookupByLibrary.simpleMessage("Total Workers"),
     "update_task": MessageLookupByLibrary.simpleMessage("Update Task"),
+    "viewTasks": MessageLookupByLibrary.simpleMessage("View Tasks"),
+    "viewWorkers": MessageLookupByLibrary.simpleMessage("View Workers"),
     "welcomeBack": MessageLookupByLibrary.simpleMessage("Welcome back"),
     "workerAddedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Worker added successfully",

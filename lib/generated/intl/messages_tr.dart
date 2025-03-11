@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Bu görevi silmek istediğinizden emin misiniz?",
         ),
+    "assignedTo": MessageLookupByLibrary.simpleMessage("Atanan"),
     "backToLogin": MessageLookupByLibrary.simpleMessage("Girişe dön"),
     "cancel": MessageLookupByLibrary.simpleMessage("İptal"),
     "cancelled": MessageLookupByLibrary.simpleMessage("iptal edildi"),
@@ -60,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "due_date": MessageLookupByLibrary.simpleMessage("Bitiş Tarihi"),
     "edit": MessageLookupByLibrary.simpleMessage("Düzenle"),
     "editWorker": MessageLookupByLibrary.simpleMessage("Çalışanı Düzenle"),
+    "edit_task": MessageLookupByLibrary.simpleMessage("Görevi Düzenle"),
     "email": MessageLookupByLibrary.simpleMessage("E-posta"),
     "enterEmail": MessageLookupByLibrary.simpleMessage(
       "Lütfen e-posta giriniz",
@@ -136,6 +138,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "task_title": MessageLookupByLibrary.simpleMessage("Görev Baslığı"),
     "totalWorkers": MessageLookupByLibrary.simpleMessage("Toplam Çalışanlar"),
     "update_task": MessageLookupByLibrary.simpleMessage("Görevi Güncelle"),
+    "viewTasks": MessageLookupByLibrary.simpleMessage("Görevleri Göster"),
+    "viewWorkers": MessageLookupByLibrary.simpleMessage("Çalışanları Göster"),
     "welcomeBack": MessageLookupByLibrary.simpleMessage("Hoş geldiniz"),
     "workerAddedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Çalışan başarıyla eklendi",

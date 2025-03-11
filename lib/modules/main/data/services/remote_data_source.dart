@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/main/data/models/dashboard_details.dart';
 import 'package:tasks_admin/modules/task/data/model/task.dart';
@@ -23,10 +22,9 @@ class DashboardDataSourceImpl implements DashboardDataSource {
       final tasks = await _getTasks();
       DashboardDetails? dashboardDetails;
       dashboardDetails = DashboardDetails.fromDocument(snapshot);
-      dashboardDetails.tasks = tasks;
+            dashboardDetails = dashboardDetails.copyWith(tasks: tasks);
       return Result.success(dashboardDetails);
     } on FirebaseException catch (e) {
-      debugPrint('Firebase error getting task status: $e');
       return Result.error(e);
     }
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
+import 'package:tasks_admin/core/utils/asset_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
@@ -49,7 +50,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               SizedBox(height: 4.h),
               BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
-                  print(state);
                   if (state is DashboardDetailsSuccess) {
                     dashboardDetails = state.dashboardDetails;
                   }
@@ -89,22 +89,37 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       children: <Widget>[
         CircleAvatar(
           radius: 6.w, // Responsive radius
-          backgroundImage: AssetImage(
-              'assets/icons/admin_panel_icon.png'), // Replace with your image
+          backgroundImage: AssetImage(AssetManager.adminPanelIcon),
         ),
         SizedBox(width: 4.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              S.of(context).welcomeBack,
-              style: TextStyle(color: Colors.white, fontSize: 14.sp),
-            ),
-            Text(
-              S.of(context).adminDashboard,
-              style: TextStylesManager.authTitle,
-            ),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                S.of(context).welcomeBack,
+                style: TextStyle(color: Colors.white, fontSize: 14.sp),
+              ),
+              Text(
+                S.of(context).adminDashboard,
+                style: TextStylesManager.authTitle,
+              ),
+            ],
+          ),
+        ),
+        BlocBuilder<DashboardCubit, DashboardState>(
+          builder: (context, state) {
+            print(state);
+            return IconButton(
+              icon: Icon(
+                Icons.refresh,
+                color: ColorManager.white,
+              ),
+              onPressed: () {
+                context.read<DashboardCubit>().getDashboardDetails();
+              },
+            );
+          },
         ),
       ],
     );
@@ -206,7 +221,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ),
             ),
             SizedBox(height: 1.h),
-            Text('Assigned to: ${task.workerName}',
+            Text('${S.of(context).assignedTo}: ${task.workerName}',
                 style:
                     TextStyle(color: ColorManager.greyLight, fontSize: 13.sp)),
             SizedBox(height: 2.h),
@@ -240,7 +255,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       children: <Widget>[
         Expanded(
           child: DefaultButton(
-              text: "View Workers ",
+              text: S.of(context).viewWorkers,
               onPressed: () {
                 context.push(ManageWorkersScreen());
               }),
@@ -248,7 +263,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         SizedBox(width: 4.w),
         Expanded(
           child: DefaultButton(
-              text: "View Tasks ",
+              text: S.of(context).viewTasks,
               onPressed: () {
                 context.push(TaskManagementView(tasks: dashboardDetails.tasks));
               }),

@@ -11,10 +11,7 @@ import '../../modules/firebase_options.dart';
 
 class AppInitializer {
   static Future<void> init() async {
-    debugPrint("****************************************");
-    debugPrint("${DateTime.now().add(Duration(days: 5))}");
-    debugPrint("*****************************************");
-
+            
     await CacheHelper.init();
     await LocalizationManager.init();
     await di.init(); // Initialize the service locator

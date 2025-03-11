@@ -28,9 +28,9 @@ class TaskCubit extends Cubit<TaskState> {
     );
   }
 
-  Future<void> deleteTask(String taskId) async {
+  Future<void> deleteTask(TaskModel task) async {
     emit(DeleteTaskLoading());
-    final result = await _taskRepository.deleteTask(taskId);
+    final result = await _taskRepository.deleteTask(task);
     if (result is Success<bool>) {
       emit(DeleteTaskSuccess());
     } else if (result is Error<bool>) {
@@ -40,7 +40,8 @@ class TaskCubit extends Cubit<TaskState> {
 
   Future<void> updateTask(TaskModel task) async {
     emit(UpdateTaskLoading());
-    final result = await _taskRepository.updateTask(task);
+    TaskModel taskModel = await _uploadFiles(task);
+    final result = await _taskRepository.updateTask(taskModel);
     if (result is Success<bool>) {
       emit(UpdateTaskSuccess());
     } else if (result is Error<bool>) {
@@ -50,7 +51,8 @@ class TaskCubit extends Cubit<TaskState> {
 
   Future<void> createTask(TaskModel task) async {
     emit(CreateTaskLoading());
-    final result = await _taskRepository.createTask(task);
+    TaskModel taskModel = await _uploadFiles(task);
+    final result = await _taskRepository.createTask(taskModel);
     if (result is Success<String>) {
       emit(CreateTaskSuccess());
     } else if (result is Error<String>) {
@@ -58,23 +60,21 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  Future<void> uploadFile({
+  Future<String?> uploadFile({
     required File file,
     required String storagePath,
   }) async {
-    emit(UploadFileLoading());
+    // emit(UploadFileLoading());
     final result = await _taskRepository.uploadFile(
       file: file,
       storagePath: storagePath,
     );
     if (result is Success<String>) {
-      emit(UploadFileSuccess(
-        downloadUrl: result.data,
-        storagePath: storagePath,
-      ));
+      return result.data;
     } else if (result is Error<String>) {
       emit(UploadFileError(errorMessage: result.exception));
     }
+    return null;
   }
 
   void filterTasksByStatus(TaskStatus status, List<TaskModel> tasks) {
@@ -87,8 +87,8 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  void showDeleteDialog(String taskId) {
-    emit(ShowDeleteDialog(taskId));
+  void showDeleteDialog(TaskModel task) {
+    emit(ShowDeleteDialog(task));
     emit(CloseDeleteDialog());
   }
 
@@ -101,15 +101,13 @@ class TaskCubit extends Cubit<TaskState> {
   }
 
   List<File> selectedImages = [];
+  String? audioFile;
 
   Future<void> pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? image =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 10);
     if (image != null) {
       selectedImages.add(File(image.path));
-      // uploadFile(
-      //   file: File(image.path),
-      //   storagePath: "images",
-      // );
       emit(MediaImageSelected(List.from(selectedImages)));
     }
   }
@@ -121,10 +119,7 @@ class TaskCubit extends Cubit<TaskState> {
 
   Future<void> completeRecording(String? audioPath) async {
     if (audioPath == null) return;
-    await uploadFile(
-      file: File(audioPath),
-      storagePath: "audios",
-    );
+    audioFile = audioPath;
     emit(CompleteRecordingState());
   }
 
@@ -133,9 +128,9 @@ class TaskCubit extends Cubit<TaskState> {
     emit(MediaImageSelected(List.from(selectedImages)));
   }
 
-  Future<void> deleteFile(String url) async {
+  Future<void> deleteFile(String url, String taskId) async {
     emit(DeleteFileLoading());
-    final result = await _taskRepository.deleteFile(url);
+    final result = await _taskRepository.deleteFile(url, taskId);
     if (result is Success<bool>) {
       emit(DeleteFileSuccess(url));
     } else if (result is Error<bool>) {
@@ -149,5 +144,24 @@ class TaskCubit extends Cubit<TaskState> {
             element.title.toLowerCase().contains(query.toLowerCase()))
         .toList();
     emit(SearchTasksState(filteredWorkers));
+  }
+
+  Future<TaskModel> _uploadFiles(TaskModel task) async {
+    List<String> imagesUrl = task.imagesUrl;
+    String? audioUrl = task.voiceUrl;
+    for (File file in selectedImages) {
+      final String? res = await uploadFile(file: file, storagePath: "images");
+      imagesUrl.add(res!);
+    }
+    if (audioFile != null) {
+      final String? res =
+          await uploadFile(file: File(audioFile!), storagePath: "audios");
+      audioUrl = res;
+    }
+    task = task.copyWith(imagesUrl: imagesUrl, voiceUrl: audioUrl);
+    selectedImages.clear();
+    audioUrl = null;
+    audioFile = null;
+    return task;
   }
 }

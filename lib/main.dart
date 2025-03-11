@@ -6,7 +6,10 @@ import 'package:tasks_admin/core/utils/app_initializer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/generated/l10n.dart';
 import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
+import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
+import 'package:tasks_admin/core/services/service_locator.dart' as di;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +27,9 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) => MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => UserCubit.get()),
+            BlocProvider(
+              create: (context) => TaskCubit(di.sl<TaskRepository>()),
+            ),
             BlocProvider<DashboardCubit>.value(value: DashboardCubit())
           ],
           child: MaterialApp(

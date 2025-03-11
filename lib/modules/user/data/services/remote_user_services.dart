@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
@@ -43,8 +42,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
       final admin = Admin.fromJson(adminDoc.data() as Map<String, dynamic>);
       return Result.success(admin);
     } on Exception catch (e) {
-      debugPrint(e.toString());
-      return Result.error(e);
+            return Result.error(e);
     }
   }
 
@@ -84,8 +82,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
         );
       }
 
-      debugPrint("add worker cloud functions started...");
-
+      
       final HttpsCallableResult callableResult =
           await _functions.httpsCallable('createWorkerAuth').call({
         'email': workerCreationForm.email,
@@ -94,8 +91,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
       final String id = callableResult.data['uid'];
 
       final worker = workerCreationForm.toWorker(id: id, imageUrl: imageUrl);
-      debugPrint("Worker data: ${worker.toJson()}");
-
+      
       WriteBatch batch = _firestore.batch();
       DocumentReference workerRef =
           _firestore.collection("workers").doc(worker.id);
@@ -135,29 +131,24 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Result<Worker>> updateWorker(WorkerEditionForm editedWorker) async {
     try {
-      debugPrint("update worker started...");
-      String? imageUrl;
+            String? imageUrl;
 
       if (editedWorker.image != null) {
         imageUrl = await _uploadImage(
           editedWorker.image!,
           editedWorker.email,
         );
-        debugPrint("image uploaded..");
-        debugPrint("$imageUrl");
-      }
+                      }
       if (editedWorker.password != null) {
         await _editPassword(editedWorker.id, editedWorker.password!);
       }
 
       final worker = editedWorker.toWorker(imageUrl: imageUrl);
-      debugPrint("${worker.toJson()}");
-      await _firestore
+            await _firestore
           .collection("workers")
           .doc(worker.id)
           .update(worker.toJson());
-      debugPrint("update worker completed...");
-      return Result.success(worker);
+            return Result.success(worker);
     } on Exception catch (e) {
       return Result.error(e);
     }
@@ -192,8 +183,6 @@ class RemoteUserServices implements BaseRemoteUserServices {
       'workerId': id,
       'newPassword': password,
     }).then((v) {
-      debugPrint(v.data.toString());
-      debugPrint(v.runtimeType.toString());
-    });
+                });
   }
 }

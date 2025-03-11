@@ -75,7 +75,6 @@ class ManageWorkersScreen extends StatelessWidget {
               child: BlocConsumer<UserCubit, UserState>(
                 listener: (context, state) {
                   if (state is GetWorkersSuccessState) {
-                    debugPrint('workers: ${state.workers}');
                     filteredWorkers = state.workers;
                     workers = state.workers;
                   } else if (state is UserErrorState) {
@@ -166,7 +165,7 @@ class ManageWorkersScreen extends StatelessWidget {
                             spacing: 3,
                             children: [
                               Text(
-                                worker.name + ' ' + worker.surname,
+                                '${worker.name} ${worker.surname}',
                                 style: TextStylesManager.cardTitle,
                               ),
                               FittedBox(

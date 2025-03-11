@@ -18,10 +18,7 @@ class ExceptionManager {
   };
 
   static String getMessage(Exception exception) {
-    debugPrint("***************************error*************************");
-    debugPrint(exception.toString());
-    debugPrint("***************************error*************************");
-    return _handlers[exception.runtimeType]?.handle(exception) ??
+                return _handlers[exception.runtimeType]?.handle(exception) ??
         _handlers[UnexpectedExceptionHandler]!.handle(exception);
   }
 

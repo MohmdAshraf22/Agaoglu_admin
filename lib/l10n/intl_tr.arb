@@ -73,5 +73,9 @@
   "save": "Kaydet",
   "workerUpdatedSuccessfully": "Çalışan başarıyla güncellendi",
   "leaveEmptyToKeepCurrent": "Mevcut olanı korumak için boş bırakın",
-  "newPassword": "Yeni Şifre"
+  "newPassword": "Yeni Şifre",
+  "viewWorkers": "Çalışanları Göster",
+  "edit_task": "Görevi Düzenle",
+  "assignedTo": "Atanan",
+  "viewTasks": "Görevleri Göster"
 }

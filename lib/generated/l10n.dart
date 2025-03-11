@@ -639,6 +639,31 @@ class S {
       args: [],
     );
   }
+
+  /// `View Workers`
+  String get viewWorkers {
+    return Intl.message(
+      'View Workers',
+      name: 'viewWorkers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Task`
+  String get edit_task {
+    return Intl.message('Edit Task', name: 'edit_task', desc: '', args: []);
+  }
+
+  /// `Assigned to`
+  String get assignedTo {
+    return Intl.message('Assigned to', name: 'assignedTo', desc: '', args: []);
+  }
+
+  /// `View Tasks`
+  String get viewTasks {
+    return Intl.message('View Tasks', name: 'viewTasks', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

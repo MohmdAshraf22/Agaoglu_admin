@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 
-import '../../../../../generated/l10n.dart';
-
-class CreateTaskAppbar extends StatelessWidget {
-  const CreateTaskAppbar({super.key});
+class TaskAppbar extends StatelessWidget {
+  final String title;
+  const TaskAppbar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +12,7 @@ class CreateTaskAppbar extends StatelessWidget {
       elevation: 2,
       shadowColor: ColorManager.grey,
       backgroundColor: ColorManager.white,
-      title: Text(S.of(context).create_task,
+      title: Text(title,
           style: TextStyle(color: ColorManager.primary)),
       centerTitle: true,
       leading: IconButton(

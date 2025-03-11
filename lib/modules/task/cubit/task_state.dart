@@ -122,12 +122,12 @@ final class FilterTaskByStatus extends TaskState {
 }
 
 final class ShowDeleteDialog extends TaskState {
-  final String taskId;
+  final TaskModel task;
 
-  const ShowDeleteDialog(this.taskId);
+  const ShowDeleteDialog(this.task);
 
   @override
-  List<Object> get props => [taskId];
+  List<Object> get props => [task];
 }
 
 final class SelectDateTimeState extends TaskState {

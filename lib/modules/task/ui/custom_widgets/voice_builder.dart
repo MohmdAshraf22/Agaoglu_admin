@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -10,17 +10,20 @@ import 'package:record/record.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
 
 class VoiceBuilder extends StatefulWidget {
   final Function(File?)? onRecordComplete;
   final String? initialAudioPath;
   final String? audioUrl;
+  final String taskId;
 
   const VoiceBuilder({
     super.key,
     this.onRecordComplete,
     this.initialAudioPath,
     this.audioUrl,
+    required this.taskId,
   });
 
   @override
@@ -89,7 +92,7 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
         });
       }
     } catch (e) {
-      debugPrint('Error starting recording: $e');
+      throw Exception('Error starting recording: $e');
     }
   }
 
@@ -104,22 +107,20 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
         widget.onRecordComplete?.call(_audioFile);
       }
     } catch (e) {
-      debugPrint('Error stopping recording: $e');
+      throw Exception('Error starting recording: $e');
     }
   }
 
   Future<void> _deleteAudio() async {
     try {
       if (_audioUrl != null) {
-        final Reference storageReference =
-            FirebaseStorage.instance.refFromURL(_audioUrl!);
-        await storageReference.delete();
+        context.read<TaskCubit>().deleteFile(_audioUrl!, widget.taskId);
         setState(() {
           _audioUrl = null;
         });
       }
     } catch (e) {
-      debugPrint('Error stopping recording: $e');
+      throw Exception('Error deleting audio: $e');
     }
   }
 
@@ -135,7 +136,7 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
           _isPlaying = !_isPlaying;
         });
       } catch (e) {
-        debugPrint('Error playing audio: $e');
+        throw Exception('Error starting recording: $e');
       }
     } else if (_audioFile != null) {
       try {
@@ -148,7 +149,7 @@ class _VoiceBuilderState extends State<VoiceBuilder> {
           _isPlaying = !_isPlaying;
         });
       } catch (e) {
-        debugPrint('Error playing audio: $e');
+        throw Exception('Error starting recording: $e');
       }
     }
   }
@@ -213,10 +214,9 @@ class AudioPlayerBuilder extends StatefulWidget {
 }
 
 class _AudioPlayerBuilderState extends State<AudioPlayerBuilder> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  late final AudioPlayer _audioPlayer;
   bool _isPlaying = false;
   Duration _position = Duration.zero;
-  final Duration _bufferedPosition = Duration.zero;
   Duration _totalDuration = Duration.zero;
 
   @override
@@ -227,23 +227,27 @@ class _AudioPlayerBuilderState extends State<AudioPlayerBuilder> {
 
   Future<void> _initAudioPlayer() async {
     try {
-      await _audioPlayer.setSource(UrlSource(widget.audioUrl));
-
-      // Listen to position updates
-      _audioPlayer.onPositionChanged.listen((pos) {
-        setState(() => _position = pos);
+      _audioPlayer = AudioPlayer();
+      _audioPlayer.onDurationChanged.listen((newDuration) {
+        setState(() {
+          _totalDuration = newDuration;
+        });
       });
 
-      // Listen to duration updates
-      _audioPlayer.onDurationChanged.listen((dur) {
-        setState(() => _totalDuration = dur);
+      _audioPlayer.onPositionChanged.listen((newPosition) {
+        setState(() {
+          _position = newPosition;
+        });
       });
 
-      _audioPlayer.onPlayerStateChanged.listen((state) {
-        setState(() => _isPlaying = state == PlayerState.playing);
+      _audioPlayer.onPlayerComplete.listen((_) {
+        setState(() {
+          _isPlaying = false;
+          _position = Duration.zero;
+        });
       });
     } catch (e) {
-      debugPrint('Error loading audio: $e');
+      throw Exception('Error initializing audio player: $e');
     }
   }
 
@@ -257,8 +261,11 @@ class _AudioPlayerBuilderState extends State<AudioPlayerBuilder> {
     if (_isPlaying) {
       await _audioPlayer.pause();
     } else {
-      await _audioPlayer.resume();
+      await _audioPlayer.play(UrlSource(widget.audioUrl));
     }
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
   }
 
   @override
@@ -275,11 +282,24 @@ class _AudioPlayerBuilderState extends State<AudioPlayerBuilder> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
-              child: SeekBar(
-                duration: _totalDuration,
-                position: _position,
-                bufferedPosition: _bufferedPosition,
-                onChangeEnd: (newPosition) => _audioPlayer.seek(newPosition),
+              child: Row(
+                children: [
+                  SizedBox(width: 2.w),
+                  Text(
+                      RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})')
+                              .firstMatch(_remaining)
+                              ?.group(1) ??
+                          _remaining,
+                      style: Theme.of(context).textTheme.bodySmall),
+                  Slider(
+                    value: _position.inSeconds.toDouble(),
+                    min: 0,
+                    max: _totalDuration.inSeconds.toDouble(),
+                    onChanged: (value) {
+                      _audioPlayer.seek(Duration(seconds: value.toInt()));
+                    },
+                  ),
+                ],
               ),
             ),
             IconButton(
@@ -295,140 +315,10 @@ class _AudioPlayerBuilderState extends State<AudioPlayerBuilder> {
       ),
     );
   }
-}
-
-class PositionData {
-  final Duration position;
-  final Duration bufferedPosition;
-  final Duration duration;
-
-  PositionData(this.position, this.bufferedPosition, this.duration);
-}
-
-class SeekBar extends StatefulWidget {
-  final Duration duration;
-  final Duration position;
-  final Duration bufferedPosition;
-  final ValueChanged<Duration>? onChanged;
-  final ValueChanged<Duration>? onChangeEnd;
-
-  const SeekBar({
-    super.key,
-    required this.duration,
-    required this.position,
-    required this.bufferedPosition,
-    this.onChanged,
-    this.onChangeEnd,
-  });
-
-  @override
-  SeekBarState createState() => SeekBarState();
-}
-
-class SeekBarState extends State<SeekBar> {
-  double? _dragValue;
-  late SliderThemeData _sliderThemeData;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _sliderThemeData = SliderTheme.of(context).copyWith(
-      trackHeight: 2.0,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double max = widget.duration.inMilliseconds.toDouble();
-    final double position =
-        widget.position.inMilliseconds.toDouble().clamp(0, max);
-    final double bufferedPosition =
-        widget.bufferedPosition.inMilliseconds.toDouble().clamp(0, max);
-
-    return Row(
-      children: [
-        SizedBox(width: 2.w),
-        Text(
-            RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})')
-                    .firstMatch(_remaining)
-                    ?.group(1) ??
-                _remaining,
-            style: Theme.of(context).textTheme.bodySmall),
-        Stack(
-          children: [
-            SliderTheme(
-              data: _sliderThemeData.copyWith(
-                thumbShape: HiddenThumbComponentShape(),
-                activeTrackColor: Colors.orange.shade100,
-                inactiveTrackColor: Colors.grey.shade300,
-              ),
-              child: ExcludeSemantics(
-                child: Slider(
-                  min: 0.0,
-                  max: max,
-                  value: bufferedPosition,
-                  onChanged: (value) {},
-                ),
-              ),
-            ),
-            SliderTheme(
-              data: _sliderThemeData.copyWith(
-                inactiveTrackColor: Colors.transparent,
-              ),
-              child: Slider(
-                min: 0.0,
-                max: max,
-                activeColor: ColorManager.orange,
-                value: _dragValue ?? position,
-                onChanged: (value) {
-                  setState(() {
-                    _dragValue = value;
-                  });
-                  if (widget.onChanged != null) {
-                    widget.onChanged!(Duration(milliseconds: value.round()));
-                  }
-                },
-                onChangeEnd: (value) {
-                  if (widget.onChangeEnd != null) {
-                    widget.onChangeEnd!(Duration(milliseconds: value.round()));
-                  }
-                  _dragValue = null;
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
 
   String get _remaining =>
       RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})')
-          .firstMatch("${widget.duration - widget.position}")
+          .firstMatch("${_totalDuration - _position}")
           ?.group(1) ??
-      '${widget.duration - widget.position}';
-}
-
-class HiddenThumbComponentShape extends SliderComponentShape {
-  @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.zero;
-  }
-
-  @override
-  void paint(
-    PaintingContext context,
-    Offset center, {
-    required Animation<double> activationAnimation,
-    required Animation<double> enableAnimation,
-    required bool isDiscrete,
-    required TextPainter labelPainter,
-    required RenderBox parentBox,
-    required SliderThemeData sliderTheme,
-    required TextDirection textDirection,
-    required double value,
-    required double textScaleFactor,
-    required Size sizeWithOverflow,
-  }) {}
+      '${_totalDuration - _position}';
 }
