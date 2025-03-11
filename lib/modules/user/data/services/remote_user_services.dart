@@ -3,41 +3,28 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_admin/core/utils/firebase_result_handler.dart';
-import 'package:tasks_admin/firebase_options.dart';
-import 'package:tasks_admin/main.dart';
 import 'package:tasks_admin/modules/user/data/models/user.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_creation_form.dart';
 import 'package:tasks_admin/modules/user/data/models/worker_edition_form.dart';
 
 abstract class BaseRemoteUserServices {
   Future<Result<Admin>> login(String email, String password);
-
   Future<Result<List<Worker>>> getWorkers();
-
   Future<Result<Worker>> addWorker(WorkerCreationForm workerCreationForm);
-
   Future<Result<Worker>> updateWorker(WorkerEditionForm editedWorker);
-
   Future<Result<void>> deleteWorker(String workerId);
-
   Future<Result<void>> logout();
-
   Future<Result<void>> resetPassword(String email);
 }
 
 class RemoteUserServices implements BaseRemoteUserServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore =
-      FirebaseFirestore.instanceFor(app: FirebaseConstants.firebaseApp!);
-  final FirebaseStorage _storage =
-      FirebaseStorage.instanceFor(app: FirebaseConstants.firebaseApp!);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
-  FirebaseApp? _app;
-  FirebaseAuth? workerAuth;
   final String _dashboardDetails = 'dashboardDetails';
 
   @override
@@ -87,38 +74,29 @@ class RemoteUserServices implements BaseRemoteUserServices {
   Future<Result<Worker>> addWorker(
       WorkerCreationForm workerCreationForm) async {
     try {
-      debugPrint("add worker started...");
       String? imageUrl;
 
       if (workerCreationForm.image != null) {
         imageUrl = await _uploadImage(
           workerCreationForm.image!,
-          workerCreationForm.email,
+          workerCreationForm.email +
+              "${workerCreationForm.image?.path.split(".").last}",
         );
-        debugPrint("image uploaded..");
-        debugPrint("$imageUrl");
       }
-      debugPrint("add worker cloud functions started...");
-      //
-      // Todo: use Cloud Functions after adding billing account
-      // final result = await _functions.httpsCallable('createWorkerAuth').call({
-      //   'email': workerCreationForm.email,
-      //   'password': workerCreationForm.password,
-      // }).then((v) {
-      //   debugPrint(v.data);
-      //   debugPrint(v.runtimeType.toString());
-      //   debugPrint(v.hashCode.toString());
-      // });
 
-      final String id =
-          await _signUp(workerCreationForm.email, workerCreationForm.password);
-      debugPrint("add worker cloud functions ended...");
-      debugPrint(id);
+      debugPrint("add worker cloud functions started...");
+
+      final HttpsCallableResult callableResult =
+          await _functions.httpsCallable('createWorkerAuth').call({
+        'email': workerCreationForm.email,
+        'password': workerCreationForm.password,
+      });
+      final String id = callableResult.data['uid'];
 
       final worker = workerCreationForm.toWorker(id: id, imageUrl: imageUrl);
-      debugPrint("${worker.toJson()}");
-      WriteBatch batch = _firestore.batch();
+      debugPrint("Worker data: ${worker.toJson()}");
 
+      WriteBatch batch = _firestore.batch();
       DocumentReference workerRef =
           _firestore.collection("workers").doc(worker.id);
       batch.set(workerRef, worker.toJson());
@@ -128,7 +106,6 @@ class RemoteUserServices implements BaseRemoteUserServices {
       batch.update(dashboardRef, {'totalWorkers': FieldValue.increment(1)});
 
       await batch.commit();
-      debugPrint("add worker cloud completed...");
       return Result.success(worker);
     } on Exception catch (e) {
       return Result.error(e);
@@ -138,10 +115,9 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Result<void>> deleteWorker(String workerId) async {
     try {
-      // Todo: use Cloud Functions after adding billing account
-      // await _functions.httpsCallable('deleteWorkerAuth').call({
-      //   'workerId': workerId,
-      // });
+      await _functions.httpsCallable('deleteWorkerAuth').call({
+        'workerId': workerId,
+      });
       WriteBatch batch = _firestore.batch();
       DocumentReference workerRef = _firestore.doc("workers/$workerId");
       batch.delete(workerRef);
@@ -159,7 +135,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
   @override
   Future<Result<Worker>> updateWorker(WorkerEditionForm editedWorker) async {
     try {
-      debugPrint("add worker started...");
+      debugPrint("update worker started...");
       String? imageUrl;
 
       if (editedWorker.image != null) {
@@ -171,18 +147,8 @@ class RemoteUserServices implements BaseRemoteUserServices {
         debugPrint("$imageUrl");
       }
       if (editedWorker.password != null) {
-        await _editPassword(editedWorker.id, editedWorker.password);
+        await _editPassword(editedWorker.id, editedWorker.password!);
       }
-      debugPrint("add worker cloud functions started...");
-      //  Todo: use Cloud Functions after adding billing account
-      // final result = await _functions.httpsCallable('createWorkerAuth').call({
-      //   'email': editedWorker.email,
-      //   'password': editedWorker.password,
-      // }).then((v) {
-      //   debugPrint(v.data);
-      //   debugPrint(v.runtimeType.toString());
-      //   debugPrint(v.hashCode.toString());
-      // });
 
       final worker = editedWorker.toWorker(imageUrl: imageUrl);
       debugPrint("${worker.toJson()}");
@@ -190,13 +156,8 @@ class RemoteUserServices implements BaseRemoteUserServices {
           .collection("workers")
           .doc(worker.id)
           .set(worker.toJson());
-      debugPrint("add worker cloud completed...");
+      debugPrint("update worker completed...");
       return Result.success(worker);
-      // await _firestore
-      //     .collection("workers")
-      //     .doc(worker.id)
-      //     .update(worker.toJson());
-      // return Result.success(editedWorker.toWorker(id: id));
     } on Exception catch (e) {
       return Result.error(e);
     }
@@ -213,33 +174,26 @@ class RemoteUserServices implements BaseRemoteUserServices {
   }
 
   Future<String?> _uploadImage(File image, String imageName) async {
-    final uploadTask =
-        _storage.ref().child("workerImages/$imageName").putFile(image);
-    return await uploadTask.snapshot.ref.getDownloadURL();
+    String? imageUrl;
+
+    final Reference storageReference =
+        _storage.ref().child('workers/$imageName');
+    final UploadTask uploadTask = storageReference.putFile(image);
+
+    await uploadTask.whenComplete(() {
+      imageUrl = storageReference.getDownloadURL().toString();
+    });
+
+    return imageUrl;
   }
 
-  Future<String> _signUp(String email, String password) async {
-    if (_app == null) {
-      _app = await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-        name: "worker",
-      );
-      workerAuth = FirebaseAuth.instanceFor(app: _app!);
-    }
-    final userCredential = await workerAuth!
-        .createUserWithEmailAndPassword(email: email, password: password);
-    return userCredential.user!.uid;
-  }
-
-  Future<void> _editPassword(String id, String? password) async {
-    //    Todo: use Cloud Functions after adding billing account
-    // final result = await _functions.httpsCallable('updateWorkerPassword').call({
-    //   'email': editedWorker.email,
-    //   'password': editedWorker.password,
-    // }).then((v) {
-    //   debugPrint(v.data);
-    //   debugPrint(v.runtimeType.toString());
-    //   debugPrint(v.hashCode.toString());
-    // });
+  Future<void> _editPassword(String id, String password) async {
+    await _functions.httpsCallable('updateWorkerPassword').call({
+      'workerId': id,
+      'newPassword': password,
+    }).then((v) {
+      debugPrint(v.data.toString());
+      debugPrint(v.runtimeType.toString());
+    });
   }
 }

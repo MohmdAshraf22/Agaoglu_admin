@@ -1,23 +1,12 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
-// تهيئة Firebase Admin
-admin.initializeApp(enforceAppCheck: false);
+admin.initializeApp();
 
-// دالة إنشاء مستخدم جديد
-export const createWorkerAuth = functions.runWith({
-    enforceAppCheck: false,
-    }).https.onCall(
-  async (data, context) => {
+export const createWorkerAuth = functions
+  .runWith({enforceAppCheck: false}) // هنا يتم تعطيل App Check
+  .https.onCall(async (data, context) => {
     try {
-//       if (!context.auth) {
-//         throw new functions.https.HttpsError(
-//           "unauthenticated",
-//           "You must be logged in"
-//         );
-//       }
-
-      // إنشاء المستخدم
       const userRecord = await admin.auth().createUser({
         email: data.email,
         password: data.password,
@@ -29,21 +18,12 @@ export const createWorkerAuth = functions.runWith({
       console.log(message);
       throw new functions.https.HttpsError("internal", message);
     }
-  }
-);
+  });
 
-// دالة تعديل كلمة المرور للمستخدم
-export const updateWorkerPassword = functions.https.onCall(
-  async (data, context) => {
+export const updateWorkerPassword = functions
+  .runWith({enforceAppCheck: false}) // إضافة نفس الإعداد
+  .https.onCall(async (data, context) => {
     try {
-//       if (!context.auth) {
-//         throw new functions.https.HttpsError(
-//           "unauthenticated",
-//           "You must be logged in"
-//         );
-//       }
-
-      // تحديث كلمة المرور للمستخدم
       await admin.auth().updateUser(data.workerId, {
         password: data.newPassword,
       });
@@ -54,25 +34,16 @@ export const updateWorkerPassword = functions.https.onCall(
       console.log(message);
       throw new functions.https.HttpsError("internal", message);
     }
-  }
-);
+  });
 
-// دالة حذف مستخدم
-export const deleteWorkerAuth = functions.https.onCall(
-  async (data, context) => {
+export const deleteWorkerAuth = functions
+  .runWith({enforceAppCheck: false}) // إضافة نفس الإعداد
+  .https.onCall(async (data, context) => {
     try {
-//       if (!context.auth) {
-//         throw new functions.https.HttpsError(
-//           "unauthenticated",
-//           "You must be logged in"
-//         );
-//       }
-
       await admin.auth().deleteUser(data.workerId);
       return {success: true};
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       throw new functions.https.HttpsError("internal", message);
     }
-  }
-);
+  });

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,6 +19,7 @@ class CreateWorkerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    File? selectedImage;
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController nameController = TextEditingController();
     TextEditingController phoneController = TextEditingController();
@@ -63,11 +66,10 @@ class CreateWorkerScreen extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 color: ColorManager.grey.withOpacity(0.3),
                               ),
-                              child: state is ImageSelectedState &&
-                                      state.image != null
+                              child: selectedImage != null
                                   ? ClipOval(
                                       child: Image.file(
-                                        state.image!,
+                                        selectedImage!,
                                         fit: BoxFit.cover,
                                       ),
                                     )
@@ -237,6 +239,9 @@ class CreateWorkerScreen extends StatelessWidget {
                       if (state is UserErrorState) {
                         ExceptionManager.showMessage(state.exception);
                       }
+                      if (state is ImageSelectedState && state.image != null) {
+                        selectedImage = state.image!;
+                      }
                     },
                     builder: (context, state) {
                       return Column(
@@ -249,6 +254,7 @@ class CreateWorkerScreen extends StatelessWidget {
                               if (formKey.currentState!.validate() &&
                                   cubit.selectedJobTitle != null) {
                                 cubit.addWorker(WorkerCreationForm(
+                                    image: selectedImage,
                                     name: nameController.text,
                                     surname: surnameController.text,
                                     email: emailController.text,

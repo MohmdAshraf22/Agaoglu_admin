@@ -21,6 +21,8 @@ class EditWorkerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserCubit cubit = UserCubit.get()..selectJobTitle(worker.job);
+
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController nameController =
         TextEditingController(text: worker.name);
@@ -31,7 +33,6 @@ class EditWorkerScreen extends StatelessWidget {
     TextEditingController passwordController = TextEditingController();
     TextEditingController surnameController =
         TextEditingController(text: worker.surname);
-    UserCubit cubit = UserCubit.get()..selectJobTitle(worker.job);
     bool isPasswordAppears = false;
     return Scaffold(
       backgroundColor: ColorManager.primaryDark,
