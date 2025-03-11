@@ -11,6 +11,7 @@ import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppInitializer.init();
+
   runApp(const MyApp());
 }
 
@@ -55,15 +56,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/*
-  await FirebaseAuth.instance
-      .createUserWithEmailAndPassword(
-          email: "admin@amdin.com", password: "123456")
-      .then((v) async {
-    await FirebaseFirestore.instance
-        .collection("admins")
-        .doc(v.user!.uid)
-        .set({'id': v.user!.uid, 'name': "admin", "email": "admin@amdin.com"});
-  });
- */

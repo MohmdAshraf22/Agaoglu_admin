@@ -12,6 +12,7 @@ class WorkerEditionForm extends Equatable {
   final String job;
   final String phoneNumber;
   final String id;
+  final String? imageUrl;
   const WorkerEditionForm({
     this.image,
     required this.id,
@@ -21,13 +22,14 @@ class WorkerEditionForm extends Equatable {
     this.password,
     required this.job,
     required this.phoneNumber,
+    this.imageUrl,
   });
 
   Worker toWorker({String? imageUrl}) => Worker(
         name: name,
         email: email,
         job: job,
-        imageUrl: imageUrl,
+        imageUrl: imageUrl ?? this.imageUrl,
         id: id,
         surname: surname,
         phoneNumber: phoneNumber,
@@ -35,5 +37,5 @@ class WorkerEditionForm extends Equatable {
 
   @override
   List<Object?> get props =>
-      [image, name, surname, email, password, job, phoneNumber, id];
+      [image, name, surname, email, password, job, phoneNumber, id, imageUrl];
 }

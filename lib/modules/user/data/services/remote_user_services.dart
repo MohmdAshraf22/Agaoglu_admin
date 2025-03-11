@@ -155,7 +155,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
       await _firestore
           .collection("workers")
           .doc(worker.id)
-          .set(worker.toJson());
+          .update(worker.toJson());
       debugPrint("update worker completed...");
       return Result.success(worker);
     } on Exception catch (e) {
@@ -180,8 +180,8 @@ class RemoteUserServices implements BaseRemoteUserServices {
         _storage.ref().child('workers/$imageName');
     final UploadTask uploadTask = storageReference.putFile(image);
 
-    await uploadTask.whenComplete(() {
-      imageUrl = storageReference.getDownloadURL().toString();
+    await uploadTask.then((v) async {
+      imageUrl = await v.ref.getDownloadURL();
     });
 
     return imageUrl;

@@ -105,7 +105,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       selectedImage = File(image.path);

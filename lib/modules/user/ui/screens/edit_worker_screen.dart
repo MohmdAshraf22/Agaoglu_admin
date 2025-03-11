@@ -69,13 +69,21 @@ class EditWorkerScreen extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: ColorManager.grey.withOpacity(0.3),
                             ),
-                            child: state is ImageSelectedState &&
-                                    state.image != null
-                                ? ClipOval(
-                                    child: Image.file(
-                                      state.image!,
-                                      fit: BoxFit.cover,
-                                    ),
+                            child: cubit.selectedImage != null
+                                ? BlocConsumer<UserCubit, UserState>(
+                                    listener: (context, state) {
+                                      if (state is ImageSelectedState) {
+                                        cubit.selectedImage = state.image;
+                                      }
+                                    },
+                                    builder: (context, state) {
+                                      return ClipOval(
+                                        child: Image.file(
+                                          cubit.selectedImage!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    },
                                   )
                                 : worker.imageUrl != null
                                     ? ClipOval(
@@ -265,6 +273,10 @@ class EditWorkerScreen extends StatelessWidget {
                               cubit.updateWorker(
                                 WorkerEditionForm(
                                     id: worker.id,
+                                    imageUrl: cubit.selectedImage != null
+                                        ? cubit.selectedImage!.path
+                                        : worker.imageUrl,
+                                    image: cubit.selectedImage,
                                     name: nameController.text,
                                     surname: surnameController.text,
                                     email: emailController.text,
