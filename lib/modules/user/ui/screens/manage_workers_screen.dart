@@ -98,6 +98,7 @@ class ManageWorkersScreen extends StatelessWidget {
                             : Skeletonizer(
                                 enabled: state is GetWorkersLoadingState,
                                 child: ListView.builder(
+                                  padding: EdgeInsets.zero,
                                   physics: BouncingScrollPhysics(),
                                   itemBuilder: (context, index) => state
                                           is GetWorkersLoadingState

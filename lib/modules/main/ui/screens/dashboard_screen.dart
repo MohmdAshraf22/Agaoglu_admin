@@ -109,7 +109,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         ),
         BlocBuilder<DashboardCubit, DashboardState>(
           builder: (context, state) {
-            print(state);
             return IconButton(
               icon: Icon(
                 Icons.refresh,

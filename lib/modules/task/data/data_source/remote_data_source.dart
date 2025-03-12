@@ -10,7 +10,7 @@ abstract class TaskDataSource {
 
   Future<Result<bool>> deleteFile(String url, String taskId);
 
-  Future<Result<String>> createTask(TaskModel task);
+  Future<Result<bool>> createTask(TaskModel task);
 
   Future<Result<bool>> updateTask(TaskModel task);
 
@@ -36,7 +36,7 @@ class TaskDataSourceImpl implements TaskDataSource {
   }
 
   @override
-  Future<Result<String>> createTask(TaskModel task) async {
+  Future<Result<bool>> createTask(TaskModel task) async {
     try {
       WriteBatch batch = _fireStore.batch();
       final collection = _fireStore.collection(_tasks);
@@ -47,7 +47,7 @@ class TaskDataSourceImpl implements TaskDataSource {
       batch.update(dashboardRef, {'pendingTasks': FieldValue.increment(1)});
       batch.set(taskRef, task.toMap(id));
       await batch.commit();
-      return Result.success("TaskModel added successfully");
+      return Result.success(true);
     } on FirebaseException catch (e) {
       return Result.error(e);
     } on Exception catch (e) {
@@ -87,8 +87,6 @@ class TaskDataSourceImpl implements TaskDataSource {
       await collection.doc(task.id).update(task.toMap(task.id));
       return Result.success(true);
     } on FirebaseException catch (e) {
-      return Result.error(e);
-    } on Exception catch (e) {
       return Result.error(e);
     }
   }
@@ -133,8 +131,6 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(true);
     } on FirebaseException catch (e) {
       return Result.error(e);
-    } catch (e) {
-      return Result.error(Exception());
     }
   }
 
@@ -146,8 +142,6 @@ class TaskDataSourceImpl implements TaskDataSource {
       return Result.success(true);
     } on FirebaseException catch (e) {
       return Result.error(e);
-    } catch (e) {
-      return Result.error(Exception());
     }
   }
 }

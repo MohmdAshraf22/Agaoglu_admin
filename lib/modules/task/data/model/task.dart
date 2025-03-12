@@ -100,7 +100,7 @@ class TaskModel extends Equatable {
       workerPhoto: data['workerPhoto'],
       workerId: data['workerId'],
       voiceUrl: data['voiceUrl'],
-      imagesUrl: List<String>.from(data['imagesUrl']),
+      imagesUrl: List<String>.from(data['imagesUrl']).toList(),
       site: data['site'],
       block: data['block'],
       flat: data['flat'],

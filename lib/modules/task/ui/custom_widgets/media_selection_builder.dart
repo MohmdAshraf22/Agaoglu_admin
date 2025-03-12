@@ -115,17 +115,18 @@ class _MediaSelectionContentState extends State<_MediaSelectionContent> {
                 : const SizedBox.shrink();
           },
         ),
-        if (imagesUrl.isNotEmpty)
-          BlocBuilder<TaskCubit, TaskState>(
-            builder: (context, state) {
-              if (state is DeleteFileSuccess) {
-                if (imagesUrl.contains(state.url)) {
-                  imagesUrl.remove(state.url);
-                                  }
+        BlocBuilder<TaskCubit, TaskState>(
+          builder: (context, state) {
+            if (state is DeleteFileSuccess) {
+              if (imagesUrl.contains(state.url)) {
+                imagesUrl.remove(state.url);
               }
-              return _buildSelectedImagesUrl(imagesUrl, widget.taskId);
-            },
-          ),
+            }
+            return imagesUrl.isNotEmpty
+                ? _buildSelectedImagesUrl(imagesUrl, widget.taskId)
+                : const SizedBox.shrink();
+          },
+        ),
       ],
     );
   }

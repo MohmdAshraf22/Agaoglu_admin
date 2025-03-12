@@ -77,8 +77,7 @@ class RemoteUserServices implements BaseRemoteUserServices {
       if (workerCreationForm.image != null) {
         imageUrl = await _uploadImage(
           workerCreationForm.image!,
-          workerCreationForm.email +
-              "${workerCreationForm.image?.path.split(".").last}",
+          "${workerCreationForm.email}${workerCreationForm.image?.path.split(".").last}",
         );
       }
 

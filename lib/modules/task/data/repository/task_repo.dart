@@ -22,12 +22,12 @@ class TaskRepository {
     return await _taskDataSource.updateTask(task);
   }
 
-  Future<Result<String>> createTask(TaskModel task) async {
+  Future<Result<bool>> createTask(TaskModel task) async {
     return await _taskDataSource.createTask(task);
   }
 
-  Future<Result<bool>> deleteFile(String url,String taskId) async {
-    return await _taskDataSource.deleteFile(url,taskId);
+  Future<Result<bool>> deleteFile(String url, String taskId) async {
+    return await _taskDataSource.deleteFile(url, taskId);
   }
 
   Future<Result<String>> uploadFile({

@@ -114,7 +114,7 @@ class SearchWorkersState extends UserState {
 
 class ImageSelectedState extends UserState {
   final File? image;
-  ImageSelectedState(this.image);
+  const ImageSelectedState(this.image);
 
   @override
   List<Object?> get props => [];

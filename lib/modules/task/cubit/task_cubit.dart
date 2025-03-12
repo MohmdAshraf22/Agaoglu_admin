@@ -17,13 +17,13 @@ class TaskCubit extends Cubit<TaskState> {
   final ImagePicker _picker = ImagePicker();
 
   void getTasks() {
-    emit(TaskLoading());
     _taskRepository.getTasks().listen(
       (tasks) {
-        emit(TaskLoaded(tasks: tasks));
+        emit(GetTaskLoading());
+        emit(GetTaskLoaded(tasks: tasks));
       },
       onError: (error) {
-        emit(TaskError(errorMessage: error));
+        emit(GetTaskError(errorMessage: error));
       },
     );
   }
@@ -53,9 +53,9 @@ class TaskCubit extends Cubit<TaskState> {
     emit(CreateTaskLoading());
     TaskModel taskModel = await _uploadFiles(task);
     final result = await _taskRepository.createTask(taskModel);
-    if (result is Success<String>) {
+    if (result is Success<bool>) {
       emit(CreateTaskSuccess());
-    } else if (result is Error<String>) {
+    } else if (result is Error<bool>) {
       emit(CreateTaskError(errorMessage: result.exception));
     }
   }

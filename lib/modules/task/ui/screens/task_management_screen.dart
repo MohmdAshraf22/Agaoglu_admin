@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tasks_admin/core/error/exception_manager.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
@@ -83,15 +84,12 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                         ),
                       ),
                       Expanded(
-                        child: Skeletonizer(
-                          enabled: state is TaskLoading,
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            physics: BouncingScrollPhysics(),
-                            itemBuilder: (context, index) =>
-                                _buildTaskCard(filteredTasks[index]),
-                            itemCount: filteredTasks.length,
-                          ),
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) =>
+                              _buildTaskCard(filteredTasks[index]),
+                          itemCount: filteredTasks.length,
                         ),
                       ),
                     ],
@@ -106,107 +104,103 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   }
 
   Widget _buildTaskCard(TaskModel task) {
-    return AnimatedSwitcher(
-      duration: Duration(milliseconds: 500),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        margin: EdgeInsets.symmetric(vertical: 1.5.h),
-        child: Padding(
-          padding:
-              EdgeInsetsDirectional.symmetric(horizontal: 4.w, vertical: 1.5.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      task.title,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      margin: EdgeInsets.symmetric(vertical: 1.5.h),
+      child: Padding(
+        padding:
+            EdgeInsetsDirectional.symmetric(horizontal: 4.w, vertical: 1.5.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    task.title,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: 1.w),
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 3.w, vertical: .7.h),
-                    decoration: BoxDecoration(
-                      color: getStatusColor(task.status),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      getTaskStatusLanguage(task.status, context),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 1.h),
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundImage: task.workerPhoto == null
-                        ? null
-                        : NetworkImage(task.workerPhoto!),
-                  ),
-                  SizedBox(width: 2.w),
-                  Text(
-                    task.workerName ?? S.of(context).not_accepted_yet,
-                  ),
-                ],
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                task.description,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                _getTaskAddressDetails(task),
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 2.h),
-              if (task.imagesUrl.isNotEmpty)
-                Padding(
-                  padding: EdgeInsetsDirectional.only(bottom: 2.h),
-                  child: ImageBuilder(imagesUrl: task.imagesUrl),
                 ),
-              if (task.voiceUrl != null)
-                AudioPlayerBuilder(audioUrl: task.voiceUrl!),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.calendar_today, size: 16),
-                      SizedBox(width: 2.w),
-                      Text(
-                        ConstanceManger.formatDateTime(task.createdAt),
-                      ),
-                    ],
+                SizedBox(width: 1.w),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 3.w, vertical: .7.h),
+                  decoration: BoxDecoration(
+                    color: getStatusColor(task.status),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  Spacer(),
-                  _deleteEditTask(
-                    color: ColorManager.red,
-                    icon: Icons.delete,
-                    onPressed: () => taskCubit.showDeleteDialog(task),
+                  child: Text(
+                    getTaskStatusLanguage(task.status, context),
+                    style: TextStyle(color: Colors.white),
                   ),
-                  SizedBox(width: 2.w),
-                  _deleteEditTask(
-                    color: ColorManager.orange,
-                    icon: Icons.edit,
-                    onPressed: () => context.push(EditTaskScreen(
-                      task: task,
-                    )),
-                  ),
-                ],
+                ),
+              ],
+            ),
+            SizedBox(height: 1.h),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: task.workerPhoto == null
+                      ? null
+                      : NetworkImage(task.workerPhoto!),
+                ),
+                SizedBox(width: 2.w),
+                Text(
+                  task.workerName ?? S.of(context).not_accepted_yet,
+                ),
+              ],
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              task.description,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              _getTaskAddressDetails(task),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 1.h),
+            if (task.imagesUrl.isNotEmpty)
+              Padding(
+                padding: EdgeInsetsDirectional.only(bottom: 2.h),
+                child: ImageBuilder(imagesUrl: task.imagesUrl),
               ),
-            ],
-          ),
+            if (task.voiceUrl != null)
+              AudioPlayerBuilder(audioUrl: task.voiceUrl!),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.calendar_today, size: 16),
+                    SizedBox(width: 2.w),
+                    Text(
+                      ConstanceManger.formatDateTime(task.createdAt),
+                    ),
+                  ],
+                ),
+                Spacer(),
+                _deleteEditTask(
+                  color: ColorManager.red,
+                  icon: Icons.delete,
+                  onPressed: () => taskCubit.showDeleteDialog(task),
+                ),
+                SizedBox(width: 2.w),
+                _deleteEditTask(
+                  color: ColorManager.orange,
+                  icon: Icons.edit,
+                  onPressed: () => context.push(EditTaskScreen(
+                    task: task,
+                  )),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -260,18 +254,19 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   }
 
   void _handleBuildState(TaskState state) {
-    if (state is TaskLoaded) {
+    if (state is GetTaskLoaded) {
       filteredTasksByStatus = state.tasks;
       filteredTasks = state.tasks;
       tasks = state.tasks;
-    } else if (state is TaskError) {
+    } else if (state is GetTaskError) {
       tasks.clear();
       filteredTasksByStatus.clear();
       filteredTasks.clear();
+         ExceptionManager.showMessage(state.errorMessage);
     } else if (state is FilterTaskByStatus) {
       filterSelected = state.status;
       filteredTasksByStatus = state.tasks;
-      filteredTasks = filteredTasksByStatus;
+      filteredTasks = state.tasks;
     } else if (state is SearchTasksState) {
       filteredTasks = state.tasks;
     }

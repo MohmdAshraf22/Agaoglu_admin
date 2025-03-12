@@ -92,7 +92,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.8),
+      backgroundColor: Colors.black.withValues(alpha: 0.8),
       body: Stack(
         children: [
           PageView.builder(

@@ -280,7 +280,7 @@ class CreateWorkerScreen extends StatelessWidget {
 class LabelText extends StatelessWidget {
   final String text;
 
-  const LabelText({required this.text});
+  const LabelText({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

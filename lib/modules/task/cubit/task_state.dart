@@ -11,21 +11,21 @@ final class TaskInitial extends TaskState {}
 
 /// Get Task
 
-final class TaskLoading extends TaskState {}
+final class GetTaskLoading extends TaskState {}
 
-final class TaskLoaded extends TaskState {
+final class GetTaskLoaded extends TaskState {
   final List<TaskModel> tasks;
 
-  const TaskLoaded({required this.tasks});
+  const GetTaskLoaded({required this.tasks});
 
   @override
   List<Object> get props => [tasks];
 }
 
-final class TaskError extends TaskState {
+final class GetTaskError extends TaskState {
   final Exception errorMessage;
 
-  const TaskError({required this.errorMessage});
+  const GetTaskError({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];
