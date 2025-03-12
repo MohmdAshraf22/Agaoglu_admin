@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tasks_admin/core/error/handlers/auth_exception_handler.dart';
 import 'package:tasks_admin/core/error/handlers/firebase_exception_handler.dart';

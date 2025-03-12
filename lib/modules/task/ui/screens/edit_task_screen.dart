@@ -49,7 +49,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _siteController = TextEditingController(text: widget.task.site);
     _blockController = TextEditingController(text: widget.task.block);
     _flatController = TextEditingController(text: widget.task.flat);
-    //     imagesUrl = List.from(widget.task.imagesUrl);
+    imagesUrl = widget.task.imagesUrl;
     audioUrl = widget.task.voiceUrl;
     _dueDate = widget.task.createdAt;
   }
@@ -86,7 +86,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       body: Column(
         children: [
           TaskAppbar(
-            title: S.of(context).edit_task,
+            title: S
+                .of(context)
+                .edit_task,
           ),
           Expanded(
             child: Padding(
@@ -110,7 +112,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         audioUrl: audioUrl),
                     BlocConsumer<TaskCubit, TaskState>(
                       listener: (context, state) {
-                          if (state is UpdateTaskSuccess) {
+                        if (state is UpdateTaskSuccess) {
                           context.pop();
                         }
                       },
@@ -124,7 +126,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                   TaskModel(
                                     title: _taskTitleController.text,
                                     description:
-                                        _taskDescriptionController.text,
+                                    _taskDescriptionController.text,
                                     createdAt: _dueDate ?? DateTime.now(),
                                     workerName: _selectedWorker?.name,
                                     workerPhoto: _selectedWorker?.imageUrl,
@@ -140,7 +142,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                 );
                               }
                             },
-                            text: S.of(context).update_task,
+                            text: S
+                                .of(context)
+                                .update_task,
                             textColor: ColorManager.white,
                             icon: Padding(
                               padding: EdgeInsetsDirectional.only(end: 1.w),
@@ -155,17 +159,20 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       onPressed: () {
                         context.pop();
                       },
-                      text: S.of(context).cancel,
+                      text: S
+                          .of(context)
+                          .cancel,
                       textColor: ColorManager.grey,
                       color: ColorManager.greyLight,
                     ),
                   ]
                       .expand(
-                        (element) => [
-                          element,
-                          SizedBox(height: 2.h),
-                        ],
-                      )
+                        (element) =>
+                    [
+                      element,
+                      SizedBox(height: 2.h),
+                    ],
+                  )
                       .toList(),
                 ),
               ),
@@ -179,11 +186,17 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   Widget _buildTaskTitleField() {
     return DefaultTextField(
       controller: _taskTitleController,
-      labelText: S.of(context).task_title,
-      hintText: S.of(context).enter_task_title,
+      labelText: S
+          .of(context)
+          .task_title,
+      hintText: S
+          .of(context)
+          .enter_task_title,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return S.of(context).please_enter_task_title;
+          return S
+              .of(context)
+              .please_enter_task_title;
         }
         return null;
       },
@@ -194,8 +207,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     return DefaultTextField(
       controller: _taskDescriptionController,
       maxLines: 3,
-      labelText: S.of(context).task_description,
-      hintText: S.of(context).enter_task_description,
+      labelText: S
+          .of(context)
+          .task_description,
+      hintText: S
+          .of(context)
+          .enter_task_description,
     );
   }
 
@@ -205,7 +222,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         if (state is GetWorkersSuccessState) {
           _workers = state.workers;
           _selectedWorker = _workers.firstWhere(
-              (element) => element.name == widget.task.workerName,
+                  (element) => element.name == widget.task.workerName,
               orElse: () => _workers.first);
         }
         return BlocBuilder<TaskCubit, TaskState>(
@@ -216,8 +233,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             return DropdownButtonFormField<Worker>(
               value: _selectedWorker,
               decoration: InputDecoration(
-                labelText: S.of(context).select_worker,
-                hintText: S.of(context).choose_a_worker,
+                labelText: S
+                    .of(context)
+                    .select_worker,
+                hintText: S
+                    .of(context)
+                    .choose_a_worker,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -234,7 +255,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               },
               validator: (value) {
                 if (value == null) {
-                  return S.of(context).please_select_a_worker;
+                  return S
+                      .of(context)
+                      .please_select_a_worker;
                 }
                 return null;
               },
@@ -261,8 +284,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           },
           child: InputDecorator(
             decoration: InputDecoration(
-              labelText: S.of(context).due_date,
-              hintText: S.of(context).select_date,
+              labelText: S
+                  .of(context)
+                  .due_date,
+              hintText: S
+                  .of(context)
+                  .select_date,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -270,7 +297,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             ),
             child: Text(
               _dueDate == null
-                  ? S.of(context).select_date
+                  ? S
+                  .of(context)
+                  .select_date
                   : ConstanceManger.formatDateTime(_dueDate!),
             ),
           ),

@@ -32,10 +32,10 @@ class MediaSelectionBuilder extends StatelessWidget {
 
 class _MediaSelectionContent extends StatefulWidget {
   final List<String> imagesUrl;
-  String? audioUrl;
+  final String? audioUrl;
   final String taskId;
 
-  _MediaSelectionContent(
+  const _MediaSelectionContent(
       {required this.imagesUrl, this.audioUrl, required this.taskId});
 
   @override
