@@ -25,32 +25,8 @@ class AppInitializer {
   }
 
   static Widget getFirstScreen() {
-    if (DateTime.now().isAfter(DateTime.parse("2025-03-16 06:23:26.609857"))) {
-      return EmptyScreen();
-    }
     return FirebaseAuth.instance.currentUser == null
         ? LoginScreen()
         : const AdminDashboardScreen();
-  }
-}
-
-class EmptyScreen extends StatelessWidget {
-  const EmptyScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Center(
-          child: Text(
-            "انتهت فترة التجربة .. يرجى التواصل مع المطورين",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
   }
 }

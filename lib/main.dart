@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tasks_admin/core/services/service_locator.dart' as di;
 import 'package:tasks_admin/core/utils/app_initializer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/generated/l10n.dart';
@@ -9,7 +10,6 @@ import 'package:tasks_admin/modules/main/cubit/dashboard_cubit.dart';
 import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
 import 'package:tasks_admin/modules/task/data/repository/task_repo.dart';
 import 'package:tasks_admin/modules/user/cubit/user_cubit.dart';
-import 'package:tasks_admin/core/services/service_locator.dart' as di;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
