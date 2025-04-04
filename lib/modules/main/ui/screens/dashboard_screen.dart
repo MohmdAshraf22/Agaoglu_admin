@@ -89,7 +89,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       children: <Widget>[
         CircleAvatar(
           radius: 6.w, // Responsive radius
-          backgroundImage: AssetImage(AssetManager.adminPanelIcon),
+          backgroundImage: AssetImage(AssetManager.logoPlaceholder),
         ),
         SizedBox(width: 4.w),
         Expanded(
