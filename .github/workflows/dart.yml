@@ -8,28 +8,48 @@ jobs:
     name: 🎉 iOS Build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout latest commit
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures the latest commit is pulled
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           architecture: x64
-      - run: flutter pub get
-      
 
-      - run: pod repo update
+      - name: Clean Flutter & pub cache
+        run: |
+          flutter clean
+          flutter pub cache repair
+
+      - name: Get latest dependencies
+        run: flutter pub get
+
+      - name: Update CocoaPods repo
+        run: pod repo update
         working-directory: ios
 
-      - run: flutter build ios --release --no-codesign
+      - name: Clean CocoaPods and reinstall
+        run: |
+          rm -rf ios/Pods
+          rm -rf ios/.symlinks
+          rm -rf ios/Flutter/Flutter.podspec
+          pod install --verbose
+        working-directory: ios
 
-      - run: mkdir Payload
-        working-directory: build/ios/iphoneos
+      - name: Select Xcode Version
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
-      - run: mv Runner.app/ Payload
-        working-directory: build/ios/iphoneos
+      - name: Build iOS release
+        run: flutter build ios --release --no-codesign
 
-      - name: Zip output
-        run: zip -qq -r -9 FlutterIpaExport.ipa Payload
+      - name: Prepare IPA file
+        run: |
+          mkdir -p Payload
+          mv Runner.app Payload
+          zip -qq -r -9 FlutterIpaExport.ipa Payload
         working-directory: build/ios/iphoneos
 
       - name: Upload binaries to release
