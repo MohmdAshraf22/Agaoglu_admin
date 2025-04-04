@@ -11,7 +11,7 @@ jobs:
       - name: Checkout latest commit
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensures the latest commit is pulled
+          fetch-depth: 0  
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -27,6 +27,9 @@ jobs:
       - name: Get latest dependencies
         run: flutter pub get
 
+      - name: Get latest dependencies
+        run: flutter pub upgrade
+
       - name: Select Xcode Version
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
@@ -41,7 +44,7 @@ jobs:
         working-directory: ios
 
       - name: Build iOS release
-        run: flutter build ios --release --no-codesign
+        run: flutter build ios --release 
 
       - name: Prepare IPA file
         run: |
