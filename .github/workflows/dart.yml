@@ -27,20 +27,18 @@ jobs:
       - name: Get latest dependencies
         run: flutter pub get
 
-      - name: Update CocoaPods repo
-        run: pod repo update
-        working-directory: ios
-
-      - name: Clean CocoaPods and reinstall
-        run: |
-          rm -rf ios/Pods
-          rm -rf ios/.symlinks
-          rm -rf ios/Flutter/Flutter.podspec
-          pod install --verbose
-        working-directory: ios
-
       - name: Select Xcode Version
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
+      - name: Install CocoaPods dependencies
+        run: |
+          if [ -f "Podfile" ]; then
+            pod deintegrate
+            pod install --repo-update --verbose
+          else
+            echo "Podfile not found, skipping pod install"
+          fi
+        working-directory: ios
 
       - name: Build iOS release
         run: flutter build ios --release --no-codesign
