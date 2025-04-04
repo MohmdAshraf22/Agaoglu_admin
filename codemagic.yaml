@@ -1,14 +1,16 @@
 workflows:
-  ios-build:
-    name: iOS Build
+  ios-simulator-build:
+    name: iOS Simulator Build
     environment:
       flutter: stable
       cocoapods: default
+      xcode: latest
     scripts:
       - name: Set up Flutter
         script: |
           flutter doctor -v
           flutter pub get
+
       - name: Ensure Podfile exists and set platform
         script: |
           cd ios
@@ -21,15 +23,18 @@ workflows:
             echo "Podfile found, setting platform to 13.0."
             sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/g" Podfile
           fi
-          cat Podfile # Optional: Print the Podfile content for debugging
+          cat Podfile
           cd ..
+
       - name: Install CocoaPods dependencies
         script: |
           cd ios
           pod install --repo-update
           cd ..
-      - name: Build IPA
+
+      - name: Build for iOS Simulator
         script: |
-          flutter build ipa --export-options-plist ios/Runner/Info.plist # Adjust path if needed
+          flutter build ios --simulator
+
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/iphonesimulator/Runner.app
