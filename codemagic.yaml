@@ -1,0 +1,26 @@
+workflows:
+  ios-build:
+    name: iOS Build
+    environment:
+      flutter: stable
+      cocoapods: default # Or specify a version if needed
+    scripts:
+      - name: Set up Flutter
+        script: |
+          flutter doctor -v
+          flutter pub get
+      - name: Set iOS deployment target
+        script: |
+          cd ios
+          sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/g" Podfile
+          cd ..
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios
+          pod install --repo-update
+          cd ..
+      - name: Build IPA
+        script: |
+          flutter build ipa --export-options-plist ios/Runner/Info.plist # Adjust path if needed
+    artifacts:
+      - build/ios/ipa/*.ipa
