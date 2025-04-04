@@ -3,16 +3,25 @@ workflows:
     name: iOS Build
     environment:
       flutter: stable
-      cocoapods: default # Or specify a version if needed
+      cocoapods: default
     scripts:
       - name: Set up Flutter
         script: |
           flutter doctor -v
           flutter pub get
-      - name: Set iOS deployment target
+      - name: Ensure Podfile exists and set platform
         script: |
           cd ios
-          sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/g" Podfile
+          if [ ! -f "Podfile" ]; then
+            echo "Podfile not found, creating a basic one."
+            echo "platform :ios, '13.0'" > Podfile
+            echo "target 'Runner' do" >> Podfile
+            echo "end" >> Podfile
+          else
+            echo "Podfile found, setting platform to 13.0."
+            sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/g" Podfile
+          fi
+          cat Podfile # Optional: Print the Podfile content for debugging
           cd ..
       - name: Install CocoaPods dependencies
         script: |
