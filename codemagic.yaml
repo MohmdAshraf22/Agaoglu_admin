@@ -15,17 +15,19 @@ workflows:
         script: |
           cd ios
           if [ ! -f "Podfile" ]; then
-            echo "Podfile not found, creating a basic one."
-            echo "platform :ios, '13.0'" > Podfile
-            echo "target 'Runner' do" >> Podfile
-            echo "end" >> Podfile
+           echo "Podfile not found, creating a basic one."
+           echo "platform :ios, '13.0'" > Podfile
+           echo "target 'Runner' do" >> Podfile
+           echo "end" >> Podfile
           else
-            echo "Podfile found, setting platform to 13.0."
-            sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/g" Podfile
+           echo "Podfile found, setting platform to 13.0."
+           sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/g" Podfile
+           if ! grep -q "platform :ios" Podfile; then
+             echo "platform :ios, '13.0'" | cat - Podfile > temp && mv temp Podfile
+           fi
           fi
           cat Podfile
           cd ..
-
       - name: Install CocoaPods dependencies
         script: |
           cd ios
