@@ -7,13 +7,13 @@ class LocalizationManager {
   static late int currentLocale;
 
   static Future<void> init() async {
-    await CacheHelper.getData(key: "currentLocale").then((value) {
-      if (value != null) {
-        currentLocale = value;
-      } else {
-        currentLocale = 1;
-      }
-    });
+    // await CacheHelper.getData(key: "currentLocale").then((value) {
+    //   if (value != null) {
+    //     currentLocale = value;
+    //   } else {
+        currentLocale = 0;
+    //   }
+    // });
   }
 
   static Future<void> setLocale(int localeIndex) async {

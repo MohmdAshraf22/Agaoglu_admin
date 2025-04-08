@@ -276,7 +276,6 @@ class CreateWorkerScreen extends StatelessWidget {
   }
 }
 
-// Add this widget for text labels
 class LabelText extends StatelessWidget {
   final String text;
 

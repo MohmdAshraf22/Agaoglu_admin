@@ -21,28 +21,28 @@ class MainAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsetsDirectional.only(
-            end: 4.w,
-          ),
-          child: AppBar(
-            backgroundColor: ColorManager.primary,
-            elevation: 0,
-            titleSpacing: 1,
-            title: Text(
-              title,
-              style: TextStyle(
-                color: ColorManager.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
+        AppBar(
+          backgroundColor: ColorManager.primary,
+          elevation: 0,
+          titleSpacing: 1,
+          title: Text(
+            title,
+            style: TextStyle(
               color: ColorManager.white,
-              onPressed: () => context.pop(),
+              fontWeight: FontWeight.bold,
             ),
-            actions: [
-              Container(
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            color: ColorManager.white,
+            onPressed: () => context.pop(),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                end: 4.w,
+              ),
+              child: Container(
                 width: 10.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -54,8 +54,8 @@ class MainAppBar extends StatelessWidget {
                   onPressed: onAdd,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         Padding(
           padding: EdgeInsets.symmetric(

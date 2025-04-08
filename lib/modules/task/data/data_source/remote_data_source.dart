@@ -30,7 +30,11 @@ class TaskDataSourceImpl implements TaskDataSource {
 
   @override
   Stream<List<TaskModel>> getTasks() {
-    return _fireStore.collection(_tasks).snapshots().map((snapshot) {
+    return _fireStore
+        .collection(_tasks)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
       return snapshot.docs.map((doc) => TaskModel.fromDocument(doc)).toList();
     }).handleError((error) {});
   }
@@ -104,7 +108,7 @@ class TaskDataSourceImpl implements TaskDataSource {
       final TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
       if (taskSnapshot.state == TaskState.success) {
         final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-                return Result.success(downloadUrl);
+        return Result.success(downloadUrl);
       } else {
         return Result.error(Exception());
       }

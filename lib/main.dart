@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            locale: Locale("en"),
+            locale: Locale("tr"),
             localizationsDelegates: const [
               S.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
-            title: 'Task Management',
+            title: 'Görev Yönetimi',
             theme: ThemeData(
               colorScheme:
                   ColorScheme.fromSeed(seedColor: ColorManager.primary),

@@ -22,7 +22,7 @@ class DashboardDataSourceImpl implements DashboardDataSource {
       final tasks = await _getTasks();
       DashboardDetails? dashboardDetails;
       dashboardDetails = DashboardDetails.fromDocument(snapshot);
-            dashboardDetails = dashboardDetails.copyWith(tasks: tasks);
+      dashboardDetails = dashboardDetails.copyWith(tasks: tasks);
       return Result.success(dashboardDetails);
     } on FirebaseException catch (e) {
       return Result.error(e);
@@ -30,7 +30,10 @@ class DashboardDataSourceImpl implements DashboardDataSource {
   }
 
   Future<List<TaskModel>> _getTasks() async {
-    final data = await _fireStore.collection(_tasks).orderBy('createdAt').get();
+    final data = await _fireStore
+        .collection(_tasks)
+        .orderBy('createdAt', descending: true)
+        .get();
     return data.docs.map((doc) => TaskModel.fromDocument(doc)).toList();
   }
 }
