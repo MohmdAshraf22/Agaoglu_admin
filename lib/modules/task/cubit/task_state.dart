@@ -148,6 +148,16 @@ final class SelectWorkerState extends TaskState {
   List<Object> get props => [workerId];
 }
 
+final class SelectLocationState extends TaskState {
+  final String location;
+  final LocationType type;
+
+  const SelectLocationState(this.location, this.type);
+
+  @override
+  List<Object> get props => [location,type];
+}
+
 final class CloseDeleteDialog extends TaskState {}
 
 final class MediaImageSelected extends TaskState {
@@ -187,3 +197,4 @@ class SearchTasksState extends TaskState {
   @override
   List<Object> get props => [tasks];
 }
+enum LocationType { block, flat }

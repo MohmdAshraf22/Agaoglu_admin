@@ -29,9 +29,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _taskTitleController;
   late final TextEditingController _taskDescriptionController;
-  late final TextEditingController _siteController;
-  late final TextEditingController _blockController;
-  late final TextEditingController _flatController;
+  late String? _site, _block, _flat;
+
   List<String> imagesUrl = [];
   String? audioUrl;
   late final TaskCubit taskCubit;
@@ -47,9 +46,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _taskTitleController = TextEditingController(text: widget.task.title);
     _taskDescriptionController =
         TextEditingController(text: widget.task.description);
-    _siteController = TextEditingController(text: widget.task.site);
-    _blockController = TextEditingController(text: widget.task.block);
-    _flatController = TextEditingController(text: widget.task.flat);
+    _site = widget.task.site;
+    _block = widget.task.block;
+    _flat = widget.task.flat;
     imagesUrl = widget.task.imagesUrl;
     audioUrl = widget.task.voiceUrl;
     _dueDate = widget.task.createdAt;
@@ -59,9 +58,6 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   void dispose() {
     _taskTitleController.dispose();
     _taskDescriptionController.dispose();
-    _siteController.dispose();
-    _blockController.dispose();
-    _flatController.dispose();
     imagesUrl.clear();
     audioUrl = null;
     _dueDate = null;
@@ -101,9 +97,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     _buildWorkerDropdown(),
                     _buildDueDateSelector(),
                     LocationBuilder(
-                      blockController: _blockController,
-                      flatController: _flatController,
-                      siteController: _siteController,
+                      block: _block,
+                      flat: _flat,
+                      site: _site,
                     ),
                     MediaSelectionBuilder(
                         taskId: widget.task.id,
@@ -117,6 +113,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           ExceptionManager.showMessage(state.errorMessage);
                         } else if (state is UploadFileError) {
                           ExceptionManager.showMessage(state.errorMessage);
+                        } else if (state is SelectLocationState) {
+                          if (state.type == LocationType.block) {
+                            _block = state.location;
+                          } else {
+                            _flat = state.location;
+                          }
                         }
                       },
                       builder: (context, state) {
@@ -135,9 +137,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                     workerPhoto: _selectedWorker?.imageUrl,
                                     imagesUrl: imagesUrl,
                                     voiceUrl: audioUrl,
-                                    block: _blockController.text,
-                                    flat: _flatController.text,
-                                    site: _siteController.text,
+                                    block: _block,
+                                    flat: _flat,
+                                    site: _site,
                                     id: widget.task.id,
                                     status: TaskStatus.pending,
                                     workerId: _selectedWorker?.id,

@@ -48,7 +48,7 @@ class Worker extends AppUser {
       id: document.id,
       name: json['name'],
       email: json['email'],
-      job: json['job'] ?? json["categoryId"],
+      job: json['job'],
     );
   }
 

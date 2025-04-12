@@ -28,9 +28,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   final TextEditingController _taskTitleController = TextEditingController();
   final TextEditingController _taskDescriptionController =
       TextEditingController();
-  final TextEditingController _siteController = TextEditingController();
-  final TextEditingController _blockController = TextEditingController();
-  final TextEditingController _flatController = TextEditingController();
+  String? _site, _block, _flat;
   List<String> imagesUrl = [];
   String? audioUrl;
   late final TaskCubit taskCubit;
@@ -83,9 +81,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     _buildWorkerDropdown(),
                     _buildDueDateSelector(),
                     LocationBuilder(
-                      blockController: _blockController,
-                      flatController: _flatController,
-                      siteController: _siteController,
+                      block: _block,
+                      flat: _flat,
+                      site: _site,
                     ),
                     MediaSelectionBuilder(
                       imagesUrl: [],
@@ -99,6 +97,12 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                           ExceptionManager.showMessage(state.errorMessage);
                         } else if (state is UploadFileError) {
                           ExceptionManager.showMessage(state.errorMessage);
+                        } else if (state is SelectLocationState) {
+                          if (state.type == LocationType.block) {
+                            _block = state.location;
+                          } else {
+                            _flat = state.location;
+                          }
                         }
                       },
                       builder: (context, state) {
@@ -117,9 +121,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                   workerPhoto: _selectedWorker?.imageUrl,
                                   imagesUrl: imagesUrl,
                                   voiceUrl: audioUrl,
-                                  block: _blockController.text,
-                                  flat: _flatController.text,
-                                  site: _siteController.text,
+                                  block: _block,
+                                  flat: _flat,
+                                  site: _site,
                                   workerId: _selectedWorker?.id,
                                 ));
                               }

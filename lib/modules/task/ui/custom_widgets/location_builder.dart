@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
-import 'package:tasks_admin/core/widgets/widgets.dart';
 import 'package:tasks_admin/generated/l10n.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
 
 class LocationBuilder extends StatefulWidget {
-  final TextEditingController siteController, blockController, flatController;
+  final String? site, block, flat;
 
   const LocationBuilder(
-      {super.key,
-      required this.siteController,
-      required this.blockController,
-      required this.flatController});
+      {super.key, required this.site, required this.block, required this.flat});
 
   @override
   State<LocationBuilder> createState() => _LocationBuilderState();
 }
 
 class _LocationBuilderState extends State<LocationBuilder> {
-  // @override
-  // dispose() {
-  //   widget.siteController.dispose();
-  //   widget.blockController.dispose();
-  //   widget.flatController.dispose();
-  //   super.dispose();
-  // }
+  List<String> letters =
+      List.generate(26, (index) => String.fromCharCode(65 + index));
+  List<String> numbers = List.generate(10, (index) => (index + 1).toString());
+  String? _selectedBlock, _selectedFlat;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedBlock = widget.block;
+    _selectedFlat = widget.flat;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,37 +42,66 @@ class _LocationBuilderState extends State<LocationBuilder> {
         children: [
           _buildLocationTitle(),
           SizedBox(height: 1.h),
-          _buildLocationField(
-              label: S.of(context).add_site, controller: widget.siteController),
-          _buildLocationField(
-              label: S.of(context).add_block,
-              controller: widget.blockController),
-          _buildLocationField(
-              label: S.of(context).add_flat, controller: widget.flatController),
+          BlocConsumer<TaskCubit, TaskState>(
+            listener: (context, state) {
+              if (state is SelectLocationState) {
+                if (state.type == LocationType.block) {
+                  _selectedBlock = state.location;
+                } else {
+                  _selectedFlat = state.location;
+                }
+              }
+            },
+            builder: (context, state) {
+              return Column(
+                children: [
+                  // _buildLocationField(
+                  //   label: S.of(context).add_site,
+                  //   value: widget.site,
+                  //   labelsList: [],
+                  // ),
+                  _buildLocationField(
+                    type: LocationType.block,
+                  ),
+                  _buildLocationField(
+                    type: LocationType.flat,
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
   Widget _buildLocationField({
-    required String label,
-    required TextEditingController controller,
+    required LocationType type,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w500,
-            color: ColorManager.primary,
+        DropdownButtonFormField<String>(
+          value: _selectedBlock == null || _selectedFlat == null
+              ? null
+              : (type == LocationType.block)
+                  ? _selectedBlock
+                  : _selectedFlat,
+          menuMaxHeight: 25.h,
+          decoration: InputDecoration(
+            labelText: _getDropdownLabel(type),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-        ),
-        SizedBox(height: 1.h),
-        DefaultTextField(
-          controller: controller,
-          labelText: label,
+          items: (_getDropdownList(type))
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
+          onChanged: (String? newValue) {
+            if (newValue == null) return;
+            context.read<TaskCubit>().selectLocation(newValue, type);
+          },
         ),
         SizedBox(height: 1.h),
       ],
@@ -94,4 +125,22 @@ class _LocationBuilderState extends State<LocationBuilder> {
           ),
         ],
       );
+
+  String _getDropdownLabel(LocationType type) {
+    switch (type) {
+      case LocationType.block:
+        return S.of(context).add_block;
+      case LocationType.flat:
+        return S.of(context).add_flat;
+    }
+  }
+
+  List<String> _getDropdownList(LocationType type) {
+    switch (type) {
+      case LocationType.block:
+        return letters;
+      case LocationType.flat:
+        return numbers;
+    }
+  }
 }
