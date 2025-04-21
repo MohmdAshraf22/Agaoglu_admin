@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
-import 'package:tasks_admin/core/utils/asset_manager.dart';
+import 'package:tasks_admin/core/utils/assets_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/constance_manger.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
@@ -89,7 +89,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       children: <Widget>[
         CircleAvatar(
           radius: 6.w, // Responsive radius
-          backgroundImage: AssetImage(AssetManager.logoPlaceholder),
+          backgroundImage: AssetImage(AssetsManager.logo),
         ),
         SizedBox(width: 4.w),
         Expanded(
