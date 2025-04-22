@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tasks_admin/core/error/exception_manager.dart';
 import 'package:tasks_admin/core/routing/navigation_manager.dart';
+import 'package:tasks_admin/core/utils/assets_manager.dart';
 import 'package:tasks_admin/core/utils/color_manager.dart';
 import 'package:tasks_admin/core/utils/text_styles_manager.dart';
 import 'package:tasks_admin/core/widgets/widgets.dart';
@@ -150,7 +151,7 @@ class ManageWorkersScreen extends StatelessWidget {
                         radius: 7.w,
                         backgroundImage: worker.imageUrl != null
                             ? NetworkImage(worker.imageUrl!)
-                            : AssetImage("assets/images/worker_avatar.png"),
+                            : AssetImage(AssetsManager.workerAvatar),
                       ),
                       SizedBox(width: 1.w),
                       Expanded(

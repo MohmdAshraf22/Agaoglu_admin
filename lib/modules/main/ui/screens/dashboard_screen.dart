@@ -50,6 +50,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               SizedBox(height: 4.h),
               BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
+                  print('object');
                   if (state is DashboardDetailsSuccess) {
                     dashboardDetails = state.dashboardDetails;
                   }
@@ -59,17 +60,24 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         _buildStats(dashboardDetails),
-                        SizedBox(height: 4.h),
-                        Text(
-                          S.of(context).recentTasks,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.sp, // Responsive font size
-                            fontWeight: FontWeight.bold,
+                        if (dashboardDetails.tasks.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 4.h, bottom: 2.h),
+                                child: Text(
+                                  S.of(context).recentTasks,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp, // Responsive font size
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              _buildTaskList(dashboardDetails),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 2.h),
-                        _buildTaskList(dashboardDetails),
                         SizedBox(height: 4.h),
                       ],
                     ),
@@ -88,7 +96,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return Row(
       children: <Widget>[
         CircleAvatar(
-          radius: 6.w, // Responsive radius
+          radius: 6.w,
           backgroundImage: AssetImage(AssetsManager.logo),
         ),
         SizedBox(width: 4.w),
@@ -107,19 +115,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             ],
           ),
         ),
-        BlocBuilder<DashboardCubit, DashboardState>(
-          builder: (context, state) {
-            return IconButton(
-              icon: Icon(
-                Icons.refresh,
-                color: ColorManager.white,
-              ),
-              onPressed: () {
-                context.read<DashboardCubit>().getDashboardDetails();
-              },
-            );
+        IconButton(
+          icon: Icon(
+            Icons.refresh,
+            color: ColorManager.white,
+          ),
+          onPressed: () {
+            cubit.getDashboardDetails();
           },
-        ),
+        )
       ],
     );
   }
