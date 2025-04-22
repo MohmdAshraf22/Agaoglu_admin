@@ -33,8 +33,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   String? audioUrl;
   late final TaskCubit taskCubit;
   Worker? _selectedWorker;
+  String? _selectedJob;
+  List<Worker> _workers = [], _filteredWorkers = [];
+  List<String> _jobs = [];
   DateTime? _dueDate;
-  List<Worker> _workers = [];
 
   @override
   void dispose() {
@@ -78,6 +80,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   children: [
                     _buildTaskTitleField(),
                     _buildTaskDescriptionField(),
+                    _buildJobDropdown(),
                     _buildWorkerDropdown(),
                     _buildDueDateSelector(),
                     LocationBuilder(
@@ -163,6 +166,95 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     );
   }
 
+  Widget _buildJobDropdown() {
+    return BlocBuilder<TaskCubit, TaskState>(
+      builder: (context, state) {
+        if (state is SelectWorkerJobState) {
+          _filterWorkersByJob(state.job);
+        }
+        return DropdownButtonFormField(
+          value: _selectedJob,
+          decoration: InputDecoration(
+            labelText: S.of(context).select_job,
+            hintText: S.of(context).select_job,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          items: _jobs.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? job) {
+            if (job == null) return;
+            taskCubit.selectWorkerJob(job);
+          },
+          validator: (value) {
+            if (value == null) {
+              return S.of(context).please_select_a_job;
+            }
+            return null;
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildWorkerDropdown() {
+    return BlocBuilder<UserCubit, UserState>(
+      builder: (context, state) {
+        if (state is GetWorkersSuccessState) {
+          _workers = state.workers;
+          _jobs = state.workers.map((worker) => worker.job).toSet().toList();
+          if (_selectedJob != null) {
+            _filterWorkersByJob(_selectedJob);
+          }
+        }
+        return BlocBuilder<TaskCubit, TaskState>(
+          builder: (context, state) {
+            if (state is SelectWorkerState) {
+              _selectedWorker = state.workerId;
+            }
+            return DropdownButtonFormField(
+              value: _selectedWorker,
+              decoration: InputDecoration(
+                labelText: S.of(context).select_worker,
+                hintText: S.of(context).choose_a_worker,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              items: _filteredWorkers
+                  .map<DropdownMenuItem<Worker>>((Worker value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(value.name),
+                );
+              }).toList(),
+              onChanged: (Worker? newValue) {
+                if (newValue == null) return;
+                taskCubit.selectWorker(newValue);
+              },
+              validator: (value) {
+                if (value == null && _filteredWorkers.isNotEmpty) {
+                  return S.of(context).please_select_a_worker;
+                }
+                return null;
+              },
+              disabledHint: Text(_selectedJob == null
+                  ? S.of(context).select_job_first
+                  : _filteredWorkers.isEmpty
+                      ? S.of(context).no_workers_for_job
+                      : S.of(context).choose_a_worker),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildTaskTitleField() {
     return DefaultTextField(
       controller: _taskTitleController,
@@ -183,49 +275,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       maxLines: 3,
       labelText: S.of(context).task_description,
       hintText: S.of(context).enter_task_description,
-    );
-  }
-
-  Widget _buildWorkerDropdown() {
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
-        if (state is GetWorkersSuccessState) {
-          _workers = state.workers;
-        }
-        return BlocBuilder<TaskCubit, TaskState>(
-          builder: (context, state) {
-            if (state is SelectWorkerState) {
-              _selectedWorker = state.workerId;
-            }
-            return DropdownButtonFormField<Worker>(
-              value: _selectedWorker,
-              decoration: InputDecoration(
-                labelText: S.of(context).select_worker,
-                hintText: S.of(context).choose_a_worker,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              items: _workers.map<DropdownMenuItem<Worker>>((Worker value) {
-                return DropdownMenuItem<Worker>(
-                  value: value,
-                  child: Text(value.name),
-                );
-              }).toList(),
-              onChanged: (Worker? newValue) {
-                if (newValue == null) return;
-                taskCubit.selectWorker(newValue);
-              },
-              validator: (value) {
-                if (value == null) {
-                  return S.of(context).please_select_a_worker;
-                }
-                return null;
-              },
-            );
-          },
-        );
-      },
     );
   }
 
@@ -261,5 +310,11 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         );
       },
     );
+  }
+
+  void _filterWorkersByJob(String? selectedJob) {
+    _selectedWorker = null;
+    _filteredWorkers =
+        _workers.where((worker) => worker.job == selectedJob).toList();
   }
 }

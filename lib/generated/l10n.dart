@@ -660,6 +660,41 @@ class S {
     return Intl.message('Assigned to', name: 'assignedTo', desc: '', args: []);
   }
 
+  /// `Please select a job`
+  String get please_select_a_job {
+    return Intl.message(
+      'Please select a job',
+      name: 'please_select_a_job',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Job`
+  String get select_job {
+    return Intl.message('Select Job', name: 'select_job', desc: '', args: []);
+  }
+
+  /// `No workers for job`
+  String get no_workers_for_job {
+    return Intl.message(
+      'No workers for job',
+      name: 'no_workers_for_job',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a job first`
+  String get select_job_first {
+    return Intl.message(
+      'Please select a job first',
+      name: 'select_job_first',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `View Tasks`
   String get viewTasks {
     return Intl.message('View Tasks', name: 'viewTasks', desc: '', args: []);

@@ -92,6 +92,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
     "noDataFound": MessageLookupByLibrary.simpleMessage("No data found"),
+    "no_workers_for_job": MessageLookupByLibrary.simpleMessage(
+      "No workers for job",
+    ),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Not Accepted yet",
     ),
@@ -102,6 +105,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Please enter task title",
+    ),
+    "please_select_a_job": MessageLookupByLibrary.simpleMessage(
+      "Please select a job",
     ),
     "please_select_a_worker": MessageLookupByLibrary.simpleMessage(
       "Please select a worker",
@@ -116,6 +122,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "search_tasks": MessageLookupByLibrary.simpleMessage("Search tasks..."),
     "selectJob": MessageLookupByLibrary.simpleMessage("Select Job"),
     "select_date": MessageLookupByLibrary.simpleMessage("Select date"),
+    "select_job": MessageLookupByLibrary.simpleMessage("Select Job"),
+    "select_job_first": MessageLookupByLibrary.simpleMessage(
+      "Please select a job first",
+    ),
     "select_worker": MessageLookupByLibrary.simpleMessage("Select Worker"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "signIn": MessageLookupByLibrary.simpleMessage("Sign In"),

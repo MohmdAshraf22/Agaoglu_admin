@@ -96,6 +96,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "name": MessageLookupByLibrary.simpleMessage("İsim"),
     "newPassword": MessageLookupByLibrary.simpleMessage("Yeni Şifre"),
     "noDataFound": MessageLookupByLibrary.simpleMessage("Veri bulunamadı"),
+    "no_workers_for_job": MessageLookupByLibrary.simpleMessage(
+      "Bu işe ait çalışan yok",
+    ),
     "not_accepted_yet": MessageLookupByLibrary.simpleMessage(
       "Henüz Kabul Edilmedi",
     ),
@@ -106,6 +109,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "phoneNumber": MessageLookupByLibrary.simpleMessage("Telefon Numarası"),
     "please_enter_task_title": MessageLookupByLibrary.simpleMessage(
       "Lütfen görev başlığını girin",
+    ),
+    "please_select_a_job": MessageLookupByLibrary.simpleMessage(
+      "Lütfen bir iş seçin",
     ),
     "please_select_a_worker": MessageLookupByLibrary.simpleMessage(
       "Lütfen bir çalışan seçin",
@@ -120,6 +126,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "search_tasks": MessageLookupByLibrary.simpleMessage("Görevleri ara..."),
     "selectJob": MessageLookupByLibrary.simpleMessage("İş Seç"),
     "select_date": MessageLookupByLibrary.simpleMessage("Tarih seçin"),
+    "select_job": MessageLookupByLibrary.simpleMessage("İş Seç"),
+    "select_job_first": MessageLookupByLibrary.simpleMessage(
+      "Ilk olarak iş seçin",
+    ),
     "select_worker": MessageLookupByLibrary.simpleMessage("Çalışan Seç"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage(
       "Sıfırlama Bağlantısı Gönder",

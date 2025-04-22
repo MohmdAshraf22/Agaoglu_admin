@@ -50,7 +50,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               SizedBox(height: 4.h),
               BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
-                  print('object');
                   if (state is DashboardDetailsSuccess) {
                     dashboardDetails = state.dashboardDetails;
                   }

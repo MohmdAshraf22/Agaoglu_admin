@@ -77,5 +77,9 @@
   "viewWorkers": "View Workers",
   "edit_task": "Edit Task",
   "assignedTo": "Assigned to",
+  "please_select_a_job": "Please select a job",
+  "select_job": "Select Job",
+  "no_workers_for_job": "No workers for job",
+  "select_job_first": "Please select a job first",
   "viewTasks": "View Tasks"
 }
