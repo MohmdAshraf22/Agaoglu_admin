@@ -147,6 +147,14 @@ final class SelectWorkerState extends TaskState {
   @override
   List<Object> get props => [workerId];
 }
+final class SelectWorkerJobState extends TaskState {
+  final String job;
+
+  const SelectWorkerJobState(this.job);
+
+  @override
+  List<Object> get props => [job];
+}
 
 final class SelectLocationState extends TaskState {
   final String location;

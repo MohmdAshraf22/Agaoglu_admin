@@ -1,0 +1,148 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
+import 'package:tasks_admin/core/utils/color_manager.dart';
+import 'package:tasks_admin/core/widgets/widgets.dart';
+import 'package:tasks_admin/generated/l10n.dart';
+import 'package:tasks_admin/modules/task/cubit/task_cubit.dart';
+
+class LocationBuilder extends StatefulWidget {
+  final String? site, block, flat;
+
+  const LocationBuilder(
+      {super.key, required this.site, required this.block, required this.flat});
+
+  @override
+  State<LocationBuilder> createState() => _LocationBuilderState();
+}
+
+class _LocationBuilderState extends State<LocationBuilder> {
+  List<String> letters =
+      List.generate(26, (index) => String.fromCharCode(65 + index));
+  List<String> numbers = List.generate(10, (index) => (index + 1).toString());
+  String? _selectedBlock, _selectedFlat;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedBlock = widget.block;
+    _selectedFlat = widget.flat;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: ColorManager.greyLight,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildLocationTitle(),
+          SizedBox(height: 1.h),
+          BlocConsumer<TaskCubit, TaskState>(
+            listener: (context, state) {
+              if (state is SelectLocationState) {
+                if (state.type == LocationType.block) {
+                  _selectedBlock = state.location;
+                } else {
+                  _selectedFlat = state.location;
+                }
+              }
+            },
+            builder: (context, state) {
+              return Column(
+                children: [
+                  // _buildLocationField(
+                  //   label: S.of(context).add_site,
+                  //   value: widget.site,
+                  //   labelsList: [],
+                  // ),
+                  _buildLocationField(
+                    type: LocationType.block,
+                  ),
+                  _buildLocationField(
+                    type: LocationType.flat,
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationField({
+    required LocationType type,
+  }) {
+    print(_selectedBlock);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DropdownButtonFormField<String>(
+          value: _selectedBlock == null || _selectedFlat == null
+              ? null
+              : (type == LocationType.block)
+                  ? _selectedBlock
+                  : _selectedFlat,
+          menuMaxHeight: 25.h,
+          decoration: InputDecoration(
+            labelText: _getDropdownLabel(type),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          items: (_getDropdownList(type))
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
+          onChanged: (String? newValue) {
+            if (newValue == null) return;
+            context.read<TaskCubit>().selectLocation(newValue, type);
+          },
+        ),
+        SizedBox(height: 1.h),
+      ],
+    );
+  }
+
+  Widget _buildLocationTitle() => Row(
+        children: [
+          Icon(
+            Icons.location_on_outlined,
+            color: ColorManager.primary,
+          ),
+          SizedBox(width: 2.w),
+          Text(
+            S.of(context).location,
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: ColorManager.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
+
+  String _getDropdownLabel(LocationType type) {
+    switch (type) {
+      case LocationType.block:
+        return S.of(context).add_block;
+      case LocationType.flat:
+        return S.of(context).add_flat;
+    }
+  }
+
+  List<String> _getDropdownList(LocationType type) {
+    switch (type) {
+      case LocationType.block:
+        return letters;
+      case LocationType.flat:
+        return numbers;
+    }
+  }
+}

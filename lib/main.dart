@@ -27,10 +27,9 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) => MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => UserCubit.get()),
-            BlocProvider(
-              create: (context) => TaskCubit(di.sl<TaskRepository>()),
-            ),
-            BlocProvider<DashboardCubit>.value(value: DashboardCubit())
+            BlocProvider<DashboardCubit>.value(value: DashboardCubit()),
+            BlocProvider<TaskCubit>.value(
+                value: TaskCubit(di.sl<TaskRepository>()))
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

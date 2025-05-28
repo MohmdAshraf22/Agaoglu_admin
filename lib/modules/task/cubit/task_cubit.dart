@@ -96,6 +96,10 @@ class TaskCubit extends Cubit<TaskState> {
     emit(SelectWorkerState(workerId));
   }
 
+  void selectWorkerJob(String job) {
+    emit(SelectWorkerJobState(job));
+  }
+
   void selectLocation(String location, LocationType type) {
     emit(SelectLocationState(location, type));
   }

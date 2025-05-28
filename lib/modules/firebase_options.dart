@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD-zxIy7Trom8IruszndBGXzBCjc0l89JE',
-    appId: '1:1021551954693:android:3e3439ca9886ee2464056c',
-    messagingSenderId: '1021551954693',
-    projectId: 'tasks-350f2',
-    storageBucket: 'tasks-350f2.firebasestorage.app',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
+    projectId: '',
+    storageBucket: '',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCTghzBkmW-n3bR7fEx_rT9faQAq2hL3W0',
-    appId: '1:1021551954693:ios:091e115d34d7d4e764056c',
-    messagingSenderId: '1021551954693',
-    projectId: 'tasks-350f2',
-    storageBucket: 'tasks-350f2.firebasestorage.app',
-    iosBundleId: 'com.tasks.tasksAdmin',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
+    projectId: '',
+    storageBucket: '',
+    iosBundleId: '',
   );
 }
