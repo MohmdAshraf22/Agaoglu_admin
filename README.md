@@ -6,7 +6,7 @@ Manage your team's tasks efficiently with real-time updates, voice notes, and fu
 
 ## Features Overview
 
-| ![Admin Dashboard](images/admin_dashboard.png) | ![Worker Task List](images/worker_tasks.png) |
+| ![Admin Dashboard](images/admin_dashboard.png) | ![Worker Task List](images/1.png) |
 |:----------------------------------------------:|:--------------------------------------------:|
 | **Admin Panel**                                | **Worker Panel**                             |
 | - Create, update, delete workers               | - Cancel, approve, complete tasks            |
