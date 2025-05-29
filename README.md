@@ -6,7 +6,7 @@ Manage your team's tasks efficiently with real-time updates, voice notes, and fu
 
 ## Features Overview
 
-| ![Admin Dashboard](images/admin_dashboard.png) | ![Worker Task List](images/1.png) |
+| ![Admin Dashboard](3.png) | ![Worker Task List](4.png) |
 |:----------------------------------------------:|:--------------------------------------------:|
 | **Admin Panel**                                | **Worker Panel**                             |
 | - Create, update, delete workers               | - Cancel, approve, complete tasks            |
@@ -16,7 +16,7 @@ Manage your team's tasks efficiently with real-time updates, voice notes, and fu
 
 ---
 
-| ![Authentication](images/auth_screen.png) | ![Task Status Tracking](images/task_status.png) |
+| ![Authentication](1.png) | ![Task Status Tracking](2.png) |
 |:-----------------------------------------:|:-----------------------------------------------:|
 | **Authentication**                        | **Task Status Tracking**                         |
 | - Separate auth for Admin & Worker apps   | - Monitor tasks progress & status                |
